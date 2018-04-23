@@ -1,4 +1,6 @@
-﻿unit fwl;
+﻿///-FileWork Library
+/// Библиотека для работы с файлами
+unit fwl;
 
 interface
 
@@ -8,18 +10,26 @@ var
   Mark: String[3];
 
 const
-  END_KEY: array of char = ('n', 'N');
-  CONT_KEY: array of char = ('y', 'Y');
+  END_KEY: array of char = ('n', 'N');    //Символы терминации
+  CONT_KEY: array of char = ('y', 'Y');   //Символы иницализации
+  //Текст ошибкок
   ERROR_MESSAGE: array of string = ('Incorrect input!', 'The file not exist!');
 
-function EditText(s: String): String;
+///-MakeAndEditFile(FileName: string);
+/// Процедура создания нового файла или добавления данных в уже существующий
 procedure MakeAndEditFile(FileName: string);
+///-ViewFile(FileName: string);
+/// Процедура выводящая все данные из указанного файла
 procedure ViewFile(FileName: string);
+///-EraseFile(FileName: string);
+/// Процедура удаляющая указанный файл
 procedure EraseFile(FileName: string);
+///-GetFileText(FileName: string): array of array of String;
+/// Функция возвращающая данные из указанного файла в формате массива массивов
 function GetFileText(FileName: string): array of array of String;
 
 implementation
-
+//Возвращает строку без символов пробела в начале
 function EditText(s: String): String;
 begin
   while (s.Length <> 0) and (s[1] = ' ') do s := s.Remove(0, 1);
