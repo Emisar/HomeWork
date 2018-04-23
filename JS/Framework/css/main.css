@@ -1,0 +1,59 @@
+﻿body
+{
+    background-color: #808080;
+    border: 5px solid #ffd800;
+    border-radius: 15px;
+    padding: 1%;
+}
+
+.main_menu {
+    background: #ffffff;
+    border: 2px solid #ffd800;
+    border-radius: 15px;
+    text-align: left;
+    width: 15%;
+    margin-bottom: 1%;
+}
+
+.main_menu:hover {
+    border: 2px solid #0094ff;
+}
+
+.main_menu:active {
+    border: 2px solid #ff0000;
+}
+
+.exercise {
+    background: #a0a0a0;
+    border: 3px solid #ffd800;
+    border-radius: 15px;
+    margin-bottom: 1%;
+    padding: 1%;
+}
+
+.matrix-elem {
+    width: 25px;
+    height: 20px;
+    text-align: center;
+    margin-bottom: 3px;
+}
+
+.progressBar-unactive {
+    border-radius: 3px;
+    background-color: #ff0000;
+    width: 600px;
+    height: 50px;
+}
+
+.progressBar-active {
+    border-radius: 3px;
+    background-color: #ff0000;
+    width: 0%;
+    height: 100%;
+}
+
+.timeBlock {
+    border-radius: 1px;
+    background-color: #a0a0a0;
+    width: auto;
+}
