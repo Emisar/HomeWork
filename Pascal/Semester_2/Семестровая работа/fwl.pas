@@ -27,6 +27,9 @@ procedure EraseFile(FileName: string);
 ///-GetFileText(FileName: string): array of array of String;
 /// Функция возвращающая данные из указанного файла в формате массива массивов
 function GetFileText(FileName: string): array of array of String;
+///-EditText(s: String): String;
+/// Функция возвращающая строку без пробелов в начале
+function EditText(s: String): String;
 
 implementation
 //Возвращает строку без символов пробела в начале

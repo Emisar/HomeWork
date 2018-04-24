@@ -291,7 +291,7 @@ end;
 procedure TreeLibMenu;
 var
   Head: String := 'Tree Menu';
-  MenuElem: array of String := ('Create Tree');
+  MenuElem: array of String := ('Create Tree', 'Save Tree', 'Load Tree');
   ch: char;
   Tree: array of Node;
 begin
@@ -305,8 +305,19 @@ begin
       case ch of
         '1':
           begin
-            CreateTree(Tree);
-            Writeln(Tree);
+            Tree:= CreateTree;
+            Writeln('Tree: '); ViewTree(Tree);
+          end;
+        '2':
+          begin
+            Tree:= CreateTree;
+            SaveTree(Tree, ReadlnString('Enter the filename:'));
+            Writeln('Tree: '); ViewTree(Tree);
+          end;
+        '3':
+          begin
+            Tree:= LoadTree(ReadlnString('Enter the filename:'));
+            ViewTree(Tree);
           end;
         '0': break;
       else
