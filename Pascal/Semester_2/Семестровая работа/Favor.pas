@@ -1,14 +1,26 @@
-﻿unit Favor;
+﻿///- Favorite
+/// Библиотека включающая в себя набор особенных процедур и функций
+unit Favor;
 
 interface
 
 uses
   Stk, Que, fwl;
 
+///-StackToQueue(Stack: PtrS; Queue: PtrQ): PtrQ;
+/// Функция переводящая перевода из стэка в очередь 
 function StackToQueue(Stack: PtrS; Queue: PtrQ): PtrQ;
+///-QueueToStack(Queue: PtrQ; Stack: PtrS): PtrS;
+/// Функция перевода из очереди в стэк
 function QueueToStack(Queue: PtrQ; Stack: PtrS): PtrS;
+///-StackToFile(Stack: PtrS; FileName: String);
+/// Процедура записывающая содержимое стэка в файл
 procedure StackToFile(Stack: PtrS; FileName: String);
+///-QueueToFile(Queue: PtrQ; FileName: String);
+/// Процедура записывающая содержимое очереди и файл
 procedure QueueToFile(Queue: PtrQ; FileName: String);
+///-BadStudents(FileName: string; num: byte);
+/// Процедура выводящая студернтов с указанным количеством плохих оценок
 procedure BadStudents(FileName: string; num: byte);
 
 implementation
