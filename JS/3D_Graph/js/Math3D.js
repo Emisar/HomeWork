@@ -32,31 +32,31 @@
                          [1, 0, 1, 0],
                          [0, 0, 0, 1]];
 
-    function fillMoveMatrix(vector) {
+    this.fillMoveMatrix = function (vector) {
         moveMatrix[3][0] = vector.x;
         moveMatrix[3][1] = vector.y;
         moveMatrix[3][2] = vector.z;
     }
 
-    function fillScaleMatrix(vector) {
+    this.fillScaleMatrix = function (vector) {
         scaleMatrix[0][0] = vector.x;
         scaleMatrix[1][1] = vector.y;
         scaleMatrix[2][2] = vector.z;
     
     }
-    function fillRotateZMatrix(alpha) {
+    this.fillRotateZMatrix = function (alpha) {
         rotateZMatrix[0][0] = Math.cos(alpha);
         rotateZMatrix[0][1] = Math.sin(alpha);
         rotateZMatrix[1][0] = -Math.sin(alpha);
         rotateZMatrix[1][1] = Math.cos(alpha);
     }         
-    function fillRotateXMatrix(alpha) {
+    this.fillRotateXMatrix = function (alpha) {
         rotateXMatrix[1][1] = Math.cos(alpha);
         rotateXMatrix[1][2] = -Math.sin(alpha);
         rotateXMatrix[2][1] = Math.sin(alpha);
         rotateXMatrix[2][2] = Math.cos(alpha);
     }
-    function fillRotateYMatrix(alpha) {
+    this.fillRotateYMatrix = function (alpha) {
         rotateYMatrix[0][0] = Math.cos(alpha);
         rotateYMatrix[0][2] = -Math.sin(alpha);
         rotateYMatrix[2][0] = Math.sin(alpha);
@@ -78,27 +78,22 @@
      
     //перенос точки на определнный вектор
     this.move = function (point, vector) {
-        fillMoveMatrix(vector);
         return mult([point.x, point.y, point.z, 1], moveMatrix);
     };
 
     this.scale = function (point, vector) {
-        fillScaleMatrix(vector);
         return mult([point.x, point.y, point.z, 1], scaleMatrix);
 
     };
     this.rotateZ= function (point, alpha) {
-        fillRotateZMatrix(alpha);
         return mult([point.x, point.y, point.z, 1], rotateZMatrix);
     };
 
     this.rotateX = function (point, alpha) {
-        fillRotateXMatrix(alpha);
         return mult([point.x, point.y, point.z, 1], rotateXMatrix);
     };
 
     this.rotateY = function (point, alpha) {
-        fillRotateYMatrix(alpha);
         return mult([point.x, point.y, point.z, 1], rotateYMatrix);
     };
 }

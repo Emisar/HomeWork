@@ -86,52 +86,74 @@ function Logic3D(options) {
     };
 
     this.move = function (vector) {
+        math3D.fillMoveMatrix(vector);
         for (var i = 0; i < scene.length; i++) {
             for (var j = 0; j < scene[i].points.length; j++) {
                 scene[i].points[j] = math3D.move(scene[i].points[j], vector);
             }
+            scene[i].center = math3D.move(scene[i].center, vector);
         }
     };
 
     this.scale = function (vector) {
+        math3D.fillScaleMatrix(vector);
         for (var i = 0; i < scene.length; i++) {
             for (var j = 0; j < scene[i].points.length; j++) {
                 scene[i].points[j] = math3D.scale(scene[i].points[j], vector);
             }
+            scene[i].center = math3D.scale(scene[i].center, vector);
         }
     };
 
     this.rotateZ = function (alpha) {
+        math3D.fillRotateZMatrix(alpha);
         for (var i = 0; i < scene.length; i++) {
             for (var j = 0; j < scene[i].points.length; j++) {
                 scene[i].points[j] = math3D.rotateZ(scene[i].points[j], alpha);
             }
+            scene[i].center = math3D.rotateZ(scene[i].center, alpha);
         }
     };
     this.rotateX = function (alpha) {
+        math3D.fillRotateXMatrix(alpha);
         for (var i = 0; i < scene.length; i++) {
             for (var j = 0; j < scene[i].points.length; j++) {
                 scene[i].points[j] = math3D.rotateX(scene[i].points[j], alpha);
             }
+            scene[i].center = math3D.rotateX(scene[i].center, alpha);
         }
     };
     this.rotateY = function (alpha) {
+        math3D.fillRotateYMatrix(alpha);
         for (var i = 0; i < scene.length; i++) {
             for (var j = 0; j < scene[i].points.length; j++) {
                 scene[i].points[j] = math3D.rotateY(scene[i].points[j], alpha);
             }
+            scene[i].center = math3D.rotateY(scene[i].center, alpha);
         }
     };
 
     function animateScene() {
         for (var i = 0; i < scene.length; i++) {
             var figure = scene[i];
-            if (figure && figure.animation && figure.animation.y) {
+            if (figure && figure.animation) {
                 for (var j = 0; j < figure.points.length; j++) {
-                    figure.points[j] = math3D.rotateX(figure.points[j], figure.animation.x);
-                    figure.points[j] = math3D.rotateY(figure.points[j], figure.animation.y);
-                    figure.points[j] = math3D.rotateZ(figure.points[j], figure.animation.z);
-
+                    math3D.fillMoveMatrix({ x: -figure.center.x, y: -figure.center.y, z: -figure.center.z });
+                    figure.points[j] = math3D.move(figure.points[j], { x: -figure.points[j].x, y: -figure.points[j].y, z: -figure.points[j].z });
+                    if (figure.animation.y) {
+                        math3D.fillRotateYMatrix(figure.animation.y);
+                        figure.points[j] = math3D.rotateY(figure.points[j], figure.animation.y);
+                    }
+                    if (figure.animation.x) {
+                        math3D.fillRotateXMatrix(figure.animation.x);
+                        figure.points[j] = math3D.rotateX(figure.points[j], figure.animation.x);
+                    }
+                    if (figure.animation.z) {
+                        math3D.fillRotateZMatrix(figure.animation.z);
+                        figure.points[j] = math3D.rotateZ(figure.points[j], figure.animation.z);
+                    }
+                    math3D.fillMoveMatrix({ x: figure.center.x, y: figure.center.y, z: figure.center.z });
+                    figure.points[j] = math3D.move(figure.points[j], { x: figure.points[j].x, y: figure.points[j].y, z: figure.points[j].z });
                 }
             }
         }
@@ -145,7 +167,7 @@ function Logic3D(options) {
         scene.push(planet);
         scene.push(satellite);
 
-        setInterval(animateScene, 25);
+        //setInterval(animateScene, 25);
         //scene.push(hyperParab(-5, -5, 10,10, 10));
         //scene.push(cube(3));
         //scene.push(parab(-5, -5, 10, 10, 10));

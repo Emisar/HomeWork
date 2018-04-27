@@ -34,75 +34,86 @@
 
     this.polygon = function (points, color) {
         if (points instanceof Array && points.length >= 3) {
-            context.fillStyle = (color) ? color : "#000000";
-            context.beginPath();
-            context.moveTo(xs(points[0].x), ys(points[0].y));
+            memContext.fillStyle = (color) ? color : "#000000";
+            memContext.beginPath();
+            memContext.moveTo(xs(points[0].x), ys(points[0].y));
             for (var i = 1; i < points.length; i++) {
-                context.lineTo(xs(points[i].x), ys(points[i].y));
+                memContext.lineTo(xs(points[i].x), ys(points[i].y));
             }
-            context.lineTo(xs(points[0].x), ys(points[0].y));
-            context.closePath();
-            context.fill();
+            memContext.lineTo(xs(points[0].x), ys(points[0].y));
+            memContext.closePath();
+            memContext.fill();
         }
     }
 
+    this.print = function () {
+        var image = memContext.getImageData(0, 0, width, height);
+        context.putImageData(image, 0, 0);
+    };
+
     this.clear = function (color) {
-        context.fillStyle = (color) ? color : "#d0d0d0";
-        context.fillRect(0, 0, width, height);
+        memContext.fillStyle = (color) ? color : "#d0d0d0";
+        memContext.fillRect(0, 0, width, height);
     }
 
     this.point = function(x, y, radius, color) {
-        context.fillStyle = (color) ? color : "#FF0000";
-        context.beginPath();
-        context.arc(
+        memContext.fillStyle = (color) ? color : "#FF0000";
+        memContext.beginPath();
+        memContext.arc(
             xs(x), ys(y), // center
             (radius) ? radius : 2, // radius
             0, Math.PI*2, // angles start and end draw
             true); 
-        context.closePath();
-        context.fill();
+        memContext.closePath();
+        memContext.fill();
     };
 
     this.line = function (x1, y1, x2, y2, color, lineWidth) {
-        context.strokeStyle = (color) ? color : "#000000";
-        context.beginPath();
-        context.lineWidth = (lineWidth) ? lineWidth : 1;
-        context.moveTo(xs(x1), ys(y1));
-        context.lineTo(xs(x2), ys(y2));
-        context.closePath();
-        context.stroke();
+        memContext.strokeStyle = (color) ? color : "#000000";
+        memContext.beginPath();
+        memContext.lineWidth = (lineWidth) ? lineWidth : 1;
+        memContext.moveTo(xs(x1), ys(y1));
+        memContext.lineTo(xs(x2), ys(y2));
+        memContext.closePath();
+        memContext.stroke();
     }
 
     this.arrow = function () {
-        context.strokeStyle = "#000000";
-        context.beginPath();
-        context.moveTo(xs(0), 0);
-        context.lineTo(xs(0) + 10, 20);
-        context.moveTo(xs(0), 0);
-        context.lineTo(xs(0) - 10, 20);
-        context.moveTo(width, ys(0));
-        context.lineTo(width - 20, ys(0) + 10);
-        context.moveTo(width, ys(0));
-        context.lineTo(width - 20, ys(0) - 10);
-        context.closePath();
-        context.stroke();
+        memContext.strokeStyle = "#000000";
+        memContext.beginPath();
+        memContext.moveTo(xs(0), 0);
+        memContext.lineTo(xs(0) + 10, 20);
+        memContext.moveTo(xs(0), 0);
+        memContext.lineTo(xs(0) - 10, 20);
+        memContext.moveTo(width, ys(0));
+        memContext.lineTo(width - 20, ys(0) + 10);
+        memContext.moveTo(width, ys(0));
+        memContext.lineTo(width - 20, ys(0) - 10);
+        memContext.closePath();
+        memContext.stroke();
     }
 
     var canvas;
     var context;
+    var memCanvas;
+    var memContext;
 
     function init() {
         canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
-
         canvas.addEventListener('wheel', wheelCallback);
         canvas.addEventListener('mousedown', MouseDownCallback);
         canvas.addEventListener('mouseup', MouseUpCallback);
         canvas.addEventListener('mousemove', MouseMoveCallback);
         canvas.addEventListener('mouseout', MouseOutCallback);
-
         context = canvas.getContext('2d');
+
+        memCanvas = document.createElement('canvas');
+        memCanvas.width = width;
+        memCanvas.height = height;
+        memContext = memCanvas.getContext('2d');
+
         document.querySelector(parent).appendChild(canvas);
     }
     init();

@@ -28,6 +28,15 @@
         area: area
     });
 
+    var ui = new UI({
+        callback: {
+            keyDown: keyDownCallback,
+            showPoints: showPointsCallback,
+            showEdges: showEdgesCallback,
+            showPolygons: showPolygonsCallback
+        }
+    });
+
     function keyDownCallback(event) {
         switch (event.keyCode) {
             // moveup             
@@ -117,11 +126,21 @@
             }
         }
     }
+    
+    var isShow_Points = true;
+    var isShow_Edges = true;
+    var isShow_Polygons = true;
 
-    var isShow = {
-        points: true,
-        edges: true,
-        polygons: true
+    function showPointsCallback(check) {
+        isShow_Points = check;
+    };
+
+    function showEdgesCallback(check) {
+        isShow_Edges = check;
+    };
+
+    function showPolygonsCallback(check) {
+        isShow_Polygons = check;
     };
 
     function drawScene() {
@@ -130,7 +149,7 @@
         for (var i = 0; i < scene.length; i++) {
             var points = scene[i].points;
             //draw polygons
-            if (isShow.polygons) {
+            if (isShow_Polygons) {
                 logic3D.sortPolygons(scene[i], camera);
                 if (scene[i].polygons && scene[i].polygons.length) {
                     for (var j = 0; j < scene[i].polygons.length; j++) {
@@ -151,7 +170,7 @@
                 }
             }
             //draw edges
-            if (isShow.edges) {
+            if (isShow_Edges) {
                 for (var j = 0; j < scene[i].edges.length; j++) {
                     var edge = scene[i].edges[j];
                     canvas.line(points[edge.p1].x2D, points[edge.p1].y2D,
@@ -160,14 +179,14 @@
                 }
             }
             // draw points
-            if (isShow.points) {
+            if (isShow_Points) {
                 for (var j = 0; j < points.length; j++) {
                     var point = points[j];
                     canvas.point(point.x2D, point.y2D);
                 }
             }
         }
-        if (isShow.polygons && polygons) {
+        if (isShow_Polygons && polygons) {
             polygons.sort(function (a, b) {
                 return (a.distance > b.distance) ? -1 : 1;
             });
@@ -177,46 +196,23 @@
         }
     }
 
+    var FPScount = 0;
+    var oldTimestamp = (new Date()).getTime();
+    var newTimestamp = (new Date()).getTime();
+
     (function animloop() {
+        // FPS
+        FPScount++;
+        newTimestamp = (new Date()).getTime();
+        if (newTimestamp - oldTimestamp >= 1000) {
+            ui.showFPS(FPScount);
+            FPScount = 0;
+            oldTimestamp = newTimestamp;
+        }
+        // render scene
         canvas.clear();
         drawScene();
+        canvas.print();
         requestAnimationFrame(animloop);
     })();
-
-    document.addEventListener('keydown', keyDownCallback);
-
-    var div = document.createElement('div');
-
-    var checkBox_Point = document.createElement('input');
-    checkBox_Point.setAttribute('type', 'checkbox');
-    checkBox_Point.checked = true;
-
-    var label_Point = document.createElement('s1');
-    label_Point.innerHTML = 'Show Points';
-
-    var checkBox_Edge = document.createElement('input');
-    checkBox_Edge.setAttribute('type', 'checkbox');
-    checkBox_Edge.checked = true;
-
-    var label_Edge = document.createElement('s1');
-    label_Edge.innerHTML = 'Show Edges';
-
-    var checkBox_Poly = document.createElement('input');
-    checkBox_Poly.setAttribute('type', 'checkbox');
-    checkBox_Poly.checked = true;
-
-    var label_Poly = document.createElement('s1');
-    label_Poly.innerHTML = 'Show Polygons';
-
-    div.appendChild(checkBox_Point);
-    div.appendChild(label_Point);
-    div.appendChild(checkBox_Edge);
-    div.appendChild(label_Edge);
-    div.appendChild(checkBox_Poly);
-    div.appendChild(label_Poly);
-    document.querySelector('body').appendChild(div);
-
-    checkBox_Point.addEventListener('change', function () { isShow.points = checkBox_Point.checked; });
-    checkBox_Edge.addEventListener('change', function () { isShow.edges = checkBox_Edge.checked; });
-    checkBox_Poly.addEventListener('change', function () { isShow.polygons = checkBox_Poly.checked; });
 };
