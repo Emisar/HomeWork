@@ -2,7 +2,8 @@
     this.points = points;
     this.middle = new Point(0, 0, 0);
     this.distance = 0;
-    this.color = color || 'red';
+    this.color = color || { red: 125, green: 0, blue: 0 };
+    this.lumen = 0;
  }
 
 function Edge(p1, p2) {
@@ -30,7 +31,8 @@ function Logic3D(options) {
     options = (options instanceof Object) ? options : {};
     var area = options.area;
     var camera = options.camera;
-    
+
+    var lights = [];
     var math3D = new Math3D();
     var scene = [];
 
@@ -77,6 +79,42 @@ function Logic3D(options) {
                                                  Math.pow(polygons[i].middle.y - camera.y, 2) + 
                                                  Math.pow(polygons[i].middle.z - camera.z, 2));
             }
+        }
+    };
+
+    this.setLights = function () {
+        for (var i = 0; i < lights.length; i++) {
+            var light = lights[i];
+            for (var j = 0; j < scene.length; j++) {
+                var figure = scene[j];
+                var polygons = figure.polygons;
+                var points = figure.points;
+                for (var k = 0; k < polygons.length; k++) {
+                    if (polygons[k].points.length) {
+                        polygons[k].middle.x = 0;
+                        polygons[k].middle.y = 0;
+                        polygons[k].middle.z = 0;
+                        for (var n = 0; n < polygons[k].points.length; n++) {
+                            polygons[k].middle.x += points[polygons[k].points[n]].x;
+                            polygons[k].middle.y += points[polygons[k].points[n]].y;
+                            polygons[k].middle.z += points[polygons[k].points[n]].z;
+                        }
+                        polygons[k].middle.x /= polygons[k].points.length;
+                        polygons[k].middle.y /= polygons[k].points.length;
+                        polygons[k].middle.z /= polygons[k].points.length;
+                        polygons[k].middle.x2D = xs(polygons[k].middle);
+                        polygons[k].middle.y2D = ys(polygons[k].middle);
+                    }
+                    var distance =
+                        Math.sqrt(Math.pow(polygons[k].middle.x - camera.x, 2) +
+                        Math.pow(polygons[k].middle.y - camera.y, 2) +
+                        Math.pow(polygons[k].middle.z - camera.z, 2));
+                    var lumen = light.watt / Math.pow(distance, 2);
+                    lumen = (lumen > 1) ? 1 : lumen;
+                    polygons[k].lumen = lumen;
+                    polygons[k].lumen = (polygons[k].lumen > 1) ? 1 : polygons[k].lumen;
+                }    
+            }       
         }
     };
 
@@ -137,25 +175,30 @@ function Logic3D(options) {
         for (var i = 0; i < scene.length; i++) {
             var figure = scene[i];
             if (figure && figure.animation) {
+                math3D.fillMoveMatrix({ x: -figure.center.x, y: -figure.center.y, z: -figure.center.z });
                 for (var j = 0; j < figure.points.length; j++) {
-                    math3D.fillMoveMatrix({ x: -figure.center.x, y: -figure.center.y, z: -figure.center.z });
                     figure.points[j] = math3D.move(figure.points[j], { x: -figure.points[j].x, y: -figure.points[j].y, z: -figure.points[j].z });
+                }
+                math3D.fillRotateYMatrix(figure.animation.y);
+                math3D.fillRotateXMatrix(figure.animation.x);
+                math3D.fillRotateZMatrix(figure.animation.z);
+                for (var j = 0; j < figure.points.length; j++) {
                     if (figure.animation.y) {
-                        math3D.fillRotateYMatrix(figure.animation.y);
                         figure.points[j] = math3D.rotateY(figure.points[j], figure.animation.y);
                     }
                     if (figure.animation.x) {
-                        math3D.fillRotateXMatrix(figure.animation.x);
                         figure.points[j] = math3D.rotateX(figure.points[j], figure.animation.x);
                     }
                     if (figure.animation.z) {
-                        math3D.fillRotateZMatrix(figure.animation.z);
                         figure.points[j] = math3D.rotateZ(figure.points[j], figure.animation.z);
                     }
-                    math3D.fillMoveMatrix({ x: figure.center.x, y: figure.center.y, z: figure.center.z });
+                }
+                math3D.fillMoveMatrix({ x: figure.center.x, y: figure.center.y, z: figure.center.z });
+                for (var j = 0; j < figure.points.length; j++) {
                     figure.points[j] = math3D.move(figure.points[j], { x: figure.points[j].x, y: figure.points[j].y, z: figure.points[j].z });
                 }
             }
+            
         }
     }
 
@@ -167,7 +210,11 @@ function Logic3D(options) {
         scene.push(planet);
         scene.push(satellite);
 
-        //setInterval(animateScene, 25);
+        var light1 = new Point(-10, 4, 0);
+        light1.watt = 100;
+        lights.push(light1);
+
+        setInterval(animateScene, 25);
         //scene.push(hyperParab(-5, -5, 10,10, 10));
         //scene.push(cube(3));
         //scene.push(parab(-5, -5, 10, 10, 10));

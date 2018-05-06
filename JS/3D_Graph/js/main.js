@@ -126,30 +126,36 @@
             }
         }
     }
-    
-    var isShow_Points = true;
-    var isShow_Edges = true;
-    var isShow_Polygons = true;
+
+    var isShow = {
+        points: true,
+        edges: true,
+        polygons: true
+    };
 
     function showPointsCallback(check) {
-        isShow_Points = check;
+        isShow.points = check;
     };
 
     function showEdgesCallback(check) {
-        isShow_Edges = check;
+        isShow.edges = check;
     };
 
     function showPolygonsCallback(check) {
-        isShow_Polygons = check;
+        isShow.polygons = check;
     };
 
     function drawScene() {
         var scene = logic3D.getScene();
+        // Lights
+        if (isShow.polygons) {
+            logic3D.setLights();
+        }
         var polygons = [];
         for (var i = 0; i < scene.length; i++) {
             var points = scene[i].points;
             //draw polygons
-            if (isShow_Polygons) {
+            if (isShow.polygons) {
                 logic3D.sortPolygons(scene[i], camera);
                 if (scene[i].polygons && scene[i].polygons.length) {
                     for (var j = 0; j < scene[i].polygons.length; j++) {
@@ -161,16 +167,18 @@
                                     y: points[scene[i].polygons[j].points[k]].y2D
                                 });
                             }
+                            var color = scene[i].polygons[j].color;
+                            var lumen = scene[i].polygons[j].lumen;
                             polygons.push({
                                 points: arr,
                                 distance: scene[i].polygons[j].distance,
-                                color: scene[i].polygons[j].color });
+                                color: 'rgb(' + Math.round(color.red * lumen) + ',' + Math.round(color.green * lumen) + ',' + Math.round(color.blue * lumen) + ')'});
                         }
                     }
                 }
             }
             //draw edges
-            if (isShow_Edges) {
+            if (isShow.edges) {
                 for (var j = 0; j < scene[i].edges.length; j++) {
                     var edge = scene[i].edges[j];
                     canvas.line(points[edge.p1].x2D, points[edge.p1].y2D,
@@ -179,14 +187,14 @@
                 }
             }
             // draw points
-            if (isShow_Points) {
+            if (isShow.points) {
                 for (var j = 0; j < points.length; j++) {
                     var point = points[j];
                     canvas.point(point.x2D, point.y2D);
                 }
             }
         }
-        if (isShow_Polygons && polygons) {
+        if (isShow.polygons && polygons) {
             polygons.sort(function (a, b) {
                 return (a.distance > b.distance) ? -1 : 1;
             });

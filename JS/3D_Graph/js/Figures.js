@@ -69,11 +69,11 @@ function sphere(n, r, center, red, green, blue, animation) {
         if (green > 0) { green++; };
         if ((i + 1) % n !== 0) {
             if (points[i] && points[i + 1] && points[i + n + 1] && points[i + n]) {
-                polygons.push(new Polygon([i, i + 1, i + n + 1, i + n], 'rgb(' + red + ',' + green + ',' + blue + ')'));
+                polygons.push(new Polygon([i, i + 1, i + n + 1, i + n], { red: red, green: green, blue: blue }));
             }
         } else {
             if (points[i] && points[i + 1 - n] && points[i + 1] && points[i + n]) {
-                polygons.push(new Polygon([i, i + 1 - n, i + 1, i + n], 'rgb(' + red + ',' + green + ',' + blue + ')'));
+                polygons.push(new Polygon([i, i + 1 - n, i + 1, i + n], { red: red, green: green, blue: blue }));
             }
         }
     }
