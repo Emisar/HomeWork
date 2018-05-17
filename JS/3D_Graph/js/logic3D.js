@@ -23,8 +23,8 @@ function Figure(points, edges, polygons, center, animation) {
     this.points = points;
     this.edges = edges;
     this.polygons = polygons;
-    this.animation = animation || new Point(0, 0, 0);
     this.center = center || new Point(0, 0, 0);
+    this.animation = animation || new Point(0, 0, 0);
 }
 
 function Logic3D(options) {
@@ -172,52 +172,53 @@ function Logic3D(options) {
     };
 
     function animateScene() {
+        var a = 0, b = 0;
         for (var i = 0; i < scene.length; i++) {
             var figure = scene[i];
-            if (figure && figure.animation) {
-                math3D.fillMoveMatrix({ x: -figure.center.x, y: -figure.center.y, z: -figure.center.z });
-                for (var j = 0; j < figure.points.length; j++) {
-                    figure.points[j] = math3D.move(figure.points[j], { x: -figure.points[j].x, y: -figure.points[j].y, z: -figure.points[j].z });
-                }
-                math3D.fillRotateYMatrix(figure.animation.y);
-                math3D.fillRotateXMatrix(figure.animation.x);
-                math3D.fillRotateZMatrix(figure.animation.z);
-                for (var j = 0; j < figure.points.length; j++) {
-                    if (figure.animation.y) {
-                        figure.points[j] = math3D.rotateY(figure.points[j], figure.animation.y);
+            if (figure) {
+                if (figure.animation) {
+                    math3D.fillMoveMatrix({ x: -figure.center.x, y: -figure.center.y, z: -figure.center.z });
+                    for (var j = 0; j < figure.points.length; j++) {
+                        figure.points[j] = math3D.move(figure.points[j], { x: -figure.points[j].x, y: -figure.points[j].y, z: -figure.points[j].z });
                     }
-                    if (figure.animation.x) {
-                        figure.points[j] = math3D.rotateX(figure.points[j], figure.animation.x);
+                    math3D.fillRotateYMatrix(figure.animation.y);
+                    math3D.fillRotateXMatrix(figure.animation.x);
+                    math3D.fillRotateZMatrix(figure.animation.z);
+                    for (var j = 0; j < figure.points.length; j++) {
+                        if (figure.animation.y) {
+                            figure.points[j] = math3D.rotateY(figure.points[j], figure.animation.y);
+                        }
+                        if (figure.animation.x) {
+                            figure.points[j] = math3D.rotateX(figure.points[j], figure.animation.x);
+                        }
+                        if (figure.animation.z) {
+                            figure.points[j] = math3D.rotateZ(figure.points[j], figure.animation.z);
+                        }
                     }
-                    if (figure.animation.z) {
-                        figure.points[j] = math3D.rotateZ(figure.points[j], figure.animation.z);
+                    math3D.fillMoveMatrix({ x: figure.center.x, y: figure.center.y, z: figure.center.z });
+                    for (var j = 0; j < figure.points.length; j++) {
+                        figure.points[j] = math3D.move(figure.points[j], { x: figure.points[j].x, y: figure.points[j].y, z: figure.points[j].z });
                     }
-                }
-                math3D.fillMoveMatrix({ x: figure.center.x, y: figure.center.y, z: figure.center.z });
-                for (var j = 0; j < figure.points.length; j++) {
-                    figure.points[j] = math3D.move(figure.points[j], { x: figure.points[j].x, y: figure.points[j].y, z: figure.points[j].z });
                 }
             }
-            
         }
     }
 
     function init() {
-        // Solar System
-        var planet = sphere(20, 8, { x: 0, y: 0, z: 0 }, 0, 50, 0, new Point( 0, Math.PI * 2 / 360, 0));
-        var satellite = sphere(20, 4, { x: 13, y: 0, z: 0 }, 50, 0, 0, new Point(Math.PI * 2 / 360 / 2, Math.PI * 2 / 360 / 2, Math.PI * 2 / 360 / 2));
-
-        scene.push(planet);
-        scene.push(satellite);
+        //scene.push(sphere(20, 8, { x: 0, y: 0, z: 0 }, 0, 50, 0, new Point(0, Math.PI * 2 / 360, 0)));
+        //scene.push(ellipsoid(20, 10, 10, 10, { red: 150, green: 100, blue: 100 }, { x: 0, y: 0, z: 0 }));
+        //scene.push(cylinder(10, 5, 5, 10, {red: 150, green: 100, blue: 100}, { x: 0, y: 0, z: -5 }));
+        //scene.push(hyperCylinder(12, 5, 5, 10, { red: 150, green: 100, blue: 100 }, { x: 0, y: 0, z: -5 }));
+        //scene.push(parabCylinder(11, 5, 10, { red: 150, green: 100, blue: 100 }, { x: 0, y: 0, z: 0 }));
+        //scene.push(hyperParab(0, 0, 10, 20, 10));
+        //scene.push(diHyperbol(10, { h: -10, H: 10 }, 3, 3, 2, { red: 150, green: 100, blue: 100 }))
+        //scene.push(elepticParab(10, 10, 3, 3, { red: 150, green: 100, blue: 100 }));
 
         var light1 = new Point(-10, 4, 0);
         light1.watt = 100;
         lights.push(light1);
 
-        setInterval(animateScene, 25);
-        //scene.push(hyperParab(-5, -5, 10,10, 10));
-        //scene.push(cube(3));
-        //scene.push(parab(-5, -5, 10, 10, 10));
+        //setInterval(animateScene, 25);
     }
 
     init();
