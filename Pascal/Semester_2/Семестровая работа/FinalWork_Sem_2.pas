@@ -291,9 +291,10 @@ end;
 procedure TreeLibMenu;
 var
   Head: String := 'Tree Menu';
-  MenuElem: array of String := ('Create Tree', 'Save Tree', 'Load Tree');
+  MenuElem: array of String := ('Create Tree', 'Create Tree Adress', 'BinSearching Tree', 'Save Tree', 'Load Tree');
   ch: char;
-  Tree: array of Node;
+  Tree: array of NodeId;
+  TreeAdress: PtrN := nil;
 begin
   while true do
   begin
@@ -305,19 +306,30 @@ begin
       case ch of
         '1':
           begin
-            Tree:= CreateTree;
+            CreateTree(Tree);
             Writeln('Tree: '); ViewTree(Tree);
           end;
         '2':
           begin
-            Tree:= CreateTree;
-            SaveTree(Tree, ReadlnString('Enter the filename:'));
-            Writeln('Tree: '); ViewTree(Tree);
+            CreateTree(TreeAdress);
+            Writeln('Tree: '); ViewTree(TreeAdress);
           end;
         '3':
           begin
+            CreateSearchingTree(TreeAdress);
+            Writeln('Tree: '); ViewTree(TreeAdress);
+            SearchNode(TreeAdress, ReadlnInteger('Enter the searched integer:'))
+          end;
+        '4':
+          begin
+            CreateTree(Tree);
+            SaveTree(Tree, ReadlnString('Enter the filename:'));
+            Writeln('Tree: '); ViewTree(Tree);
+          end;
+        '5':
+          begin
             Tree:= LoadTree(ReadlnString('Enter the filename:'));
-            ViewTree(Tree);
+            Writeln('Tree: '); ViewTree(Tree);
           end;
         '0': break;
       else
@@ -335,7 +347,7 @@ end;
 procedure MainMenu;
 var
   Head: String := 'Main Menu';
-  MenuElem: array of String := ('Stack', 'Queue', 'File System', 'Favorite', 'Tree Menu');
+  MenuElem: array of String := ('Stack', 'Queue', 'File System', 'Tree Menu', 'Favorite');
   ch: char;
 begin
   while true do
@@ -349,8 +361,8 @@ begin
         '1': StkMenu;
         '2': QueMenu;
         '3': fwlMenu;
-        '4': FavorMenu;
-        '5': TreeLibMenu;
+        '4': TreeLibMenu;
+        '5': FavorMenu;
         '0': break;
       else
         Error(2);

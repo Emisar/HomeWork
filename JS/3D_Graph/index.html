@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>3D_Lesson</title>
+    <link rel="Stylesheet" href="css/main.css" />
     <script src="js/MatrixCalculator.js"></script>
     <script src="js/Canvas.js"></script>
     <script src="js/Figures.js"></script>
@@ -11,5 +12,49 @@
     <script src="js/main.js"></script>
 </head>
 <body>
+    <div id="graph"></div>
+    <div id="ui">
+        <div class="config">
+            <span id="FPS-counter-label">FPS: 0</span><br />
+            <input id="show-points-checkbox" type="checkbox" checked><s1>Show Points</s1>
+            <input id="show-edges-checkbox" type="checkbox" checked><s1>Show Edges</s1>
+            <input id="show-polygons-checkbox" type="checkbox" checked><s1>Show Polygons</s1>
+        </div>
+        <div class="select">
+            <label>Points count: </label>
+            <input id="set-points-count" type="range" min="3" max="20" step="1" value="10" /><br />
+            <label>Red color: </label>
+            <input id="set-color-red" type="range" min="0" max="255" step="1" value="50" /><br />
+            <label>Green color: </label>
+            <input id="set-color-green" type="range" min="0" max="255" step="1" value="50" /><br />
+            <label>Blue color: </label>
+            <input id="set-color-blue" type="range" min="0" max="255" step="1" value="50" /><br />
+            <select id="select-figure">
+                <option value='1'>Универсальная</option>
+                <option value='2'>Сфера</option>
+                <option value='3'>Эллипсоид</option>
+                <option value='4'>Конус</option>
+                <option value='5'>Цилиндр</option>
+                <option value='6'>Гиперболический цилиндр</option>
+                <option value='7'>Параболический цилиндр</option>
+                <option value='8'>Однополостной гиперболоид</option>
+                <option value='9'>Двухполостной гиперболоид</option>
+                <option value='10'>Гиперболический параболоид</option>
+                <option value='11'>Эллиптический параболоид </option>
+            </select>
+			<div>
+				<input class='input-js' id="inputA" size="1" placeholder="x" disabled>
+				<input class='input-js' id="inputB" size="1" placeholder="y" disabled>
+				<input class='input-js' id="inputC" size="1" placeholder="z" disabled>
+				<input class='input-js' id="inputF" size="1" placeholder="xr" disabled>
+				<input class='input-js' id="inputG" size="1" placeholder="yr" disabled>
+				<input class='input-js' id="inputH" size="1" placeholder="zr" disabled>
+				<input class='input-js' id="inputP" size="1" placeholder="width" disabled>
+				<input class='input-js' id="inputQ" size="1" placeholder="h" disabled>
+				<input class='input-js' id="inputR" size="1" placeholder="H" disabled>
+				<input class='input-js' id="inputD" size="1" placeholder="degree" disabled>
+			</div>
+        </div>
+    </div>
 </body>
 </html>

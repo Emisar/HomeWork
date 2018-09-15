@@ -1,0 +1,24 @@
+body
+{
+	position:relative;
+}
+
+#graph { 
+	position:absolute;
+	top:0;
+	left:0;
+	width:600px;
+}
+
+.config { 
+	position:absolute;
+	top:600px;
+	left:0;
+	width:600px;
+}
+
+.select { 
+	position:absolute;
+	top:0;
+	left:610px;
+}

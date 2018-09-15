@@ -1,4 +1,4 @@
-Program GraphicLesson;
+﻿Program GraphicLesson;
 
 Uses GraphABC;
 

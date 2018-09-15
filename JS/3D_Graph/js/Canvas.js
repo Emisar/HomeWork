@@ -1,6 +1,6 @@
 ﻿function Canvas(options) {
     options = (options instanceof Object) ? options : {};
-    var parent = options.parent || 'body';
+    var parent = options.parent || document.querySelector('body');
     var width = options.width || 300;
     var height = options.height || 300;
     var area = options.area || {
@@ -114,7 +114,7 @@
         memCanvas.height = height;
         memContext = memCanvas.getContext('2d');
 
-        document.querySelector(parent).appendChild(canvas);
+        parent.appendChild(canvas);
     }
     init();
 }

@@ -1,7 +1,7 @@
 ﻿window.onload = function () {
     var dZoom = 1;
 
-    var camera = { x: 0, y: 0, z: -20 };
+    var camera = { x: 0, y: 0, z: -20};
     var area = {
         left: -10,
         bottom: -10,
@@ -11,6 +11,7 @@
     };
 
     var canvas = new Canvas({
+        parent: document.getElementById('graph'),
         area: area,
         width: 600,
         height: 600,
@@ -22,40 +23,87 @@
             mouseOut: mouseOutCallback
         }
     });
-
-    var logic3D = new Logic3D({
-        camera: camera,
-        area: area
-    });
-
+	
     var ui = new UI({
         callback: {
             keyDown: keyDownCallback,
             showPoints: showPointsCallback,
             showEdges: showEdgesCallback,
-            showPolygons: showPolygonsCallback
+            showPolygons: showPolygonsCallback,
+			setFigure: setFigureCallback
         }
+    });
+	
+	function setFigureCallback(figureMode, options) {
+        switch (figureMode) {
+			case 1:
+				logic3D.universal(options);
+				break;
+			case 2:
+				logic3D.sphere(options);
+				break;
+			case 3:
+				logic3D.ellipsoid(options);
+				break;
+			case 4:
+				logic3D.conus(options);
+				break;
+			case 5:
+				logic3D.сylinder(options);
+				break;
+			case 6:
+				logic3D.hyperCylinder(options);
+				break;
+			case 7:
+				logic3D.parabCylinder(options);
+				break;
+			case 8:
+				logic3D.hyperboloid(options);
+				break;
+			case 9:
+				logic3D.twoCavityHyperbol(options);
+				break;
+			case 10:
+				logic3D.hyperParaboloid(options);
+				break;
+			case 11:
+				logic3D.ellepticParaboloid(options);
+                break;
+        }
+	}
+    
+    var logic3D = new Logic3D({
+        camera: camera,
+        area: area
     });
 
     function keyDownCallback(event) {
         switch (event.keyCode) {
             // moveup             
             case 38:    // arrow up
+				logic3D.rotateCameraZ(0.1);
+				break;
             case 87:    // w
                 logic3D.move({ x: 0, y: 0.2, z: 0 });
                 break;
             // move down             
             case 40:    // arrow down
+				logic3D.rotateCameraZ(-0.1);
+				break;
             case 83:    // s
                 logic3D.move({ x: 0, y: -0.2, z: 0 });
                 break;
             // Move left             
             case 37:    // arrow left
+				logic3D.rotateCameraX(-0.1);
+				break;
             case 65:    // a
                 logic3D.move({ x: -0.2, y: 0, z: 0 });
                 break;
             // Move right             
             case 39:    // arrow right
+				logic3D.rotateCameraX(0.1);
+				break;
             case 68:    // d
                 logic3D.move({ x: 0.2, y: 0, z: 0 });
                 break;
@@ -101,7 +149,8 @@
     })();
 
     function wheelCallback(event) {
-        if (event.wheelDeltaY < 0) {
+        var temp = event.deltaY || event.deltaMode;
+        if (temp < 0) {
             camera.z--;
             area.z--;
         } else {
@@ -181,9 +230,11 @@
             if (isShow.edges) {
                 for (var j = 0; j < scene[i].edges.length; j++) {
                     var edge = scene[i].edges[j];
-                    canvas.line(points[edge.p1].x2D, points[edge.p1].y2D,
-                        points[edge.p2].x2D, points[edge.p2].y2D,
-                        'green', 2);
+                    if (points[edge.p1] && points[edge.p2]) {
+                        canvas.line(points[edge.p1].x2D, points[edge.p1].y2D,
+                            points[edge.p2].x2D, points[edge.p2].y2D,
+                            'green', 2);
+                    }
                 }
             }
             // draw points

@@ -29,13 +29,14 @@ function Figure(points, edges, polygons, center, animation) {
 
 function Logic3D(options) {
     options = (options instanceof Object) ? options : {};
-    var area = options.area;
-    var camera = options.camera;
-
+    var area = options.area || { left: 0, bottom: 0, width: 0, height: 0, z: 0 };
+	
+	var camera = options.camera || { x: 0, y: 0, z: 0 };
+    
     var lights = [];
     var math3D = new Math3D();
     var scene = [];
-
+    
     function xs(point) {
         return (area.z - camera.z) * point.x / (point.z - camera.z);
     }
@@ -43,6 +44,14 @@ function Logic3D(options) {
         return (area.z - camera.z) * point.y / (point.z - camera.z);
     }
 
+	this.rotateCameraX = function(y) {
+		// Поворот камеры по X
+	}
+	
+	this.rotateCameraZ = function(y) {
+		// Поворот камеры по Z
+	}
+	
     function recalcToArea() {
         for (var i = 0; i < scene.length; i++) {
             for (var j = 0; j < scene[i].points.length; j++) {
@@ -203,22 +212,245 @@ function Logic3D(options) {
             }
         }
     }
+	
+	this.universal = function(options) {
+		var n = (isNaN(options.pointsCount)) ? 0 : options.pointsCount;
+		var A = (isNaN(options.universal.A)) ? 0 : options.universal.A;
+		var B = (isNaN(options.universal.B)) ? 0 : options.universal.B;
+		var C = (isNaN(options.universal.C)) ? 0 : options.universal.C;
+		var F = (isNaN(options.universal.F)) ? 0 : options.universal.F;
+		var G = (isNaN(options.universal.G)) ? 0 : options.universal.G;
+		var H = (isNaN(options.universal.H)) ? 0 : options.universal.H;
+		var P = (isNaN(options.universal.P)) ? 0 : options.universal.P;
+		var Q = (isNaN(options.universal.Q)) ? 0 : options.universal.Q;
+		var R = (isNaN(options.universal.R)) ? 0 : options.universal.R;
+		var D = (isNaN(options.universal.D)) ? 0 : options.universal.D;
+		var zone = {
+			x0: (isNaN(options.area.x0)) ? -5 : options.area.x0,
+			y0: (isNaN(options.area.y0)) ? -5 : options.area.y0,
+			z0: (isNaN(options.area.z0)) ? -5 : options.area.z0,
+			xn: (isNaN(options.area.xn)) ? 5 : options.area.xn,
+			yn: (isNaN(options.area.yn)) ? 5 : options.area.yn,
+			zn: (isNaN(options.area.zn)) ? 5 : options.area.zn
+		};
+		scene[0] = All(n, {x0: -5, y0: -5, z0: -5, xn: 5, yn: 5, zn: 5}, A, B, C, F, G, H, P, Q, R, D);
+	};
+	
+	this.sphere = function(options) {
+		var n = (isNaN(options.pointsCount)) ? 0 : options.pointsCount;
+		var r = (isNaN(options.radius.xr)) ? 0 : options.radius.xr;
+		var center = {
+			x: (isNaN(options.position.x)) ? 0 : options.position.x,
+			y: (isNaN(options.position.y)) ? 0 : options.position.y,
+			z: (isNaN(options.position.z)) ? 0 : options.position.z
+		};
+		var color = {
+			red: (isNaN(options.color.red)) ? 0 : options.color.red,
+			green: (isNaN(options.color.green)) ? 0 : options.color.green,
+			blue: (isNaN(options.color.blue)) ? 0 : options.color.blue
+		}
+        scene[0] = sphere(n, r, center, color);
+        var size = r * 2;
+        scene[1] = cube(size, center, color);
+	};
+	
+	this.ellipsoid = function(options) {
+		var n = (isNaN(options.pointsCount)) ? 0 : options.pointsCount;
+		var xr = (isNaN(options.radius.xr)) ? 0 : options.radius.xr;
+		var yr = (isNaN(options.radius.yr)) ? 0 : options.radius.yr;
+		var zr = (isNaN(options.radius.zr)) ? 0 : options.radius.zr;
+		var center = {
+			x: (isNaN(options.position.x)) ? 0 : options.position.x,
+			y: (isNaN(options.position.y)) ? 0 : options.position.y,
+			z: (isNaN(options.position.z)) ? 0 : options.position.z
+		};
+		var color = {
+			red: (isNaN(options.color.red)) ? 0 : options.color.red,
+			green: (isNaN(options.color.green)) ? 0 : options.color.green,
+			blue: (isNaN(options.color.blue)) ? 0 : options.color.blue
+		}
+        scene[0] = ellipsoid(n, xr, yr, zr, center, color);
+        var size = (yr * 2 > xr * 2) ? yr * 2 : xr * 2;
+        size = (size > zr * 2) ? size : zr * 2;
+        scene[1] = cube(size, center, color);
+	};
+	
+	this.conus = function(options) {
+		var n = (isNaN(options.pointsCount)) ? 0 : options.pointsCount;
+		var h = {
+			h: (isNaN(options.height.h)) ? 0 : options.height.h,
+			H: (isNaN(options.height.H)) ? 0 : options.height.H
+		};
+		var xr = (isNaN(options.radius.xr)) ? 0 : options.radius.xr;
+		var yr = (isNaN(options.radius.yr)) ? 0 : options.radius.yr;
+		var zr = (isNaN(options.radius.zr)) ? 0 : options.radius.zr;
+		var center = {
+			x: (isNaN(options.position.x)) ? 0 : options.position.x,
+			y: (isNaN(options.position.y)) ? 0 : options.position.y,
+			z: (isNaN(options.position.z)) ? 0 : options.position.z
+		};
+		var color = {
+			red: (isNaN(options.color.red)) ? 0 : options.color.red,
+			green: (isNaN(options.color.green)) ? 0 : options.color.green,
+			blue: (isNaN(options.color.blue)) ? 0 : options.color.blue
+		}
+        scene[0] = conus(n, h, xr, yr, zr, center, color);
+        var size = (Math.abs(h.h - h.H) > xr * 2) ? Math.abs(h.h - h.H) : xr * 2;
+        size = (size > yr * 2) ? size : yr * 2;
+        size = (size > zr * 2) ? size : zr * 2;
+        scene[1] = cube(size, center, color);
+	};
+	
+	this.сylinder = function(options) {
+        var n = (isNaN(options.pointsCount)) ? 0 : options.pointsCount;
+		var xr = (isNaN(options.radius.xr)) ? 0 : options.radius.xr;
+		var yr = (isNaN(options.radius.yr)) ? 0 : options.radius.yr;
+		var z = (isNaN(options.height.h)) ? 0 : options.height.h;
+		var center = {
+			x: (isNaN(options.position.x)) ? 0 : options.position.x,
+			y: (isNaN(options.position.y)) ? 0 : options.position.y,
+			z: (isNaN(options.position.z)) ? 0 : options.position.z
+		}
+		var color = {
+			red: (isNaN(options.color.red)) ? 0 : options.color.red,
+			green: (isNaN(options.color.green)) ? 0 : options.color.green,
+			blue: (isNaN(options.color.blue)) ? 0 : options.color.blue
+		}
+        scene[0] = cylinder(n, xr, yr, z, center, color);
+        var size = (z > xr) ? z : xr;
+        size = (size > yr) ? size : yr;
+        scene[1] = cube(size, center, color);
+	};
+	
+	this.hyperCylinder = function(options) {
+        var n = (isNaN(options.pointsCount)) ? 0 : options.pointsCount;
+		var xr = (isNaN(options.radius.xr)) ? 0 : options.radius.xr;
+		var yr = (isNaN(options.radius.yr)) ? 0 : options.radius.yr;
+		var z = (isNaN(options.height.h)) ? 0 : options.height.h;
+		var center = {
+			x: (isNaN(options.position.x)) ? 0 : options.position.x,
+			y: (isNaN(options.position.y)) ? 0 : options.position.y,
+			z: (isNaN(options.position.z)) ? 0 : options.position.z
+		}
+		var color = {
+			red: (isNaN(options.color.red)) ? 0 : options.color.red,
+			green: (isNaN(options.color.green)) ? 0 : options.color.green,
+			blue: (isNaN(options.color.blue)) ? 0 : options.color.blue
+		}
+        scene[0] = hyperCylinder(n, xr, yr, z, center, color);
+        var size = (z > xr * 3) ? z : xr * 3;
+        size = (size > yr * 3) ? size : yr * 3;
+        scene[1] = cube(size, center, color);
+	}
+	
+	this.parabCylinder = function(options) {
+        var n = (isNaN(options.pointsCount)) ? 0 : options.pointsCount;
+		var p = (isNaN(options.degree)) ? 0 : options.degree;
+		var z = (isNaN(options.height.h)) ? 0 : options.height.h;
+		var center = {
+			x: (isNaN(options.position.x)) ? 0 : options.position.x,
+			y: (isNaN(options.position.y)) ? 0 : options.position.y,
+			z: (isNaN(options.position.z)) ? 0 : options.position.z
+		}
+		var color = {
+			red: (isNaN(options.color.red)) ? 0 : options.color.red,
+			green: (isNaN(options.color.green)) ? 0 : options.color.green,
+			blue: (isNaN(options.color.blue)) ? 0 : options.color.blue
+		}
+        scene[0] = parabCylinder(n, p, z, center, color);
+        scene[1] = cube(z * 2, center, color);
+	}
+	
+	this.hyperboloid = function(options) {
+		var n = (isNaN(options.pointsCount)) ? 0 : options.pointsCount;
+		var h = (isNaN(options.height.h)) ? 0 : options.height.h;
+		var xr = (isNaN(options.radius.xr)) ? 0 : options.radius.xr;
+		var yr = (isNaN(options.radius.yr)) ? 0 : options.radius.yr;
+		var zr = (isNaN(options.radius.zr)) ? 0 : options.radius.zr;
+		var center = {
+			x: (isNaN(options.position.x)) ? 0 : options.position.x,
+			y: (isNaN(options.position.y)) ? 0 : options.position.y,
+			z: (isNaN(options.position.z)) ? 0 : options.position.z
+		};
+		var color = {
+			red: (isNaN(options.color.red)) ? 0 : options.color.red,
+			green: (isNaN(options.color.green)) ? 0 : options.color.green,
+			blue: (isNaN(options.color.blue)) ? 0 : options.color.blue
+		}
+        scene[0] = hyperboloid(n, h, xr, yr, zr, center, color);
+        var size = (h > xr * 2) ? h : xr * 2;
+        size = (size > yr * 2) ? size : yr * 2;
+        size = (size > zr * 2) ? size : zr * 2;
+        scene[1] = cube(size, center, color);
+	}
+	
+	this.twoCavityHyperbol = function(options) {
+		var n = (isNaN(options.pointsCount)) ? 0 : options.pointsCount;
+		var h = {
+			h: (isNaN(options.height.h)) ? 0 : options.height.h,
+			H: (isNaN(options.height.H)) ? 0 : options.height.H
+		};
+		var xr = (isNaN(options.radius.xr)) ? 0 : options.radius.xr;
+		var yr = (isNaN(options.radius.yr)) ? 0 : options.radius.yr;
+		var zr = (isNaN(options.radius.zr)) ? 0 : options.radius.zr;
+		var center = {
+			x: (isNaN(options.position.x)) ? 0 : options.position.x,
+			y: (isNaN(options.position.y)) ? 0 : options.position.y,
+			z: (isNaN(options.position.z)) ? 0 : options.position.z
+		};
+		var color = {
+			red: (isNaN(options.color.red)) ? 0 : options.color.red,
+			green: (isNaN(options.color.green)) ? 0 : options.color.green,
+			blue: (isNaN(options.color.blue)) ? 0 : options.color.blue
+		}
+        scene[0] = twoCavityHyperbol(n, h, xr, yr, zr, center, color);
+        scene[1] = cube(Math.abs(h.h - h.H), center, color);
+	}
+	
+	this.hyperParaboloid = function(options) {
+		var n = (isNaN(options.pointsCount)) ? 0 : options.pointsCount;
+		var left = (isNaN(options.position.x)) ? 0 : options.position.x;
+		var bottom = (isNaN(options.position.y)) ? 0 : options.position.y;
+		var width = (isNaN(options.width)) ? 0 : options.width;
+		var height = (isNaN(options.height.h)) ? 0 : options.height.h;
+		var center = {
+			x: (isNaN(options.position.x)) ? 0 : options.position.x,
+			y: (isNaN(options.position.y)) ? 0 : options.position.y,
+			z: (isNaN(options.position.z)) ? 0 : options.position.z
+		};
+		var color = {
+			red: (isNaN(options.color.red)) ? 0 : options.color.red,
+			green: (isNaN(options.color.green)) ? 0 : options.color.green,
+			blue: (isNaN(options.color.blue)) ? 0 : options.color.blue
+		}
+        scene[0] = hyperParaboloid(n, left, bottom, width, height, center, color);
+        var size = (Math.abs(left - width) > Math.abs(bottom - height)) ? Math.abs(left - width) : Math.abs(bottom - height);
+        scene[1] = cube(size * 2, center, color);
+	}
+		
+	this.ellepticParaboloid = function(options) {
+		var n = (isNaN(options.pointsCount)) ? 0 : options.pointsCount;
+		var h = (isNaN(options.h)) ? 0 : options.h;
+		var xr = (isNaN(options.radius.xr)) ? 0 : options.radius.xr;
+		var yr = (isNaN(options.radius.yr)) ? 0 : options.radius.yr;
+		var center = {
+			x: (isNaN(options.position.x)) ? 0 : options.position.x,
+			y: (isNaN(options.position.y)) ? 0 : options.position.y,
+			z: (isNaN(options.position.z)) ? 0 : options.position.z
+		};
+		var color = {
+			red: (isNaN(options.color.red)) ? 0 : options.color.red,
+			green: (isNaN(options.color.green)) ? 0 : options.color.green,
+			blue: (isNaN(options.color.blue)) ? 0 : options.color.blue
+		}
+        scene[0] = elepticParab(n, h, xr, yr, center, color);
+        scene[1] = cube(h, center, color);
+	}
 
     function init() {
-        //scene.push(sphere(20, 8, { x: 0, y: 0, z: 0 }, 0, 50, 0, new Point(0, Math.PI * 2 / 360, 0)));
-        //scene.push(ellipsoid(20, 10, 10, 10, { red: 150, green: 100, blue: 100 }, { x: 0, y: 0, z: 0 }));
-        //scene.push(cylinder(10, 5, 5, 10, {red: 150, green: 100, blue: 100}, { x: 0, y: 0, z: -5 }));
-        //scene.push(hyperCylinder(12, 5, 5, 10, { red: 150, green: 100, blue: 100 }, { x: 0, y: 0, z: -5 }));
-        //scene.push(parabCylinder(11, 5, 10, { red: 150, green: 100, blue: 100 }, { x: 0, y: 0, z: 0 }));
-        //scene.push(hyperParab(0, 0, 10, 20, 10));
-        //scene.push(diHyperbol(10, { h: -10, H: 10 }, 3, 3, 2, { red: 150, green: 100, blue: 100 }))
-        //scene.push(elepticParab(10, 10, 3, 3, { red: 150, green: 100, blue: 100 }));
-
         var light1 = new Point(-10, 4, 0);
         light1.watt = 100;
         lights.push(light1);
-
-        //setInterval(animateScene, 25);
     }
 
     init();
