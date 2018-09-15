@@ -99,6 +99,7 @@ class Hero {
     protected $positionX;       // положение по оси X
     protected $positionY;       // положение по оси Y
     protected $owner;           // владелец
+    protected $skills;          // способности
     protected $attributes;      // характеристики
     protected $army;            // войска
     protected $inventory;       // инвентарь
