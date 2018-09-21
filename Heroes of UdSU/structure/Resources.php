@@ -1,13 +1,9 @@
 <?php
 
 class Resources {
-
-    /* Типы ресурсов */
-    private $gold;   // золото
-    private $wood;   // дерево
-    private $ore;    // руда
-
-    /* Конструктор класса */
+    public $gold;   // золото
+    public $wood;   // дерево
+    public $ore;    // руда
     public function __construct($gold, $wood, $ore) {
         $this->gold = $gold;
         $this->wood = $wood;

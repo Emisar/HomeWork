@@ -1,24 +1,12 @@
 <?php
 
-require_once 'Stat.php';
+require_once 'BaseElement.php';
 
-class Artifact {
+class Artifact extends BaseElement {
 
-    /* Свойства предмета */
-    protected $id;              // уникальный номер
-    protected $name;            // имя
-    protected $description;     // описание
-    protected $type;            // тип (шлем/нагрудная броня/сапоги/перчатки/аксессуар)
-    protected $owner;           // владелец
-    protected $stats;       // характеристики
-
-    /* Конструктор класса */
-    public function __construct($id, $name, $description, $type, $owner) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-        $this->type = $type;
-        $this->owner = $owner;
-        $this->stats = new Stat(0,0,0,0);
+    public function __construct($options) {
+        parent::__construct($options);
+        // удалить лишние свойства
+        unset($this->owner);
     }
 }

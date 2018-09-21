@@ -5,12 +5,12 @@ class Tile {
     public $name;
     public $type;
     public $sprite;
-    public $passability;        // проходимость
+    public $passability; // проходимость тайла
 
-    public function __construct($id, $name, $type, $sprite, $passability) {
+    public function __construct($id = null, $type = null, $name = null, $sprite = null, $passability = null) {
         $this->id = $id;
-        $this->name = $name;
         $this->type = $type;
+        $this->name = $name;
         $this->sprite = $sprite;
         $this->passability = $passability;
     }

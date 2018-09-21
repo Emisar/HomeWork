@@ -1,5 +1,6 @@
 <?php
 
+// Предметы (НЕ артефакты!!!)
 class Item {
     public $id;
     public $type;
