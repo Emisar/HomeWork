@@ -14,19 +14,19 @@ class Struct {
     public $artifacts; // список артефактов на карте
     public $armies; // нейтральные армии
 
-    public function __construct() {
+    public function __construct($options) {
         // список игроков
-        $this->gamers = [
-            new Gamer(),
-            new Gamer()
-        ];
+        $this->gamers = [];
+        foreach ($options->gamers as $value) {
+            $this->gamers[] = new Gamer($value);
+        }
         // карта
-        $this->map = [
+        /*$this->map = [
             [new Tile(1, 'grass', 'трава'), new Tile(1, 'grass', 'трава')],
             [new Tile(1, 'grass', 'трава'), new Tile(2, 'forest', 'лес')]
         ];
         // предметы (НЕ артефакты) на карте
         $this->items = [new Item(1, 'wood', 5)];
-        $this->artifacts = [new Artifact(new stdClass())];
+        $this->artifacts = [new Artifact(new stdClass())];*/
     }
 }

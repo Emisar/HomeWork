@@ -1,15 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Сорокин Антон
- * Date: 15.09.2018
- * Time: 10:48
- */
 
 error_reporting(1);
 
-require_once ('Heroes of UdSU\Game.php');
+require_once 'game\Game.php';
 
-$game = new Game();
+$options = new stdClass();
+$options->gamers = [
+    (object) [id => 1, name => 'Vasya'],
+    (object) [id => 2, name => 'Petya']
+];
+
+$game = new Game($options);
 
 print_r($game);
