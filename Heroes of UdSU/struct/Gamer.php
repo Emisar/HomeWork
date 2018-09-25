@@ -7,7 +7,7 @@ class Gamer extends BaseElement {
     public $color;       // цвет
     public $order;       // очередность хода
     public $resources;   // ресурсы
-    public $isActive;
+    public $isActive;    // ходит ли сейчас
 
     public function __construct($options) {
         parent::__construct($options);

@@ -23,10 +23,7 @@ class Input {
         if (isset($name) &&
             isset($this->COMMAND->{$name}) &&
             is_callable($this->COMMAND->{$name})) {
-
-            print_r($this->COMMAND->{$name});
-
-            //$this->COMMAND->{$name}($params);
+            $this->COMMAND->{$name}($params);
         }
     }
 }
