@@ -13,6 +13,8 @@ class Struct {
     public $items; // список предметов на карте
     public $artifacts; // список артефактов на карте
     public $armies; // нейтральные армии
+    public $towns;
+    public $buildings;
 
     public function __construct($options) {
         // список игроков

@@ -12,5 +12,8 @@ class Gamer extends BaseElement {
     public function __construct($options) {
         parent::__construct($options);
         $this->resources = new Resources($options->resources);
+        $this->color = $options->color;
+        $this->order = $options->order;
+        $this->isActive = $options->isActive;
     }
 }
