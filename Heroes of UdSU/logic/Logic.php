@@ -118,9 +118,49 @@ class Logic {
     // передать предметы между героями
     // передать войска между героями
     // передать войска между героем и городом
-    // захватить город
-    // захватить шахту
+    
+    // задать владельца элемента
+    public function setElementOwner($elemChild, $elemOwner) {
+        if (($elemChild instanceof BaseElement) && ($elemOwner instanceof BaseElement)) {
+            $elemOwner->owner = $elemChild->id;
+            return true;
+        }
+        return false;
+    }
+
+    // захватить строение
+    public function captBuilding($gamerId, $buildingId) {
+        if ($gamerId && $buildingId) {
+            $buildings = $this->struct->buildings;
+            $key = array_search($buildingId, array_column($buildings, 'id'));
+            $buildings[$key]->owner = $gamerId;
+            return true;
+        }
+        return false;
+    }
+
+    // дать игроку предмет
+    public function givePlayerItem($id, $item){
+       
+        $gamers = $this->struct->gamers;
+        $key = array_search($id, array_column($gamers, 'id'));
+        $gamer = $gamers[$key];
+
+        if ($item instanceof Item){
+            $gamer->resouces->gold += $item->gold;
+            $gamer->resouces->wood += $item->wood;
+            $gamer->resouces->ore  += $item->ore;
+        } elseif ($item instanceof Artifact){
+            //...
+        }
+    }
+
     // подобрать что-нибудь (ресурсы или артефакты)
+    public function pickupItem($id, $item){
+        givePlayerItem($item);
+        //removeItemFromMap();
+    }
+    
     // умереть героя
     // выгнать героя
     // снять/надеть предмет
