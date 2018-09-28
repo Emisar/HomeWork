@@ -172,6 +172,7 @@ class Logic {
         }
     }
     // передать войска между героем и городом
+<<<<<<< HEAD
     public function passUnitTown ($idHero, $idTown, $idUnit, $boolean) {
         if ($idHero && $idTown && $idUnit && $boolean) {
             $heroes = $this->struct->heroes;
@@ -210,6 +211,20 @@ class Logic {
     }
     // захватить строение
     public function captureBuilding($gamerId, $buildingId) {
+=======
+    
+    // задать владельца элемента
+    public function setElementOwner($elemChild, $elemOwner) {
+        if (($elemChild instanceof BaseElement) && ($elemOwner instanceof BaseElement)) {
+            $elemOwner->owner = $elemChild->id;
+            return true;
+        }
+        return false;
+    }
+
+    // захватить строение
+    public function captBuilding($gamerId, $buildingId) {
+>>>>>>> db7310bd48fd1aa4d1d2131b1eeca75da005a2e6
         if ($gamerId && $buildingId) {
             $buildings = $this->struct->buildings;
             $key = array_search($buildingId, array_column($buildings, 'id'));
@@ -218,6 +233,7 @@ class Logic {
         }
         return false;
     }
+<<<<<<< HEAD
     // подобрать что-нибудь (ресурсы или артефакты)
     public function pickupItem($id, $item){
         $gamers = $this->struct->gamers;
@@ -232,6 +248,31 @@ class Logic {
         }
         //removeItemFromMap();
     }
+=======
+
+    // дать игроку предмет
+    public function givePlayerItem($id, $item){
+       
+        $gamers = $this->struct->gamers;
+        $key = array_search($id, array_column($gamers, 'id'));
+        $gamer = $gamers[$key];
+
+        if ($item instanceof Item){
+            $gamer->resouces->gold += $item->gold;
+            $gamer->resouces->wood += $item->wood;
+            $gamer->resouces->ore  += $item->ore;
+        } elseif ($item instanceof Artifact){
+            //...
+        }
+    }
+
+    // подобрать что-нибудь (ресурсы или артефакты)
+    public function pickupItem($id, $item){
+        givePlayerItem($item);
+        //removeItemFromMap();
+    }
+    
+>>>>>>> db7310bd48fd1aa4d1d2131b1eeca75da005a2e6
     // умереть героя
     // выгнать героя
     // снять/надеть предмет
