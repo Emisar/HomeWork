@@ -8,165 +8,164 @@ class Logic {
         $this->struct = $struct;
     }
 
-    // закончить ход игрока
     public function endTurn($id) {
         if ($id) {
             $gamers = $this->struct->gamers;
-            // получить текущего игрока
+            // 'Потушить' всех игроков
+            foreach ($gamers as $gamer) {
+                $gamers->asActive = false;
+            }
+            // Получить текущего игрока
             $key = array_search($id, array_column($gamers, 'id'));
             $curGamer = $gamers[$key];
             if ($curGamer) {
-                $order = $curGamer->order; // порядковый номер текущего
-                // потушить всех игроков
-                foreach($gamers as $gamer) {
-                    $gamer->isActive = false;
-                }
-                // выбрать следующего активного игрока
-                $order = ($order < count($gamers) - 1) ? $order + 1 : 0;
-                $key = array_search($order, array_column($gamers, 'order'));
+                // Порядок номера текущего игрока
+                $order = $curGamer->order;
+                // Выбрать текущего игрока
+                $order = ($order < count($gamers)) ? $order + 1 : 0;
+                $key = array_search($id, array_column($gamers, 'id'));
+                // Дать ход игроку
                 $gamers[$key]->isActive = true;
                 return true;
             }
         }
         return false;
     }
-
     /* Про игру */
-    // прекратить игру за игрока
-    // проиграть игрока
-    public function loseGamer($id) {
+    //прекратить игру за игрока
+    //проиграть игрока
+    public function loseGamer ($id) {
         if ($id) {
             $gamers = $this->struct->gamers;
             $buildings = $this->struct->buildings;
+            // Найти игрока
             $key = array_search($id, array_column($gamers, 'id'));
-            $gamer = $gamers[$key];
-            $order = $gamer->order;
-            // потушить строения
+            $gamers = $gamers[$key];
+            // Потушить строения
             foreach ($buildings as $building) {
-                if ($building->owner == $gamer->id) {
+                if ($building->owner == $gamers->id) {
                     $building->owner = null;
                 }
             }
-            // завершить ход за этого игрока
-            if ($gamer->isActive) {
-                $this->endTurn($gamer->id);
-            }
-            // удалить игрока
+            // Найти игрока
+            $key = array_search($id, array_column($gamers, 'id'));
+            // Удалить игрока
             unset($gamers[$key]);
-            // пересчитать очередность хода
-            foreach ($gamers as $temp) {
-                if ($temp->order > $order) {
-                    $temp->order--;
-                }
-            }
-            return true;
+            // Пересчитать очередность хода
         }
-        return false;
     }
-    // завершить игру (целиком)
+    //завершить (целиком)
 
-    /* Про героев */
-    // подвинуть героя игрока (на 1 клетку)
-    public function moveHero($id, $direction) {
-        if ($id && $direction) {
+    /* Про героя */
+    //подвинуть героя игрока на одну клетку
+    //подвинуть героя игрока на несколько клеток (не делать)
+    //передать войска между героями
+    public function passUnitHeroes ($idSet, $idGet, $idUnit) {
+        if ($idSet && $idGet && $idUnit) {
             $heroes = $this->struct->heroes;
-            $key = array_search($id, array_column($heroes, 'id'));
-            $hero = $heroes[$key];
-            switch ($direction) {
-                case 'UP':
-                    $hero->y--;
-                    $hero->properties->movePoints -= 100;
-                    break;
-                case 'DOWN':
-                    $hero->y++;
-                    $hero->properties->movePoints -= 100;
-                    break;
-                case 'RIGHT':
-                    $hero->x++;
-                    $hero->properties->movePoints -= 100;
-                    break;
-                case 'LEFT':
-                    $hero->x--;
-                    $hero->properties->movePoints -= 100;
-                    break;
-                case 'UP-RIGHT':
-                    $hero->y--;
-                    $hero->x++;
-                    $hero->properties->movePoints -= 150;
-                    break;
-                case 'UP-LEFT':
-                    $hero->y--;
-                    $hero->x--;
-                    $hero->properties->movePoints -= 150;
-                    break;
-                case 'DOWN-RIGHT':
-                    $hero->y++;
-                    $hero->x++;
-                    $hero->properties->movePoints -= 150;
-                    break;
-                case 'DOWN-LEFT':
-                    $hero->y++;
-                    $hero->x--;
-                    $hero->properties->movePoints -= 150;
-                    break;
-            }
-            return true;
+            // Найти дающего героя
+            $keySet = array_search($idSet, array_column($heroes, 'id'));
+            // Найти принимающего героя
+            $keyGet = array_search($idGet, array_column($heroes, 'id'));
+            $units = $this->struct->heroes[$keySet]->army->units;
+            // Найти передающийся юнит
+            $keyUnit = array_search($idUnit, array_column($units, 'id'));
+            // Задать дающего героя
+            $heroSet = $heroes[$keySet];
+            // Задать принимающего героя
+            $heroGet = $heroes[$keyGet];
+            // Задать передающийся юнит
+            $unit = $units[$keyUnit];
+            // Дать юнита принимающему герою
+            $heroGet->units[] = $unit;
+            // Удалить юнита у дающего героя
+            unset($heroSet->units[$keyUnit]);
         }
-        return false;
     }
-    // подвинуть героя игрока (на много клеток) - пока не делаем
-    // передать предметы между героями
-    // передать войска между героями
-    // передать войска между героем и городом
-    // захватить город
-    // захватить шахту
-    // подобрать что-нибудь (ресурсы или артефакты)
-    // умереть героя
-    // выгнать героя
-    // снять/надеть предмет
-    public function equipArtifact($artifactId, $heroId, $action) {
-        if ($artifactId && $heroId && $action) {
-            $artifacts = $this->struct->artifacts;
+    //передать предметы между героями
+    public function passItemHeroes ($idSet, $idGet, $idItem) {
+        if ($idSet && $idGet && $idItem) {
             $heroes = $this->struct->heroes;
-            $heroKey = array_search($heroId, array_column($heroes, 'id'));
-            $artifactKey = array_search($artifactId, array_column($artifacts, 'id'));
-            $hero = $heroes[$heroKey];
-            $artifact = $artifacts[$artifactKey];
-            if ($action) {  // надеваем артефакт
-                if (is_null($hero->inventory->{$artifact->type})) {     // если слот свободен
-                    $hero->inventory->{$artifact->type} = $artifactId;
-                    unset($artifactId);
-                } else {        // если слот занят, то меняем предметы местами
-                    $equipedArtifactId = $hero->inventory->{$artifact->type};
-                    array_push($hero->backpack, $equipedArtifactId);
-                    $hero->inventory->{$artifact->type} = $artifactId;
-                    unset($artifactId);
-                }
-            } else {    // снимаем артефакт
-                array_push($hero->backpack, $artifactId);
-                $hero->inventory->{$artifact->type} = null;
-            }
-            return true;
-        }
-        return false;
-    }
-    // изменить армию героя
-    // зайти в город
 
-    /* Про города */
-    // купить героя
-    // посторить здание
-    // купить армию
+            // Найти дающего героя
+            $keySet = array_search($idSet, array_column($heroes, 'id'));
+            // Найти принимающего героя
+            $keyGet = array_search($idGet, array_column($heroes, 'id'));
+            $backpack = $this->struct->heroes[$keySet]->backpack;
+            // Найти передающийся предмет
+            $keyItem = array_search($idItem, array_column($backpack, 'id'));
+            // Задать дающего героя
+            $heroSet = $heroes[$keySet];
+            // Задать принимающего героя
+            $heroGet = $heroes[$keyGet];
+            // Задать передающийся предмет
+            $item = $backpack[$keyItem];
+            // Дать предмет принимающему герою
+            $heroGet->backpack[] = $item;
+            // Удалить предмет у дающего героя
+            unset($heroSet->backpack[$keyItem]);
+        }
+    }
+    //передать войска между героям и городом
+    public function passUnitTown ($idHero, $idTown, $idUnit, $boolean) {
+        if ($idHero && $idTown && $idUnit && $boolean) {
+            $heroes = $this->struct->heroes;
+            $towns = $this->struct->towns;
+            // Найти героя
+            $keyHero = array_search($idHero, array_column($heroes, 'id'));
+            // Найти город
+            $keyTown = array_search($idTown, array_column($towns, 'id'));
+            // Задаем героя
+            $hero = $heroes[$keyHero];
+            // Задаем город
+            $town = $towns[$keyTown];
+            // Если true то юнит из героя в город
+            if ($boolean == true) {
+                $units = $this->struct->heroes[$keyHero]->army->units;
+                // Находим юнита
+                $keyUnit = array_search($idUnit, array_column($units, 'id'));
+                // Задаем юнита
+                $unit = $units[$keyUnit];
+                // Удалить юнита у героя
+                unset($hero->units[$keyUnit]);
+                // Дать городу юнит
+                $town->army->units[] = $unit;
+            } else {
+                $units = $this->struct->towns[$keyTown]->army->units;
+                // Находим юнита
+                $keyUnit = array_search($idUnit, array_column($units, 'id'));
+                // Задать юнита
+                $unit = $units[$keyUnit];
+                // Удалить юнита из города
+                unset($town->units[$keyUnit]);
+                // Дать герою юнит
+                $hero->army->units[] = $unit;
+            }
+        }
+    }
+    //захватить город
+    //захватить шахту
+    //умереть героя
+    //снять/надеть предмет
+    //изменить армию героя
+    //подобрать (ресурсы или артефакты)
+
+    /* Про город */
+    //купить героя
+    //построить здание
+    //купить армию
 
     /* Про сражения */
-    // вступить в сражение (герой с нейтралом)
-    // вступить в сражение (герой с героем)
-    // вступить в сражение (герой с городом)
-    // подвинуть юнита
-    // атаковать
-    // обороняться
-    // ждать
-    // применить заклинание
-    // сбежать
-    // завершить бой
+    //вступить в сражение (герой с нейтралом)
+    //вступить в сражение (герой с героем)
+    //вступить в сражение (герой с городом)
+    //вступить в сражение (подвинуть юнита)
+    //вступить в сражение (атаковать)
+    //вступить в сражение (обороняться)
+    //вступить в сражение (ждать)
+    //применить заклинание
+    //сбежать
+    //завершить бой
+
+
 }
