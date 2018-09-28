@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="32bcaaf8-4178-4ff4-8b10-9a39e2d2e05a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/ToDoList" beforeDir="false" afterPath="$PROJECT_DIR$/ToDoList" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logic/Logic.php" beforeDir="false" afterPath="$PROJECT_DIR$/logic/Logic.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/struct/Struct.php" beforeDir="false" afterPath="$PROJECT_DIR$/struct/Struct.php" afterDir="false" />
-    </list>
+    <list default="true" id="32bcaaf8-4178-4ff4-8b10-9a39e2d2e05a" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -292,7 +288,7 @@
       <workItem from="1537621796436" duration="1367000" />
       <workItem from="1537902124634" duration="1442000" />
       <workItem from="1538056973435" duration="2496000" />
-      <workItem from="1538131359074" duration="4977000" />
+      <workItem from="1538131359074" duration="5235000" />
     </task>
     <task id="LOCAL-00001" summary="Commands">
       <created>1537903444865</created>
@@ -305,10 +301,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="39317000" />
+    <option name="totallyTimeSpent" value="39575000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="27" y="10" width="1346" height="728" extended-state="0" />
+    <frame x="27" y="10" width="1346" height="728" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2822706" />
