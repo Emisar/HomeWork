@@ -2,7 +2,7 @@
 
 error_reporting(1);
 
-require_once 'game\Game.php';
+require_once 'Game.php';
 
 $options = new stdClass();
 $options->gamers = [
