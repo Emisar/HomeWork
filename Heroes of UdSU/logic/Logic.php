@@ -40,23 +40,38 @@ class Logic {
             $buildings = $this->struct->buildings;
             $key = array_search($id, array_column($gamers, 'id'));
             $gamer = $gamers[$key];
+            $order = $gamer->order;
             // потушить строения
             foreach ($buildings as $building) {
                 if ($building->owner == $gamer->id) {
                     $building->owner = null;
                 }
             }
+            // завершить ход за этого игрока
             if ($gamer->isActive) {
                 $this->endTurn($gamer->id);
             }
             // удалить игрока
             unset($gamers[$key]);
+            // пересчитать очередность хода
+            foreach ($gamers as $temp) {
+                if ($temp->order > $order) {
+                    $temp->order--;
+                }
+            }
         }
     }
     // завершить игру (целиком)
 
     /* Про героев */
     // подвинуть героя игрока (на 1 клетку)
+    public function moveHero($id, $direction) {
+        if ($id && $direction) {
+            $gamers = $this->struct->gamers;
+            $key = array_search($id, array_column($gamers, 'id'));
+            $gamer = $gamers[$key];
+        }
+    }
     // подвинуть героя игрока (на много клеток) - пока не делаем
     // передать предметы между героями
     // передать войска между героями
