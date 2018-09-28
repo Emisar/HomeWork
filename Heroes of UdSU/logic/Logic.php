@@ -233,7 +233,57 @@ class Logic {
         //removeItemFromMap();
     }
     // умереть героя
+    public function dieHero ($id) {
+        if ($id) {
+            $heroes = $this->struct->heroes;
+            $key = array_search($id, array_column($heroes, 'id'));
+            $hero = $heroes[$key];
+            $army = $hero->army;
+            $inventory = $hero->inventory;
+            $backpack = $hero->backpack;
+            foreach ($army as $value) {
+                $value = null;
+            }
+
+            foreach ($backpack as $value) {
+                $value = null;
+            }
+
+            foreach ($inventory as $value) {
+                $value = null;
+            }
+            return true;
+
+        }
+        return false;
+    }
     // выгнать героя
+    public function expelHero ($id) {
+        if ($id) {
+            $heroes = $this->struct->heroes;
+            $key = array_search($id, array_column($heroes, 'id'));
+            $hero = $heroes[$key];
+            unset($hero);
+            /*$army = $hero->army;
+            $inventory = $hero->inventory;
+            $backpack = $hero->backpack;
+            foreach ($army as $value) {
+                $value = null;
+            }
+
+            foreach ($backpack as $value) {
+                $value = null;
+            }
+
+            foreach ($inventory as $value) {
+                $value = null;
+            }
+            return true; */
+
+
+        }
+        return false;
+    }
     // снять/надеть предмет
     public function equipArtifact($artifactId, $heroId, $action) {
         if ($artifactId && $heroId && $action) {
@@ -266,6 +316,9 @@ class Logic {
         return false;
     }
     // изменить армию героя
+    public function splitArmy ($id) {
+
+    }
     // зайти в город
 
     /* Про города */
