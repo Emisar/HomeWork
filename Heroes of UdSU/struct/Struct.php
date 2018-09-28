@@ -15,6 +15,7 @@ class Struct {
     public $armies; // нейтральные армии
     public $towns;
     public $buildings;
+    public $heroes;
 
     public function __construct($options) {
         // список игроков

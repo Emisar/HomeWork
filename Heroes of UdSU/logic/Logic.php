@@ -59,7 +59,9 @@ class Logic {
                     $temp->order--;
                 }
             }
+            return true;
         }
+        return false;
     }
     // завершить игру (целиком)
 
@@ -67,10 +69,50 @@ class Logic {
     // подвинуть героя игрока (на 1 клетку)
     public function moveHero($id, $direction) {
         if ($id && $direction) {
-            $gamers = $this->struct->gamers;
-            $key = array_search($id, array_column($gamers, 'id'));
-            $gamer = $gamers[$key];
+            $heroes = $this->struct->heroes;
+            $key = array_search($id, array_column($heroes, 'id'));
+            $hero = $heroes[$key];
+            switch ($direction) {
+                case 'UP':
+                    $hero->y--;
+                    $hero->properties->movePoints -= 100;
+                    break;
+                case 'DOWN':
+                    $hero->y++;
+                    $hero->properties->movePoints -= 100;
+                    break;
+                case 'RIGHT':
+                    $hero->x++;
+                    $hero->properties->movePoints -= 100;
+                    break;
+                case 'LEFT':
+                    $hero->x--;
+                    $hero->properties->movePoints -= 100;
+                    break;
+                case 'UP-RIGHT':
+                    $hero->y--;
+                    $hero->x++;
+                    $hero->properties->movePoints -= 150;
+                    break;
+                case 'UP-LEFT':
+                    $hero->y--;
+                    $hero->x--;
+                    $hero->properties->movePoints -= 150;
+                    break;
+                case 'DOWN-RIGHT':
+                    $hero->y++;
+                    $hero->x++;
+                    $hero->properties->movePoints -= 150;
+                    break;
+                case 'DOWN-LEFT':
+                    $hero->y++;
+                    $hero->x--;
+                    $hero->properties->movePoints -= 150;
+                    break;
+            }
+            return true;
         }
+        return false;
     }
     // подвинуть героя игрока (на много клеток) - пока не делаем
     // передать предметы между героями
@@ -82,6 +124,32 @@ class Logic {
     // умереть героя
     // выгнать героя
     // снять/надеть предмет
+    public function equipArtifact($artifactId, $heroId, $action) {
+        if ($artifactId && $heroId && $action) {
+            $artifacts = $this->struct->artifacts;
+            $heroes = $this->struct->heroes;
+            $heroKey = array_search($heroId, array_column($heroes, 'id'));
+            $artifactKey = array_search($artifactId, array_column($artifacts, 'id'));
+            $hero = $heroes[$heroKey];
+            $artifact = $artifacts[$artifactKey];
+            if ($action) {  // надеваем артефакт
+                if (is_null($hero->inventory->{$artifact->type})) {     // если слот свободен
+                    $hero->inventory->{$artifact->type} = $artifactId;
+                    unset($artifactId);
+                } else {        // если слот занят, то меняем предметы местами
+                    $equipedArtifactId = $hero->inventory->{$artifact->type};
+                    array_push($hero->backpack, $equipedArtifactId);
+                    $hero->inventory->{$artifact->type} = $artifactId;
+                    unset($artifactId);
+                }
+            } else {    // снимаем артефакт
+                array_push($hero->backpack, $artifactId);
+                $hero->inventory->{$artifact->type} = null;
+            }
+            return true;
+        }
+        return false;
+    }
     // изменить армию героя
     // зайти в город
 
