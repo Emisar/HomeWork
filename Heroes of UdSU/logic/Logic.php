@@ -299,8 +299,31 @@ class Logic {
         }
         //removeItemFromMap();
     }
+
     // умереть героя
-    public function dieHero ($id) {
+      public function dieHero ($id) {
+          if ($id) {
+              $heroes = $this->struct->heroes;
+              $key = array_search($id, array_column($heroes, 'id'));
+              $hero = $heroes[$key];
+              $army = $hero->army;
+              $inventory = $hero->inventory;
+              $backpack = $hero->backpack;
+              if (empty($army)) {
+                  foreach ($backpack as $keyBack => $valueBack) {
+                      unset($this->struct->heroes[$key]->backpack[$keyBack]);
+                  }
+                  foreach ($inventory as $keyInv => $valueInv) {
+                      unset($this->struct->heroes[$key]->keyInv);
+                  }
+                  unset($this->struct->heroes[$key]);
+              }
+        }
+        return false;
+    }
+
+    // выгнать героя
+    public function expelHero ($id) {
         if ($id) {
             $heroes = $this->struct->heroes;
             $key = array_search($id, array_column($heroes, 'id'));
@@ -308,42 +331,35 @@ class Logic {
             $army = $hero->army;
             $inventory = $hero->inventory;
             $backpack = $hero->backpack;
-            foreach ($army as $value) {
-                $value = null;
-            }
-            foreach ($backpack as $value) {
-                $value = null;
-            }
-            foreach ($inventory as $value) {
-                $value = null;
-            }
-            return true;
-        }
-        return false;
+                foreach ($army as $keyArm => $valueArm) {
+                    unset($this->struct->heroes[$key]->army[$keyArm]);
+                }
+                foreach ($backpack as $keyBack => $valueBack) {
+                    unset($this->struct->heroes[$key]->backpack[$keyBack]);
+                }
+                foreach ($inventory as $keyInv => $valueInv) {
+                    unset($this->struct->heroes[$key]->keyInv);
+                }
+            unset($this->struct->heroes[$key]);
+
+                }
+         return false;
     }
-    // выгнать героя
-    public function expelHero ($id) {
+
+    // сбежать
+    public function Escape($id) {
         if ($id) {
             $heroes = $this->struct->heroes;
             $key = array_search($id, array_column($heroes, 'id'));
             $hero = $heroes[$key];
-            unset($hero);
-            /*$army = $hero->army;
-            $inventory = $hero->inventory;
-            $backpack = $hero->backpack;
-            foreach ($army as $value) {
-                $value = null;
+            $army = $hero->army;
+            foreach ($army as $keyArm => $valueArm) {
+                unset($this->struct->heroes[$key]->army[$keyArm]);
             }
-            foreach ($backpack as $value) {
-                $value = null;
-            }
-            foreach ($inventory as $value) {
-                $value = null;
-            }
-            return true; */
         }
         return false;
     }
+
     // снять/надеть предмет
     public function equipArtifact($artifactId, $heroId, $action) {
         if ($artifactId && $heroId && $action) {
@@ -392,6 +408,6 @@ class Logic {
     // обороняться
     // ждать
     // применить заклинание
-    // сбежать
+
     // завершить бой
 }
