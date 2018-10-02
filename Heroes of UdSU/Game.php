@@ -13,8 +13,11 @@ class Game {
         $this->struct = new Struct($options);
         $this->logic = new Logic($this->struct);
 
-        $this->logic->loseGamer(1);
-        //print_r($this->logic->endTurn(2));
+        $this->logic->addArtifactToBackpack(1, $this->struct->artifacts[0]);
+
+        $this->logic->passItemHeroes(1, 2, 1);
+
+        print_r($this->struct->heroes);
 
     }
 }
