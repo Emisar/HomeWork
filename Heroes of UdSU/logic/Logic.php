@@ -21,27 +21,17 @@ class Logic {
     }
 
     private function getGamer($id) {
-        /*if ($id) {
-            $gamers = $this->struct->gamers;
-            $key = array_search($id, array_column($gamers, 'id'));
-            return $gamers[$key];
-        }
-        return null;*/
         return $this->getElemById('gamers', $id);
     }
 
     private function getHero($id) {
-        /*if ($id) {
-            $heroes = $this->struct->heroes;
-            $key = array_search($id, array_column($heroes, 'id'));
-            return $heroes[$key];
-        }
-        return null;*/
         return $this->getElemById('heroes', $id);
     }
 
-    private function getBuilding($id) {
-        return $this->getElemById('buildings', $id);
+
+
+    private function getArray($id, $arrayName) {
+        return $this->getElemById(''.$arrayName.'', $id);
     }
 
     // вернуть предмет из рюкзака героя
@@ -53,6 +43,59 @@ class Logic {
         }
         return null;
     }
+
+    // вернуть юнита из армии героя
+    private function getUnitFromArmy($array, $idUnit) {
+        if ($array && $idUnit) {
+            $army = $array->army;
+            $key = array_search($idUnit, array_column($army, 'id'));
+            return $army[$key];
+        }
+        return null;
+    }
+
+    // добавить юнита в армию
+    private function addUnitToArmy($idArray, $unit, $arrayName) {
+        $array = $this->getArray($idArray, $arrayName);
+        if ($array && $unit) {
+            $array->army[] = $unit;
+            return true;
+        }
+        return false;
+    }
+
+    // положить предмет в сумку
+    public function addArtifactToBackpack($idHero, $artifact) {
+        $hero = $this->getHero($idHero);
+        if ($hero && $artifact) {
+            $hero->backpack[] = $artifact;
+            return true;
+        }
+        return false;
+    }
+
+    // удалить юнита из армии
+    public function remUnitFromArmy($idArray, $idUnit, $arrayName) {
+        $array = $this->getArray($idArray, $arrayName);
+        if ($array && $idUnit) {
+            $key = array_search($idUnit, array_column($array->army, 'id'));
+            unset($array->army[$key]);
+            return true;
+        }
+        return false;
+    }
+
+    // выкинуть предмет из сумки
+    public function remArtifactFromBackpack($idHero, $idArtifact) {
+        $hero = $this->getHero($idHero);
+        if ($hero && $idArtifact) {
+            $key = array_search($idArtifact, array_column($hero->backpack, 'id'));
+            unset($hero->backpack[$key]);
+            return true;
+        }
+        return false;
+    }
+
 
     // задать владельца элемента
     public function setElementOwner($elemOwner, $elemChild) {
@@ -175,27 +218,6 @@ class Logic {
     }
     // подвинуть героя игрока (на много клеток) - пока не делаем
 
-    // положить предмет в сумку
-    public function addArtifactToBackpack($idHero, $artifact) {
-        $hero = $this->getHero($idHero);
-        if ($hero && $artifact) {
-            $hero->backpack[] = $artifact;
-            return true;
-        }
-        return false;
-    }
-
-    // выкинуть предмет из сумки
-    public function remArtifactFromBackpack($idHero, $idArtifact) {
-        $hero = $this->getHero($idHero);
-        if ($hero && $idArtifact) {
-            $key = array_search($idArtifact, array_column($hero->backpack, 'id'));
-            unset($hero->backpack[$key]);
-            return true;
-        }
-        return false;
-    }
-
     // передать предметы между героями
     public function passItemHeroes ($idGive, $idTake, $idItem) {
         $heroGive = $this->getHero($idGive);
@@ -212,6 +234,52 @@ class Logic {
         }
         return false;
     }
+
+    // передать войска между героями
+    public function passUnitHeroes ($idGive, $idTake, $idUnit) {
+        $heroGive = $this->getArray($idGive, 'heroes');
+        $heroTake = $this->getArray($idTake, 'heroes');
+        if ($heroGive && $heroTake) {
+            $unit = $this->getUnitFromArmy($heroGive, $idUnit);
+            if ($unit) {
+                $heroTake->army[] = $unit;
+                $this->remUnitFromArmy($idGive, $idUnit, 'heroes');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // передача юнита из города герою
+    public function passUnitTownToHero ($idGive, $idTake, $idUnit) {
+        $townGive = $this->getArray($idGive, 'towns');
+        $heroTake = $this->getArray($idTake, 'heroes');
+        if ($townGive && $heroTake) {
+            $unit = $this->getUnitFromArmy($townGive, $idUnit);
+            if ($unit) {
+                $heroTake->army[] = $unit;
+                $this->remUnitFromArmy($idGive, $idUnit, 'towns');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // передача юнита из героя в город
+    public function passUnitHeroToTown ($idGive, $idTake, $idUnit) {
+        $heroGive = $this->getArray($idGive, 'heroes');
+        $townTake = $this->getArray($idTake, 'towns');
+        if ($townTake && $heroGive) {
+            $unit = $this->getUnitFromArmy($heroGive, $idUnit);
+            if ($unit) {
+                $townTake->army[] = $unit;
+                $this->remUnitFromArmy($idGive, $idUnit, 'heroes');
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     // передать войска между героями
     /*public function passUnitHeroes ($idSet, $idGet, $idUnit) {
