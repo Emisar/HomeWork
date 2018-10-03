@@ -1,29 +1,24 @@
 <?php
 
-require_once 'commands.php';
+require_once 'input\commands.php';
 
 class Input {
     private $COMMAND;
+    private $logic;
 
-    public function __construct() {
-        $this->COMMAND = (object) COMMAND;
+    public function __construct($logic) {
+        $this->COMMAND = COMMAND;
+        $this->logic = $logic;
     }
 
     public function getCommands() {
         return $this->COMMAND;
     }
 
-    public function setCommands($commands) {
-        foreach ($commands as $key => $value) {
-            $this->COMMAND->{$key} = $value;
+    public function executeCommand($name = null, $options = null) {
+        if ($name) {
+            return $this->logic->{$name}($options);
         }
-    }
-
-    public function callCommand($name, $params = null) {
-        if (isset($name) &&
-            isset($this->COMMAND->{$name}) &&
-            is_callable($this->COMMAND->{$name})) {
-            $this->COMMAND->{$name}($params);
-        }
+        return false;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 const COMMAND = [
-    END_TURN => 'END_TURN' // конец хода игрока
+    END_TURN => 'endTurn', // конец хода игрока
+    ADD_ARTIFACT_TO_BACKPACK => 'addArtifactToBackpack'
     //...
 ];
