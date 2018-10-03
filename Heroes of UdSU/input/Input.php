@@ -1,6 +1,6 @@
 <?php
 
-require_once 'input\commands.php';
+require_once 'commands.php';
 
 class Input {
     private $COMMAND;
@@ -16,7 +16,7 @@ class Input {
     }
 
     public function executeCommand($name = null, $options = null) {
-        if ($name) {
+        if ($name && isset($this->logic->{$name}) && is_callable($this->logic->{$name})) {
             return $this->logic->{$name}($options);
         }
         return false;
