@@ -16,4 +16,7 @@ $options->heroes = [
 
 $game = new Game($options);
 
+$commands = (object) $game->getCommands();
+$game->executeCommand($commands->END_TURN, 1);
+
 //print_r($game);
