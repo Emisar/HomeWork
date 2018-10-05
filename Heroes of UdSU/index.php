@@ -24,4 +24,4 @@ $options->heroes = [
 
 $game = new Game($options);
 
-vardump($game);
+//vardump($game);
