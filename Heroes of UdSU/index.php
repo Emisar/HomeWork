@@ -1,8 +1,16 @@
 <?php
 
 error_reporting(1);
+header('Content-Type: text/html; charset=utf-8');
 
 require_once 'Game.php';
+
+// Удобный вывод данных
+function vardump($var) {
+    echo '<pre>';
+    var_dump($var);
+    echo '</pre>';
+  }
 
 $options = new stdClass();
 $options->gamers = [
@@ -16,4 +24,4 @@ $options->heroes = [
 
 $game = new Game($options);
 
-//print_r($game);
+vardump($game);
