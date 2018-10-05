@@ -11,37 +11,31 @@ class Logic {
         $this->struct = $struct;
     }
 
-    private function getElemById($arrName, $id) {
+    // НЕ РАБОТАЕТ КОРРЕКТНО если ID = 0, key всегда возвращает false
+    public function getElemById($arrName, $id) {
         if (isset($this->struct->{$arrName}) &&  $id) {
             $arr = $this->struct->{$arrName};
             $key = array_search($id, array_column($arr, 'id'));
+            //print_r($key);
             return $arr[$key];
         }
         return null;
     }
 
     private function getGamer($id) {
-        /*if ($id) {
-            $gamers = $this->struct->gamers;
-            $key = array_search($id, array_column($gamers, 'id'));
-            return $gamers[$key];
-        }
-        return null;*/
         return $this->getElemById('gamers', $id);
     }
 
     private function getHero($id) {
-        /*if ($id) {
-            $heroes = $this->struct->heroes;
-            $key = array_search($id, array_column($heroes, 'id'));
-            return $heroes[$key];
-        }
-        return null;*/
         return $this->getElemById('heroes', $id);
     }
 
     private function getBuilding($id) {
         return $this->getElemById('buildings', $id);
+    }
+
+    private function getArtifact($id) {
+        return $this->getElemById('artifacts', $id);
     }
 
     // вернуть предмет из рюкзака героя
