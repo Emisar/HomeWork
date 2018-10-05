@@ -27,7 +27,7 @@ class Logic {
         return $this->getElemById(''.$arrayName.'', $id);
     }
 
-    // вернуть предмет из рюкзака героя
+    // вернуть предмет из рюкзака героя var: hero, idItem
     private function getItemFromBackpack($hero, $idItem) {
         if ($hero && $idItem) {
             $backpack = $hero->backpack;
@@ -228,113 +228,21 @@ class Logic {
         return false;
     }
 
-    // передать войска между героями
-    public function passUnitHeroes ($idGive, $idTake, $idUnit) {
-        $heroGive = $this->getArray($idGive, 'heroes');
-        $heroTake = $this->getArray($idTake, 'heroes');
-        if ($heroGive && $heroTake) {
-            $unit = $this->getUnitFromArmy($heroGive, $idUnit);
+
+    // передача юнита                                                             (доделать количество)
+    public function passUnit ($idGive, $idTake, $idUnit, $typeGive, $typeTake) {
+        $give = $this->getArray($idGive, $typeGive);
+        $take = $this->getArray($idTake, $typeTake);
+        if ($give && $take) {
+            $unit = $this->getUnitFromArmy($give, $idUnit);
             if ($unit) {
-                $heroTake->army[] = $unit;
-                $this->remUnitFromArmy($idGive, $idUnit, 'heroes');
+                $take->army[] = $unit;
+                $this->remUnitFromArmy($idGive, $idUnit, $typeGive);
                 return true;
             }
         }
         return false;
     }
-
-    // передача юнита из города герою
-    public function passUnitTownToHero ($idGive, $idTake, $idUnit) {
-        $townGive = $this->getArray($idGive, 'towns');
-        $heroTake = $this->getArray($idTake, 'heroes');
-        if ($townGive && $heroTake) {
-            $unit = $this->getUnitFromArmy($townGive, $idUnit);
-            if ($unit) {
-                $heroTake->army[] = $unit;
-                $this->remUnitFromArmy($idGive, $idUnit, 'towns');
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // передача юнита из героя в город
-    public function passUnitHeroToTown ($idGive, $idTake, $idUnit) {
-        $heroGive = $this->getArray($idGive, 'heroes');
-        $townTake = $this->getArray($idTake, 'towns');
-        if ($townTake && $heroGive) {
-            $unit = $this->getUnitFromArmy($heroGive, $idUnit);
-            if ($unit) {
-                $townTake->army[] = $unit;
-                $this->remUnitFromArmy($idGive, $idUnit, 'heroes');
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    // передать войска между героями
-    /*public function passUnitHeroes ($idSet, $idGet, $idUnit) {
-        if ($idSet && $idGet && $idUnit) {
-            $heroes = $this->struct->heroes;
-            // Найти дающего героя
-            $keySet = array_search($idSet, array_column($heroes, 'id'));
-            // Найти принимающего героя
-            $keyGet = array_search($idGet, array_column($heroes, 'id'));
-            $units = $this->struct->heroes[$keySet]->army->units;
-            // Найти передающийся юнит
-            $keyUnit = array_search($idUnit, array_column($units, 'id'));
-            // Задать дающего героя
-            $heroSet = $heroes[$keySet];
-            // Задать принимающего героя
-            $heroGet = $heroes[$keyGet];
-            // Задать передающийся юнит
-            $unit = $units[$keyUnit];
-            // Дать юнита принимающему герою
-            $heroGet->units[] = $unit;
-            // Удалить юнита у дающего героя
-            unset($heroSet->units[$keyUnit]);
-        }
-    }*/
-
-    // передать войска между героем и городом
-    /*public function passUnitTown ($idHero, $idTown, $idUnit, $boolean) {
-        if ($idHero && $idTown && $idUnit && $boolean) {
-            $heroes = $this->struct->heroes;
-            $towns = $this->struct->towns;
-            // Найти героя
-            $keyHero = array_search($idHero, array_column($heroes, 'id'));
-            // Найти город
-            $keyTown = array_search($idTown, array_column($towns, 'id'));
-            // Задаем героя
-            $hero = $heroes[$keyHero];
-            // Задаем город
-            $town = $towns[$keyTown];
-            // Если true то юнит из героя в город
-            if ($boolean == true) {
-                $units = $this->struct->heroes[$keyHero]->army->units;
-                // Находим юнита
-                $keyUnit = array_search($idUnit, array_column($units, 'id'));
-                // Задаем юнита
-                $unit = $units[$keyUnit];
-                // Удалить юнита у героя
-                unset($hero->units[$keyUnit]);
-                // Дать городу юнит
-                $town->army->units[] = $unit;
-            } else {
-                $units = $this->struct->towns[$keyTown]->army->units;
-                // Находим юнита
-                $keyUnit = array_search($idUnit, array_column($units, 'id'));
-                // Задать юнита
-                $unit = $units[$keyUnit];
-                // Удалить юнита из города
-                unset($town->units[$keyUnit]);
-                // Дать герою юнит
-                $hero->army->units[] = $unit;
-            }
-        }
-    }*/
 
     // захватить строение
     public function captureBuilding($gamerId, $buildingId) {
@@ -355,7 +263,7 @@ class Logic {
             $gamer->resouces->gold += $item->resouces->gold;
             $gamer->resouces->wood += $item->resouces->wood;
             $gamer->resouces->ore  += $item->resouces->ore;
-        } elseif ($item instanceof Artifact){
+        } else if ($item instanceof Artifact){
             //...
         }
         //removeItemFromMap();
@@ -413,9 +321,38 @@ class Logic {
     // зайти в город
 
     /* Про города */
-    // купить героя
-    // посторить здание
-    // купить армию
+
+    public function buy($id, $value) {
+        if ($id && $value) {
+            $obj = $this->getArray($id, $value);
+            return $obj;
+        }
+    }
+
+    // купить героя, юнита, здание                                                (доделать количество)
+    public function buyObj($idObj, $idGamer, $idTown, $array, $idHero)
+    {
+        if ($idObj && $idGamer && $idTown && $array) {
+            $obj = $this->getArray($idObj, $array);
+            $gamer = $this->getArray($idGamer, 'gamers');
+            $town = $this->getArray($idTown, 'towns');
+            if ($array == 'heroes') {
+                $obj->owner = $idGamer;
+                $obj->x = $town->x;
+                $obj->y = $town->y;
+            }
+            if ($array == 'units' && $idHero) {
+                $hero = $this->getArray($idHero, 'heroes');
+                $hero->army[] = $obj;
+            }
+            if ($array == 'buildings' && !$town[$obj]) {
+                $town->buildings[] = $obj;
+            }
+            $gamer->resources->gold = $gamer->resources->gold - $obj->cost;
+            return true;
+        }
+        return false;
+    }
 
     /* Про сражения */
     // вступить в сражение (герой с нейтралом)
