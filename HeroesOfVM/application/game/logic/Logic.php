@@ -15,7 +15,9 @@ class Logic {
         if (isset($this->struct->{$arrName}) &&  $id) {
             $arr = $this->struct->{$arrName};
             $key = array_search($id, array_column($arr, 'id'));
-            return $arr[$key];
+            if (is_numeric($key)) {
+                return $arr[$key];
+            }
         }
         return null;
     }
@@ -23,6 +25,10 @@ class Logic {
     private function getGamer($id) { return $this->getElemById('gamers', $id); }
     private function getHero ($id) { return $this->getElemById('heroes', $id); }
 
+<<<<<<< HEAD:Heroes of UdSU/logic/Logic.php
+=======
+    /*
+>>>>>>> dcf3fe2f675b74797d659fa188c8ecc21629efad:HeroesOfVM/application/game/logic/Logic.php
     private function getArray($id, $arrayName) {
         return $this->getElemById(''.$arrayName.'', $id);
     }
@@ -98,9 +104,11 @@ class Logic {
         }
         return false;
     }
+    */
 
     // закончить ход игрока
-    public function endTurn($id) {
+    public function endTurn($options) {
+        $id = $options->id;
         // получить текущего игрока
         $curGamer = $this->getGamer($id);
         if ($curGamer) {
@@ -119,7 +127,7 @@ class Logic {
         return false;
     }
 
-    /* Про игру */
+    // Про игру
     // прекратить игру за игрока
     //...
 
@@ -158,7 +166,7 @@ class Logic {
     // завершить игру (целиком)
     //...
 
-    /* Про героев */
+    // Про героев
     // подвинуть героя игрока (на 1 клетку)
     // !!!!!!!!!!!!!!!
     // все переписать
@@ -320,7 +328,11 @@ class Logic {
     // изменить армию героя
     // зайти в город
 
+<<<<<<< HEAD:Heroes of UdSU/logic/Logic.php
     /* Про города */
+=======
+    // Про города
+>>>>>>> dcf3fe2f675b74797d659fa188c8ecc21629efad:HeroesOfVM/application/game/logic/Logic.php
 
     public function buy($id, $value) {
         if ($id && $value) {
@@ -329,7 +341,11 @@ class Logic {
         }
     }
 
+<<<<<<< HEAD:Heroes of UdSU/logic/Logic.php
     // купить героя, юнита, здание                                                (доделать количество)
+=======
+    // купить героя, юнита, здание (доделать количество)
+>>>>>>> dcf3fe2f675b74797d659fa188c8ecc21629efad:HeroesOfVM/application/game/logic/Logic.php
     public function buyObj($idObj, $idGamer, $idTown, $array, $idHero)
     {
         if ($idObj && $idGamer && $idTown && $array) {
@@ -354,7 +370,7 @@ class Logic {
         return false;
     }
 
-    /* Про сражения */
+    // Про сражения
     // вступить в сражение (герой с нейтралом)
     // вступить в сражение (герой с героем)
     // вступить в сражение (герой с городом)
