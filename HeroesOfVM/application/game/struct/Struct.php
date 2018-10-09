@@ -38,7 +38,7 @@ class Struct {
         // предметы (НЕ артефакты) на карте
         $this->items = [new Item(1, 'wood', 5)];*/
         $this->artifacts = [
-            new Artifact((object) [id => 1, name => 'Сапоги'])
+            //new Artifact((object) [id => 1, name => 'Сапоги'])
         ];
     }
 }
