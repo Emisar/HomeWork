@@ -1,2 +1,0 @@
-# Homework
-Git for study
