@@ -7,11 +7,11 @@ class Tile {
     public $sprite;
     public $passability; // проходимость тайла
 
-    public function __construct($id = null, $type = null, $name = null, $sprite = null, $passability = null) {
-        $this->id = $id;
-        $this->type = $type;
-        $this->name = $name;
-        $this->sprite = $sprite;
-        $this->passability = $passability;
+    public function __construct($options) {
+        $this->id = $options->id;
+        $this->type = $options->type;
+        $this->name = $options->name;
+        $this->sprite = $options->sprite;
+        $this->passability = $options->passability;
     }
 }

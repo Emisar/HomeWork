@@ -16,7 +16,7 @@ class Game {
     }
 
     public function getCommands() {
-        return $this->input->getCommands();
+        return (object) $this->input->getCommands();
     }
 
     public function executeCommand($name = null, $options = null) {

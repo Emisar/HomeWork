@@ -29,12 +29,15 @@ class Struct {
         foreach ($options->heroes as $value) {
             $this->heroes[] = new Hero($value);
         }
-
         // карта
-        /*$this->map = [
-            [new Tile(1, 'grass', 'трава'), new Tile(1, 'grass', 'трава')],
-            [new Tile(1, 'grass', 'трава'), new Tile(2, 'forest', 'лес')]
-        ];
+        $this->map = [];
+        foreach ($options->map as $line) {
+            $this->map[] = [];
+            foreach ($line as $tile) {
+                $this->map[count($this->map) - 1][] = new Tile($tile);
+            }
+        }
+        /*
         // предметы (НЕ артефакты) на карте
         $this->items = [new Item(1, 'wood', 5)];*/
         $this->artifacts = [

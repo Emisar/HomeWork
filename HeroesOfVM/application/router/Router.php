@@ -12,6 +12,16 @@ class Router {
             (object) array ('id'=>1, 'order' => 1),
             (object) array ('id'=>2, 'order' => 0)
         ];
+        $params->map = [
+            [
+                (object) array('id' => 1, 'type' => 'grass', 'name' => 'трава'),
+                (object) array('id' => 2, 'type' => 'grass', 'name' => 'трава')
+            ],
+            [
+                (object) array('id' => 3, 'type' => 'grass', 'name' => 'трава'),
+                (object) array('id' => 4, 'type' => 'water', 'name' => 'вода')
+            ]
+        ];
         $this->game = new Game($params);
     }
 
@@ -33,6 +43,9 @@ class Router {
         if ($method) {
             // вызвать команду игры
             $commands = $this->game->getCommands();
+            if ($method == $commands->GET_STRUCT) {
+                return $this->good($this->game->getStruct());
+            }
             foreach ($commands as $command) {
                 if ($command === $method) {
                     unset($params['method']);
