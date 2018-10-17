@@ -2,24 +2,41 @@ $(document).ready(async () => {
     const server = new Server();
     const canvas = new Canvas(400, 300);
 
-    canvas.fillRect('red');
+    const img = new Image();
+        img.src = "public/img/heroes.png";
 
-    const result = await server.getStruct();
-    if (result.result) {
-        const struct = result.data;
+    const SIZE = 40;
+    const SPRITE = {
+        grass: { x: 0, y: 0 },
+        water: { x: SIZE, y: 0 }
+    };
+    function printSprite(type, x, y) {
+        if (type && SPRITE[type]) {
+            canvas.sprite(img,
+                SPRITE[type].x, SPRITE[type].y, SIZE, SIZE,
+                x * SIZE, y * SIZE, SIZE, SIZE);
+        }
+    }
+
+    function render(struct) {
+        // очистить экран
+        canvas.fillRect('yellow');
+        // нарисовать карту
         const map = struct.map;
-
-        const spriteWidth = 40;
-        const spriteHeight = 40;
         for (let i = 0; i < map.length; i++) {
             for (let j = 0; j < map[i].length; j++) {
-                const color = (map[i][j].type === "grass") ? 'green' : 'blue';
-                canvas.fillSmallRect(
-                    i * spriteWidth,
-                    j * spriteHeight, spriteWidth, spriteHeight, color);
+                printSprite(map[i][j].type, i, j);
             }
         }
+        // нарисовать строения
+        // нарисовать предметы
+        // нарисовать юниты
+        // нарисовать героев
+    }
 
-        console.log(map);
+    // послать запрос на сервер и отрисовать полученные данные
+    const result = await server.getStruct();
+    if (result.result) {
+        render(result.data);
     }
 });
