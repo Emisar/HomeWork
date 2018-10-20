@@ -13,7 +13,7 @@ class Town extends BaseElement {
     public function __construct($options) {
         parent::__construct($options);
         $this->army = new Army();
-        $this->buildings = [Building(), Building(), Building()];
+        $this->buildings = $options->buildings;
         $this->width  = $options->width;
         $this->height = $options->height;
     }

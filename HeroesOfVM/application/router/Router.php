@@ -8,9 +8,16 @@ class Router {
 
     public function __construct() {
         $params = new stdClass();
+        $params->heroes = [
+            (object) array ('id'=> 1, 'backpack' => [new Artifact((object)array('id' => 1))], 'army' => [new Unit((object)array('id' => 2))]),
+            (object) array ('id' => 2, 'backpack' => [])
+        ];
         $params->gamers = [
-            (object) array ('id'=>1, 'order' => 1),
-            (object) array ('id'=>2, 'order' => 0)
+            (object) array ('id' => 1, 'order' => 1),
+            (object) array ('id' => 2, 'order' => 0)
+        ];
+        $params->towns = [
+            (object) array ('id' => 3, 'army' => [])
         ];
         $params->map = [
             [
