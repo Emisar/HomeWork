@@ -1,35 +1,16 @@
 <?php
 
 require_once '..\application\game\Game.php';
+require_once '..\application\db\DB.php';
 
 class Router {
 
     private $game;
+    private $db;
 
     public function __construct() {
-        $params = new stdClass();
-        $params->heroes = [
-            (object) array ('id'=> 1, 'backpack' => [new Artifact((object)array('id' => 1))], 'army' => [new Unit((object)array('id' => 2))]),
-            (object) array ('id' => 2, 'backpack' => [])
-        ];
-        $params->gamers = [
-            (object) array ('id' => 1, 'order' => 1),
-            (object) array ('id' => 2, 'order' => 0)
-        ];
-        $params->towns = [
-            (object) array ('id' => 3, 'army' => [])
-        ];
-        $params->map = [
-            [
-                (object) array('id' => 1, 'type' => 'grass', 'name' => 'трава'),
-                (object) array('id' => 2, 'type' => 'grass', 'name' => 'трава')
-            ],
-            [
-                (object) array('id' => 3, 'type' => 'grass', 'name' => 'трава'),
-                (object) array('id' => 4, 'type' => 'water', 'name' => 'вода')
-            ]
-        ];
-        $this->game = new Game($params);
+        $this->db = new DB();
+        $this->game = new Game($this->db);
     }
 
     private function bad($text) {
