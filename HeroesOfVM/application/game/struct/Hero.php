@@ -13,16 +13,18 @@ class Hero extends BaseElement {
     public function __construct($options) {
         parent::__construct($options);
         $this->defaultProperties = new Properties($options->properties);
-        $this->backpack = [];
-        $this->inventory = new stdClass();
-        $this->inventory->head = null;
-        $this->inventory->body = null;
-        $this->inventory->shoes = null;
-        $this->inventory->leftHand = null;
-        $this->inventory->rightHand = null;
-        $this->inventory->neck = null; // ожерелье
-        $this->inventory->cloak = null; // плащ
-        $this->inventory->leftFinger = null;
-        $this->inventory->rightFinger = null;
+        $this->backpack = $options->backpack;
+        $this->army = $options->army;
+        $this->inventory = $options->inventory;
+        /*$this->inventory = new stdClass();
+        $this->inventory->head = $options->head;
+        $this->inventory->body = $options->body;
+        $this->inventory->shoes = $options->shoes;
+        $this->inventory->leftHand = $options->leftHand;
+        $this->inventory->rightHand = $options->rightHand;
+        $this->inventory->neck = $options->neck; // ожерелье
+        $this->inventory->cloak = $options->cloak; // плащ
+        $this->inventory->leftFinger = $options->leftFinger;
+        $this->inventory->rightFinger = $options->rightFinger;*/
     }
 }
