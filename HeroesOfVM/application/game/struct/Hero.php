@@ -15,7 +15,12 @@ class Hero extends BaseElement {
         $this->defaultProperties = new Properties($options->properties);
         $this->backpack = $options->backpack;
         $this->army = $options->army;
+<<<<<<< HEAD
         $this->inventory = new stdClass();
+=======
+        $this->inventory = $options->inventory;
+        /*$this->inventory = new stdClass();
+>>>>>>> cbff924b7de175a5a6eb0d5a73496106be3a4519
         $this->inventory->head = $options->head;
         $this->inventory->body = $options->body;
         $this->inventory->shoes = $options->shoes;
@@ -24,6 +29,10 @@ class Hero extends BaseElement {
         $this->inventory->neck = $options->neck; // ожерелье
         $this->inventory->cloak = $options->cloak; // плащ
         $this->inventory->leftFinger = $options->leftFinger;
+<<<<<<< HEAD
         $this->inventory->rightFinger = $options->rightFinger;
+=======
+        $this->inventory->rightFinger = $options->rightFinger;*/
+>>>>>>> cbff924b7de175a5a6eb0d5a73496106be3a4519
     }
 }

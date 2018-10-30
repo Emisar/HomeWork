@@ -41,4 +41,33 @@ class DB {
         }
         return $map;
     }
+<<<<<<< HEAD
+=======
+
+    public function getUser($login, $password) {
+        $query = 'SELECT * FROM users WHERE login="' . $login . '" AND password="' . $password . '"';
+        $result = $this->connection->query($query);
+        while ($row = $result->fetchObject('stdClass')) {
+            return $row;
+        }
+        return null;
+    }
+
+    public function getUserByToken($token) {
+        if ($token){
+            $query = 'SELECT * FROM users WHERE token="' . $token . '"';
+            $result = $this->connection->query($query);
+            while ($row = $result->fetchObject('stdClass')) {
+                return $row;
+            }
+        }
+        return null;
+    }
+
+    public function updateUserToken($id, $token) {
+        $query = 'UPDATE users SET token="' . $token . '" WHERE id=' . $id;
+        $sth = $this->connection->query($query);
+        return $sth->execute();
+    }
+>>>>>>> cbff924b7de175a5a6eb0d5a73496106be3a4519
 }
