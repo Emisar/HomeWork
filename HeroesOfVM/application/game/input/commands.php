@@ -7,6 +7,7 @@ const COMMAND = [
     GET_STRUCT => 'getStruct', // получить данные с сервера
     END_TURN => 'endTurn', // конец хода игрока
     ADD_ARTIFACT_TO_BACKPACK => 'addArtifactToBackpack',
-    PASS_UNIT => 'passUnit'
+    PASS_UNIT => 'passUnit',
+
     //...
 ];

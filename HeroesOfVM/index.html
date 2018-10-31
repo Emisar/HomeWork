@@ -3,15 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Герои Вычислительной Техники и Механики</title>
-    <script src="public/js/jquery-3.3.1.min.js"></script>
-    <script src="public/js/User.js"></script>
-    <script src="public/js/Server.js"></script>
-    <script src="public/js/Canvas.js"></script>
+    <script src="public/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="public/js/server/Server.js"></script>
+    <script src="public/js/user/User.js"></script>
+    <script src="public/js/game/Canvas.js"></script>
+    <script src="public/js/game/Game.js"></script>
     <script src="public/js/main.js"></script>
 </head>
 <body>
     <h1>Герои Вычислительной Техники и Механики</h1>
-    <div>
+    <div id="user">
+        <span>авторизация</span><br>
+        <input id="login" type="text" placeholder="login" /><br>
+        <input id="password" type="password" placeholder="password" /><br>
+        <input id="auth" type="button" value="Войти" />
+    </div>
+    <div id="offer">выбор игры</div>
+    <div id="game" align="center">
+        <input class="logout" type="button" value="Выйти" /><br>
         <canvas id="game-field"></canvas>
     </div>
 </body>

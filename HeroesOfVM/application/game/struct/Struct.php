@@ -8,6 +8,7 @@ require_once 'Artifact.php';
 require_once 'MapBuilding.php';
 require_once 'Town.php';
 require_once 'Hero.php';
+require_once 'Properties.php';
 
 class Struct {
     public $gamers; // список игроков в игре

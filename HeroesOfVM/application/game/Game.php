@@ -9,27 +9,33 @@ class Game {
     private $logic;
     private $input;
 
-    public function __construct($db) {
+    private $db;
 
-/*
-      $params->heroes = [
-            (object) array ('id'=> 1, 'backpack' => [new Artifact((object)array('id' => 1))], 'army' => [new Unit((object)array('id' => 2))]),
-            (object) array ('id' => 2, 'backpack' => [])
-        ];
-        $params->gamers = [
-            (object) array ('id' => 1, 'order' => 1),
-            (object) array ('id' => 2, 'order' => 0)
-        ];
-        $params->towns = [
-            (object) array ('id' => 3, 'army' => [])
-        ];*/
+    public function __construct($db) {
+        $this->db = $db;
+        /*
+              $params->heroes = [
+                    (object) array ('id'=> 1, 'backpack' => [new Artifact((object)array('id' => 1))], 'army' => [new Unit((object)array('id' => 2))]),
+                    (object) array ('id' => 2, 'backpack' => [])
+                ];
+                $params->gamers = [
+                    (object) array ('id' => 1, 'order' => 1),
+                    (object) array ('id' => 2, 'order' => 0)
+                ];
+                $params->towns = [
+                    (object) array ('id' => 3, 'army' => [])
+                ];*/
 
         $params = new stdClass();
-        $params->map = $db->getMap();
+        //$params->map = $this->db->getMap();
 
         $this->struct = new Struct($params);
         $this->logic  = new Logic($this->struct);
         $this->input  = new Input($this->logic);
+    }
+
+    public function getGame($userId) {
+        //...
     }
 
     public function getCommands() {

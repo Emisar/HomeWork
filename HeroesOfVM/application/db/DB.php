@@ -19,10 +19,7 @@ class DB {
 
     private function getMapSize() {
         $query = 'SELECT * FROM map WHERE id=1';
-        $result = $this->connection->query($query);
-        while($row = $result->fetchObject('stdClass')) {
-            return $row;
-        }
+        return $this->connection->query($query)->fetchObject('stdClass');
     }
 
     public function getMap() {
@@ -41,16 +38,10 @@ class DB {
         }
         return $map;
     }
-<<<<<<< HEAD
-=======
 
     public function getUser($login, $password) {
         $query = 'SELECT * FROM users WHERE login="' . $login . '" AND password="' . $password . '"';
-        $result = $this->connection->query($query);
-        while ($row = $result->fetchObject('stdClass')) {
-            return $row;
-        }
-        return null;
+        return $this->connection->query($query)->fetchObject('stdClass');
     }
 
     public function getUserByToken($token) {
@@ -69,5 +60,4 @@ class DB {
         $sth = $this->connection->query($query);
         return $sth->execute();
     }
->>>>>>> cbff924b7de175a5a6eb0d5a73496106be3a4519
 }
