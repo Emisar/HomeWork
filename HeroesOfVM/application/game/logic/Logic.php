@@ -2,6 +2,7 @@
 
 class Logic {
 
+
     private $MOVE_POINTS_LINE = 100;
     private $MOVE_POINTS_DIAG = 141;
 
@@ -10,26 +11,134 @@ class Logic {
     public function __construct($struct) {
         $this->struct = $struct;
     }
-
+    // дать элемент по id
     private function getElemById($arrName, $id) {
-        if (isset($this->struct->{$arrName}) &&  $id) {
+        if (isset($this->struct->{$arrName}) && $id) {
             $arr = $this->struct->{$arrName};
-            $key = array_search($id, array_column($arr, 'id'));
-            if (is_numeric($key)) {
-                return $arr[$key];
+            foreach ($arr as $elem) {
+                if ($elem && $elem->id == $id) {
+                    return $elem;
+                }
+            }
+        }
+        return null;
+    }
+    // дать key элемента (1 уровневый поиск)
+    private function getKeyElem($arrName, $whereSearch, $toSearch) {
+        if (isset($this->struct->{$arrName})) {
+            $arr = $this->struct->{$arrName};
+            for ($i = 0; $i < count($arr); $i++) {
+                if ($arr[$i]->{$whereSearch} == $toSearch) {
+                    return $i;
+                }
+            }
+        }
+        return null;
+    }
+    // дать key элемента внутри объекта (2-х уровневый поиск)
+    private function getKeyElemInObj($obj, $arrName, $whereSearch, $toSearch) {
+        if (isset($obj->{$arrName}) &&  $toSearch) {
+            $arr = $obj->{$arrName};
+            for ($i = 0; $i < count($arr); $i++) {
+                if ($arr[$i]->{$whereSearch} === $toSearch) {
+                    return $i;
+                }
             }
         }
         return null;
     }
 
-    private function getGamer($id) { return $this->getElemById('gamers', $id); }
-    private function getHero ($id) { return $this->getElemById('heroes', $id); }
+    private function getGamer      ($id) { return $this->getElemById('gamers',    $id); }
+    private function getHero       ($id) { return $this->getElemById('heroes',    $id); }
+    private function getMapBuilding($id) { return $this->getElemById('buildings', $id); }
+    private function getMapArtifact($id) { return $this->getElemById('artifacts', $id); }
+    private function getMapItem    ($id) { return $this->getElemById('items',     $id); }
 
-    /*
-    private function getArray($id, $arrayName) {
-        return $this->getElemById(''.$arrayName.'', $id);
+    // вернуть юнита из армии
+    private function getUnit($from, $idUnit) {
+        if ($from && $idUnit) {
+            $army = $from->army;
+            for ($i = 0; $i < count($army); $i++) {
+                if ($army[$i]->id === $idUnit) {
+                    return clone($army[$i]);
+                }
+            }
+        }
+        return null;
+    }
+    // удалить юнита из армии
+    public function remUnit($from, $idUnit) {
+        if ($from && $idUnit) {
+            $army = $from->army;
+            for ($i = 0; $i < count($army); $i++) {
+                if ($army[$i]->id === $idUnit) {
+                    $army[$i] = null;
+                    $from->army = $army;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    // вернуть предмет из рюкзака героя var: hero, idItem
+    private function getArtifact($hero, $idArtifact) {
+        if ($hero && $idArtifact) {
+            $backpack = $hero->backpack;
+            for ($i = 0; $i < count($backpack); $i++) {
+                if ($backpack[$i]->id === $idArtifact) {
+                    return clone($backpack[$i]);
+                }
+            }
+        }
+        return null;
+    }
+    // выкинуть предмет из сумки
+    public function remArtifact($hero, $idArtifact) {
+        if ($hero && $idArtifact) {
+            $backpack = $hero->backpack;
+            for ($i = 0; $i < count($backpack); $i++) {
+                if ($backpack[$i]->id === $idArtifact) {
+                    $backpack[$i] = null;
+                    $hero->backpack = $backpack;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    // изменить характеристики героя
+    public function changeProperties($hero, $artifact, $sign) {
+        if ($hero && $artifact) {
+            foreach ($hero->properties as $keyHero => $valueHero) {
+                foreach ($artifact->properties as $keyArt => $valueArt) {
+                    if ($hero->properties->{$keyHero} && $artifact->properties->{$keyArt} && $hero->properties->{$keyHero} == $artifact->properties->{$keyArt}) {
+                        $hero->properties->{$keyHero} = $valueHero + $valueArt * $sign;
+                    }
+                }
+            }
+            return $hero;
+        }
+        return null;
+    }
+    // можно ли ходить
+    public function isPassable($x, $y)
+    {
+        $map = $this->struct->map;
+        if ($map[$x][$y]->passability) {
+            return true;
+        }
+        return false;
+    }
+    // задать владельца элемента
+    public function setElemOwner($gamerOwner, $elemChild) {
+        if ($gamerOwner && $elemChild) {
+            $elemChild->owner = $gamerOwner->owner;
+            return true;
+        }
+        return false;
     }
 
+    /*
     // вернуть предмет из рюкзака героя var: hero, idItem
     private function getItemFromBackpack($hero, $idItem) {
         if ($hero && $idItem) {
@@ -38,26 +147,6 @@ class Logic {
             return $backpack[$key];
         }
         return null;
-    }
-
-    // вернуть юнита из армии героя
-    private function getUnitFromArmy($array, $idUnit) {
-        if ($array && $idUnit) {
-            $army = $array->army;
-            $key = array_search($idUnit, array_column($army, 'id'));
-            return $army[$key];
-        }
-        return null;
-    }
-
-    // добавить юнита в армию
-    private function addUnitToArmy($idArray, $unit, $arrayName) {
-        $array = $this->getArray($idArray, $arrayName);
-        if ($array && $unit) {
-            $array->army[] = $unit;
-            return true;
-        }
-        return false;
     }
 
     // положить предмет в сумку
@@ -69,72 +158,36 @@ class Logic {
         }
         return false;
     }
-
-    // удалить юнита из армии
-    public function remUnitFromArmy($idArray, $idUnit, $arrayName) {
-        $array = $this->getArray($idArray, $arrayName);
-        if ($array && $idUnit) {
-            $key = array_search($idUnit, array_column($array->army, 'id'));
-            unset($array->army[$key]);
-            return true;
-        }
-        return false;
-    }
-
-    // выкинуть предмет из сумки
-    public function remArtifactFromBackpack($idHero, $idArtifact) {
-        $hero = $this->getHero($idHero);
-        if ($hero && $idArtifact) {
-            $key = array_search($idArtifact, array_column($hero->backpack, 'id'));
-            unset($hero->backpack[$key]);
-            return true;
-        }
-        return false;
-    }
-
-
-    // задать владельца элемента
-    public function setElementOwner($elemOwner, $elemChild) {
-        if (($elemChild instanceof BaseElement) && ($elemOwner instanceof BaseElement)) {
-            $elemOwner->owner = $elemChild->id;
-            return true;
-        }
-        return false;
-    }
     */
 
     // закончить ход игрока
     public function endTurn($options) {
-        $id = $options->id;
+        $id = intval($options->id);
         // получить текущего игрока
         $curGamer = $this->getGamer($id);
         if ($curGamer) {
-            $order = $curGamer->order; // порядковый номер текущего
+            $order = intval($curGamer->order); // порядковый номер текущего
             // потушить всех игроков
             $gamers = $this->struct->gamers;
             foreach($gamers as $gamer) {
-                $gamer->isActive = false;
+                $gamer->isActive = 0;
             }
             // выбрать следующего активного игрока
             $order = ($order < count($gamers) - 1) ? $order + 1 : 0;
-            $key = array_search($order, array_column($gamers, 'order'));
-            $gamers[$key]->isActive = true;
+            $key = $this->getKeyElem('gamers','order', $order);
+            $gamers[$key]->isActive = 1;
             return true;
         }
         return false;
     }
-
-    // Про игру
-    // прекратить игру за игрока
-    //...
-
-    // проиграть игрока
-    public function loseGamer($id) {
+    // проиграть игрока (ПОЧИНИТЬ)
+    public function loseGamer($options) {
+        $id = intval($options->id);
         $gamer = $this->getGamer($id);
         if ($gamer) {
             // завершить ход за этого игрока
             if ($gamer->isActive) {
-                $this->endTurn($gamer->id);
+                $this->endTurn($id);
             }
             // потушить строения
             $buildings = $this->struct->buildings;
@@ -145,9 +198,9 @@ class Logic {
             }
             // удалить игрока
             $gamers = $this->struct->gamers;
-            $key = array_search($id, array_column($gamers, 'id'));
+            $key = $this->getKeyElem('gamers', 'id', $id);
             unset($gamers[$key]);
-            $this->struct->gamers = $gamers; // потому что НЕ JS!!!
+            $this->struct->gamers = $gamers;
             // пересчитать очередность хода
             $order = $gamer->order;
             foreach ($gamers as $temp) {
@@ -159,204 +212,405 @@ class Logic {
         }
         return false;
     }
-
-    // завершить игру (целиком)
-    //...
-
-    // Про героев
-    // подвинуть героя игрока (на 1 клетку)
-    // !!!!!!!!!!!!!!!
-    // все переписать
-    // !!!!!!!!!!!!!!!
-    public function moveHero($id, $direction) {
+    // передвинуть героя (ДОДЕЛАТЬ)
+    /*public function moveHero($id, $direction) {
+        $map = $this->struct->map;
         $hero = $this->getHero($id);
+        print_r('qqqs');
         if ($hero && $direction) {
             switch ($direction) {
                 case 'UP':
-                    $hero->y--;
-                    $hero->properties->movePoints -= $this->MOVE_POINTS_LINE;
+                    if ($hero->y == 0) {
+                        $hero->y = count($map[]);
+                    } else {
+                        $hero->y--;
+                    }
+                    if ($this->isPassable($hero->x, $hero->y)) {
+                        $hero->properties->movePoints -= $this->MOVE_POINTS_LINE;
+                    } else {
+                        if ($hero->y == count($map[])) {
+                            $hero->y = 0;
+                        } else {
+                            $hero->y++;
+                        }
+                        return false;
+                    }
                     break;
                 case 'DOWN':
-                    $hero->y++;
-                    $hero->properties->movePoints -= $this->MOVE_POINTS_LINE;
+                    if ($hero->y == count($map[])) {
+                        $hero->y = 0;
+                    } else {
+                        $hero->y++;
+                    }
+                    if ($this->isPassable($hero->x, $hero->y)) {
+                        $hero->properties->movePoints -= $this->MOVE_POINTS_LINE;
+                    } else {
+                        if ($hero->y == 0) {
+                            $hero->y = count($map[]);
+                        } else {
+                            $hero->y--;
+                        }
+                        return false;
+                    }
                     break;
                 case 'RIGHT':
-                    $hero->x++;
-                    $hero->properties->movePoints -= $this->MOVE_POINTS_LINE;
+                    if ($hero->x == count($map)) {
+                        $hero->x = 0;
+                    } else {
+                        $hero->x++;
+                    }
+                    if ($this->isPassable($hero->x, $hero->y)) {
+                        $hero->properties->movePoints -= $this->MOVE_POINTS_LINE;
+                    } else {
+                        if ($hero->x == 0) {
+                            $hero->x = count($map);
+                        } else {
+                            $hero->x--;
+                        }
+                        return false;
+                    }
                     break;
                 case 'LEFT':
-                    $hero->x--;
-                    $hero->properties->movePoints -= $this->MOVE_POINTS_LINE;
+                    if ($hero->x == 0) {
+                        $hero->x = count($map);
+                    } else {
+                        $hero->x--;
+                    }
+                    if ($this->isPassable($hero->x, $hero->y)) {
+                        $hero->properties->movePoints -= $this->MOVE_POINTS_LINE;
+                    } else {
+                        if ($hero->x == count($map)) {
+                            $hero->x = 0;
+                        } else {
+                            $hero->x++;
+                        }
+                        return false;
+                    }
                     break;
                 case 'UP-RIGHT':
-                    $hero->y--;
-                    $hero->x++;
-                    $hero->properties->movePoints -= $this->MOVE_POINTS_DIAG;
+                    if ($hero->y == 0) {
+                        $hero->y = count($map[]);
+                    } else {
+                        $hero->y--;
+                    }
+                    if ($hero->x == count($map)) {
+                        $hero->x = 0;
+                    } else {
+                        $hero->x++;
+                    }
+                    if ($this->isPassable($hero->x, $hero->y)) {
+                        $hero->properties->movePoints -= $this->MOVE_POINTS_DIAG;
+                    } else {
+                        if ($hero->y == count($map[])) {
+                            $hero->y = 0;
+                        } else {
+                            $hero->y++;
+                        }
+                        if ($hero->x == 0) {
+                            $hero->x = count($map);
+                        } else {
+                            $hero->x--;
+                        }
+                        return false;
+                    }
                     break;
                 case 'UP-LEFT':
-                    $hero->y--;
-                    $hero->x--;
-                    $hero->properties->movePoints -= $this->MOVE_POINTS_DIAG;
+                    if ($hero->y == 0) {
+                        $hero->y = count($map[]);
+                    } else {
+                        $hero->y--;
+                    }
+                    if ($hero->x == 0) {
+                        $hero->x = count($map);
+                    } else {
+                        $hero->x--;
+                    }
+                    if ($this->isPassable($hero->x, $hero->y)) {
+                        $hero->properties->movePoints -= $this->MOVE_POINTS_DIAG;
+                    } else {
+                        if ($hero->y == count($map[])) {
+                            $hero->y = 0;
+                        } else {
+                            $hero->y++;
+                        }
+                        if ($hero->x == count($map)) {
+                            $hero->x = 0;
+                        } else {
+                            $hero->x++;
+                        }
+                        return false;
+                    }
                     break;
                 case 'DOWN-RIGHT':
-                    $hero->y++;
-                    $hero->x++;
-                    $hero->properties->movePoints -= $this->MOVE_POINTS_DIAG;
+                    if ($hero->y == count($map[])) {
+                        $hero->y = 0;
+                    } else {
+                        $hero->y++;
+                    }
+                    if ($hero->x == count($map)) {
+                        $hero->x = 0;
+                    } else {
+                        $hero->x++;
+                    }
+                    if ($this->isPassable($hero->x, $hero->y)) {
+                        $hero->properties->movePoints -= $this->MOVE_POINTS_DIAG;
+                    } else {
+                        if ($hero->y == 0) {
+                            $hero->y = count($map[]);
+                        } else {
+                            $hero->y--;
+                        }
+                        if ($hero->x == 0) {
+                            $hero->x = count($map);
+                        } else {
+                            $hero->x--;
+                        }
+                        return false;
+                    }
                     break;
                 case 'DOWN-LEFT':
-                    $hero->y++;
-                    $hero->x--;
-                    $hero->properties->movePoints -= $this->MOVE_POINTS_DIAG;
+                    if ($hero->y == count($map[])) {
+                        $hero->y = 0;
+                    } else {
+                        $hero->y++;
+                    }
+                    if ($hero->x == 0) {
+                        $hero->x = count($map);
+                    } else {
+                        $hero->x--;
+                    }
+                    if ($this->isPassable($hero->x, $hero->y)) {
+                        $hero->properties->movePoints -= $this->MOVE_POINTS_DIAG;
+                    } else {
+                        if ($hero->y == 0) {
+                            $hero->y = count($map[]);
+                        } else {
+                            $hero->y--;
+                        }
+                        if ($hero->x == count($map)) {
+                            $hero->x = 0;
+                        } else {
+                            $hero->x++;
+                        }
+                        return false;
+                    }
                     break;
             }
             //...
             return true;
         }
         return false;
-    }
-    // подвинуть героя игрока (на много клеток) - пока не делаем
-
+    }*/
     // передать предметы между героями
-    public function passItemHeroes ($idGive, $idTake, $idItem) {
+    public function passArtifact($options) {
+        $idGive = intval($options->idGive);
+        $idTake = intval($options->idTake);
+        $idArtifact = intval($options->idArtifact);
+        $position = intval($options->position) - 1;
         $heroGive = $this->getHero($idGive);
         $heroTake = $this->getHero($idTake);
         if ($heroGive && $heroTake) {
-            $item = $this->getItemFromBackpack($heroGive, $idItem);
-            if ($item) {
-                // Дать предмет принимающему герою
-                $heroTake->backpack[] = $item;
-                // Удалить предмет у дающего героя
-                $this->remArtifactFromBackpack($idGive, $idItem);
+            $artifact = $this->getArtifact($heroGive, $idArtifact);
+            if ($artifact) { // если слот пустой
+                if (is_null($heroTake->backpack[$position])) {
+                    $heroTake->backpack[$position] = $artifact;
+                    $this->remArtifact($heroGive, $idArtifact);
+                } else { // если слот занят, меняем местами
+                    $takeArtifact = $heroTake->backpack[$position];
+                    $key = $this->getKeyElemInObj($heroGive, 'backpack', 'id', $idArtifact);
+                    $heroGive->backpack[$key] = $takeArtifact;
+                    $heroTake->backpack[$position] = $artifact;
+                }
                 return true;
             }
         }
         return false;
     }
-
-
     // передача юнита                                                             (доделать количество)
-    public function passUnit ($idGive, $idTake, $idUnit, $typeGive, $typeTake) {
-        $give = $this->getArray($idGive, $typeGive);
-        $take = $this->getArray($idTake, $typeTake);
+    public function passUnit($options) {
+        $idGive = intval($options->idGive);
+        $idTake = intval($options->idTake);
+        $idUnit = intval($options->idUnit);
+        $amount = intval($options->amount);
+        $typeGive = $options->typeGive;
+        $typeTake = $options->typeTake;
+        $position = intval($options->position) - 1;
+        $give = $this->getElemById($typeGive, $idGive);
+        $take = $this->getElemById($typeTake, $idTake);
         if ($give && $take) {
-            $unit = $this->getUnitFromArmy($give, $idUnit);
-            if ($unit) {
-                $take->army[] = $unit;
-                $this->remUnitFromArmy($idGive, $idUnit, $typeGive);
+            $key = $this->getKeyElemInObj($give, 'army', 'id', $idUnit);
+            $giveUnit = $this->getUnit($give, $idUnit);
+            if ($giveUnit) {
+                if (is_null($take->army[$position])) { // если слот пустой
+                    $take->army[$position] = $giveUnit;
+                    $take->army[$position]->amount = $amount;
+                    $give->army[$key]->amount = $give->army[$key]->amount - $amount;
+                    if ($give->army[$key]->amount == 0) {
+                        $this->remUnit($give, $idUnit);
+                    }
+                } else { // если слот занят
+                    if ($give->army[$key]->type == $take->army[$position]->type) { // если передаваемый юнит такой же как и принимающий
+                        $take->army[$position]->amount = $take->army[$position]->amount + $amount;
+                        $give->army[$key]->amount = $give->army[$key]->amount - $amount;
+                        if ($give->army[$key]->amount == 0) {
+                            $this->remUnit($give, $idUnit);
+                        }
+                    } else {
+                        $copyTakeUnit = clone($take->army[$position]);
+                        $give->army[$key] = $copyTakeUnit;
+                        $take->army[$position] = $giveUnit;
+                    }
+                }
                 return true;
             }
         }
         return false;
     }
-
     // захватить строение
-    public function captureBuilding($gamerId, $buildingId) {
-        $gamer = $this->getGamer($gamerId);
-        $building = $this->getBuilding($buildingId);
-        if ($gamer && $building) {
-            return $this->setElementOwner($gamer, $building);
-        }
-        return false;
-    }
-
-    // подобрать что-нибудь (ресурсы или артефакты)
-    public function pickupItem($id, $item){
-        $gamers = $this->struct->gamers;
-        $key = array_search($id, array_column($gamers, 'id'));
-        $gamer = $gamers[$key];
-        if ($item instanceof Item){
-            $gamer->resouces->gold += $item->resouces->gold;
-            $gamer->resouces->wood += $item->resouces->wood;
-            $gamer->resouces->ore  += $item->resouces->ore;
-        } else if ($item instanceof Artifact){
-            //...
-        }
-        //removeItemFromMap();
-    }
-
-    // умереть героя
-    public function dieHero ($id) {
-        $hero = $this->getHero($id);
-        if ($hero) {
-            $key = array_search($id, array_column($this->struct->heroes, 'id'));
-            unset($this->struct->heroes[$key]);
+    public function captureBuilding($options) {
+        $idHero = intval($options->idHero);
+        $idBuilding = intval($options->idBuilding);
+        $hero = $this->getHero($idHero);
+        $building = $this->getMapBuilding($idBuilding);
+        if ($hero && $building) {
+            $this->setElemOwner($hero, $building);
             return true;
         }
         return false;
     }
-
-    // выгнать героя
-    public function expelHero ($id) {
-        return $this->dieHero($id);
+    // подобрать ресуры
+    public function pickupItem($options) {
+        $idHero = intval($options->idHero);
+        $idItem = intval($options->idItem);
+        $hero = $this->getHero($idHero);
+        $item = $this->getMapItem($idItem);
+        if ($hero && $item) {
+            $gamer = $this->getGamer($hero->owner);
+            $gamer->resources->gold += $item->resources->gold;
+            $gamer->resources->wood += $item->resources->wood;
+            $gamer->resources->ore += $item->resources->ore;
+            //removeItemFromMap();
+            return true;
+        }
+        return false;
     }
-
-
-    // снять/надеть предмет
-    public function equipArtifact($artifactId, $heroId, $action) {
-        if ($artifactId && $heroId && $action) {
-            // инициализируем массивы
-            $artifacts = $this->struct->artifacts;
-            $heroes = $this->struct->heroes;
-            // находим ключи
-            $heroKey = array_search($heroId, array_column($heroes, 'id'));
-            $artifactKey = array_search($artifactId, array_column($artifacts, 'id'));
-            // инициализируем объекты
-            $hero = $heroes[$heroKey];
-            $artifact = $artifacts[$artifactKey];
-            // надеваем артефакт
-            if ($action) {
-                if (is_null($hero->inventory->{$artifact->type})) {     // если слот свободен
-                    $hero->inventory->{$artifact->type} = $artifactId;
-                    unset($artifactId);
-                } else {        // если слот занят, то меняем предметы местами
-                    $equipedArtifactId = $hero->inventory->{$artifact->type};
-                    array_push($hero->backpack, $equipedArtifactId);
-                    $hero->inventory->{$artifact->type} = $artifactId;
-                    unset($artifactId);
+    // подобрать артефакт
+    public function pickupArtifact($options) {
+        $idHero = intval($options->idHero);
+        $idArtifact = intval($options->idArtifact);
+        $hero = $this->getHero($idHero);
+        $artifact = $this->getMapArtifact($idArtifact);
+        if ($hero && $artifact) {
+            for ($i = 0; $i < count($hero->backpack); $i++) {
+                if (is_null($hero->backpack[$i])) {
+                    $hero->backpack[$i] = $artifact;
+                    return true;
                 }
-            } else {    // снимаем артефакт
-                array_push($hero->backpack, $artifactId);
-                $hero->inventory->{$artifact->type} = null;
             }
+            $hero->backack[] = $artifact;
+            //removeArtifactMap();
+            return true;
+        }
+        return false;
+    }
+    // умереть героя
+    public function dieHero($options) {
+        $idHero = intval($options->idHero);
+        if ($idHero) {
+            $heroes = $this->struct->heroes;
+            for ($i = 0; $i < count($heroes); $i++) {
+                if ($heroes[$i]->id === $idHero) {
+                    unset($heroes[$i]);
+                    $this->struct->heroes = $heroes;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    // надеть предмет
+    public function equipArtifact($options) {
+        $idArtifact = intval($options->idArtifact);
+        $idHero = intval($options->idHero);
+        if ($idArtifact && $idHero) {
+            // инициализируем объекты
+            $hero = $this->getHero($idHero);
+            $artifact = $this->getArtifact($hero, $idArtifact);
+            $equipedArtifact = clone($hero->inventory->{$artifact->type});
+            // надеваем артефакт
+            if (is_null($hero->inventory->{$artifact->type})) {     // если слот свободен
+                $hero->inventory->{$artifact->type} = $artifact;
+                $this->remArtifact($hero, $idArtifact);
+            } else {        // если слот занят, то меняем предметы местами
+                $key = $this->getKeyElemInObj($hero, 'backpack', 'id', $idArtifact);
+                $hero->inventory->{$artifact->type} = $artifact;
+                $this->remArtifact($hero, $idArtifact);
+                $hero->backpack[$key] = $equipedArtifact;
+            }
+
+            $this->changeProperties($hero, $equipedArtifact, -1);
+            $this->changeProperties($hero, $artifact, 1);
             return true;
         }
         return false;
     }
     // изменить армию героя
-    // зайти в город
-
-    // Про города
-
-    public function buy($id, $value) {
-        if ($id && $value) {
-            $obj = $this->getArray($id, $value);
-            return $obj;
-        }
-    }
-
-    // купить героя, юнита, здание (доделать количество)
-    public function buyObj($idObj, $idGamer, $idTown, $array, $idHero)
-    {
-        if ($idObj && $idGamer && $idTown && $array) {
-            $obj = $this->getArray($idObj, $array);
-            $gamer = $this->getArray($idGamer, 'gamers');
-            $town = $this->getArray($idTown, 'towns');
-            if ($array == 'heroes') {
-                $obj->owner = $idGamer;
-                $obj->x = $town->x;
-                $obj->y = $town->y;
+    public function changeArmy($options) {
+        $idHero = intval($options->idHero);
+        $idUnit = intval($options->idUnit);
+        $amount = intval($options->amount);
+        $position = intval($options->position) - 1;
+        $hero = $this->getHero($idHero);
+        $unit = $this->getUnit($hero, $idUnit);
+        $key = $this->getKeyElemInObj($hero, 'army', 'id', $idUnit);
+        if ($hero && $unit) {
+            if (is_null($hero->army[$position])) {
+                $hero->army[$position] = $unit;
+                $hero->army[$position]->amount = $amount;
+                $hero->army[$key]->amount = $hero->army[$key]->amount - $amount;
+                if ($hero->army[$key]->amount == 0) {
+                    $this->remUnit($hero, $idUnit);
+                }
+            } else if ($hero->army[$key]->type == $hero->army[$position]->type) {
+                $hero->army[$position]->amount = $hero->army[$position]->amount + $amount;
+                $hero->army[$key]->amount = $hero->army[$key]->amount - $amount;
+                if ($hero->army[$key]->amount == 0) {
+                    $this->remUnit($hero, $idUnit);
+                }
+            } else {
+                $hero->army[$key] = clone($hero->army[$position]);
+                $hero->army[$position] = $unit;
             }
-            if ($array == 'units' && $idHero) {
-                $hero = $this->getArray($idHero, 'heroes');
-                $hero->army[] = $obj;
-            }
-            if ($array == 'buildings' && !$town[$obj]) {
-                $town->buildings[] = $obj;
-            }
-            $gamer->resources->gold = $gamer->resources->gold - $obj->cost;
             return true;
         }
         return false;
+    }
+    // купить героя, юнита, здание (доделать количество)
+    public function buyObj($options) {
+
+        $idHero = intval($options->idHero);
+        $idGamer = intval($options->idGamer);
+        $idTown = intval($options->idTown);
+        $amount = intval($options->amount);
+        $typeObj = $options->idObj;
+        $type = $options->array;
+        $name = $options->name;
+
+        if ($typeObj) {
+            if ($idGamer && $idHero && $idTown && $type == 'unit') {
+                $ListOfUnits = new ListOfUnits($amount);
+                $buyUnit = $ListOfUnits->{$name};
+                print_r($buyUnit);
+            }
+            /*if ($idGamer && $idTown && $array == 'hero') {
+
+            }
+            if ($idGamer && $idTown && $array == 'build') {
+
+            }*/
+        }
+        return false;
+
     }
 
     // Про сражения
