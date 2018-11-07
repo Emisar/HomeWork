@@ -44,10 +44,12 @@ class Game {
                 // заполнить карту
                 $map = $this->db->getMap($game->map_id);
                 $this->struct->fillMap($map);
+                // заполнить героев
+                $heroes = $this->db->getHeroes($gameId);
+                $this->struct->fillHeroes($heroes);
                 // заполнить предметы
                 // заполнить строения
                 // заполнить города
-                // заполнить героев
                 return true;
             }
         }
@@ -61,10 +63,11 @@ class Game {
             if ($game) {
                 // записать игроков
                 $this->db->updateGamers($gameId, $this->struct->gamers);
+                // записать героев
+                $this->db->updateHeroes($gameId, $this->struct->heroes);
                 // записать предметы
                 // записать строения
                 // записать города
-                // записать героев
                 return true;
             }
         }

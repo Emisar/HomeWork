@@ -10,23 +10,29 @@
     <script src="public/js/game/Canvas.js"></script>
     <script src="public/js/game/Game.js"></script>
     <script src="public/js/main.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" href="public/img/indexImages/favicon.png" type="images/png">
 </head>
 <body>
-    <h1>Герои Вычислительной Техники и Механики</h1>
-    <div id="user">
-        <span>авторизация</span><br>
+    <header>
+        <div class="logo">   
+        </div>
+    </header>
+    <div id="user" align="center">
+        <span>Авторизация</span><br>
         <input id="login" type="text" placeholder="login" /><br>
         <input id="password" type="password" placeholder="password" /><br>
         <input id="auth" type="button" value="Войти" />
     </div>
-    <div id="offer">
-        выбор игры<br>
+    <div id="offer" align="center">
+         <span>Выбор игры</span><br>
         <input id="continueGame" type="button" value="Продолжить игру" /><br>
         <input id="createGame" type="button" value="Создать игру" /><br>
         <input class="logout" type="button" value="Выйти" /><br>
     </div>
     <div id="game" align="center">
-        <input id="endTurn" type="button" value="Закончить ход" /><br>
+        <input id="endTurn" type="button" value="Закончить ход" />
+        <input id="moveHero" type="button" value="Шагнуть вправо" /><br>
         <canvas id="game-field"></canvas><br>
         <input class="logout" type="button" value="Выйти" />
     </div>

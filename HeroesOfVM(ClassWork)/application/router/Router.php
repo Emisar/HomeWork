@@ -14,8 +14,8 @@ class Router {
 
     public function __construct() {
         $this->db = new DB();
-        $this->game = new Game($this->db);
-        $this->user = new User($this->db);
+        $this->game  = new Game ($this->db);
+        $this->user  = new User ($this->db);
         $this->offer = new Offer($this->db);
     }
 

@@ -212,7 +212,25 @@ class Logic {
         }
         return false;
     }
+
     // передвинуть героя (ДОДЕЛАТЬ)
+    public function moveHero($options) {
+        $id = intval($options->heroId);
+        $direction = $options->direction;
+        if ($id && $direction) {
+            $hero = $this->getHero(intval($id));
+            if ($hero) {
+                switch ($direction) {
+                    case 'RIGHT':
+                        $hero->x++;
+                        return true;
+                        break;
+                }
+            }
+        }
+        return false;
+    }
+
     /*public function moveHero($id, $direction) {
         $map = $this->struct->map;
         $hero = $this->getHero($id);

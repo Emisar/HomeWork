@@ -9,8 +9,12 @@ function Game(options) {
     // картинка с травой
     const imgGrass = new Image();
     imgGrass.src = "public/img/sprites/grass_32x32.png";
+    // картинка с водой
     const imgWater = new Image();
     imgWater.src = "public/img/sprites/water_32x32.png";
+    // картинка с героями
+    const imgHero = new Image();
+    imgHero.src = "public/img/sprites/hero_45x60.png"
 
     const SIZE = 32;
     const SPRITES = {
@@ -28,6 +32,13 @@ function Game(options) {
                 { x: SIZE, y: 0 },
                 { x: SIZE, y: SIZE }
             ]
+        },
+        hero: {
+            img: imgHero,
+            sprite: [
+                { x: 0, y: 0 },
+                //...
+            ]
         }
     };
 
@@ -42,6 +53,15 @@ function Game(options) {
         }
     }
 
+    function printHeroSprite(hero) {
+        if (hero && hero.type) {
+            const sprite = SPRITES.hero;
+            canvas.sprite(sprite.img,
+                sprite.sprite[hero.type - 0].x, sprite.sprite[hero.type - 0].y, 45, 60,
+                hero.x * SIZE, hero.y * SIZE - (60 - SIZE), 45, 60);
+        }
+    }
+
     function render(struct) {
         canvas.fillRect('yellow');
         // нарисовать карту
@@ -53,6 +73,8 @@ function Game(options) {
         }
         // нарисовать всё остальное
         //...
+        // нарисовать героев
+        struct.heroes.forEach(hero => printHeroSprite(hero));
     }
 
     this.show = () => $(DOM_ID).show();
@@ -81,6 +103,12 @@ function Game(options) {
     function init() {
         $('#endTurn').on('click', async () => {
             const result = await server.endTurn();
+            if (result.result) {
+                render(result.data);
+            }
+        });
+        $('#moveHero').on('click', async () => {
+            const result = await server.moveHero(1, 'RIGHT');
             if (result.result) {
                 render(result.data);
             }

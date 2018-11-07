@@ -9,5 +9,6 @@ const COMMAND = [
     ADD_ARTIFACT_TO_BACKPACK => 'addArtifactToBackpack',
     PASS_UNIT => 'passUnit',
 
+    MOVE_HERO => 'moveHero' // подвинуть героя
     //...
 ];
