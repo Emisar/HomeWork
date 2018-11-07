@@ -107,14 +107,31 @@ function Game(options) {
                 render(result.data);
             }
         });
-        $('#moveHero').on('click', async () => {
+                $('#moveHeroLeft').on('click', async () => {
+            const result = await server.moveHero(1, 'LEFT');
+            if (result.result) {
+                render(result.data);
+            }
+        });
+                $('#moveHeroRight').on('click', async () => {
             const result = await server.moveHero(1, 'RIGHT');
             if (result.result) {
                 render(result.data);
             }
         });
-        // описать все остальные команды
-        //...
+
+                 $('#moveHeroUp').on('click', async () => {
+            const result = await server.moveHero(1, 'UP');
+            if (result.result) {
+                render(result.data);
+            }
+        });
+                 $('#moveHeroDown').on('click', async () => {
+            const result = await server.moveHero(1, 'DOWN');
+            if (result.result) {
+                render(result.data);
+            }
+        });
     }
     init();
 }

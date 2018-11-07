@@ -225,6 +225,24 @@ class Logic {
                         $hero->x++;
                         return true;
                         break;
+
+                    case 'LEFT':
+                        $hero->x--;
+                        return true;
+                        break;
+
+
+                    case 'UP':
+                        $hero->y--;
+                        return true;
+                        break;
+
+
+                    case 'DOWN':
+                        $hero->y++;
+                        return true;
+                        break;
+
                 }
             }
         }
