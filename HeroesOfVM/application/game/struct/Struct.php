@@ -21,12 +21,7 @@ class Struct {
     public $heroes;
 
     public function __construct() {
-    /*  // список героев
-        $this->heroes = [];
-        foreach ($options->heroes as $value) {
-            $this->heroes[] = new Hero($value);
-        }
-        // список городов
+    /*  // список городов
         $this->towns = [];
         foreach ($options->towns as $value) {
             $this->towns[] = new Town($value);
@@ -72,6 +67,14 @@ class Struct {
             foreach ($line as $tile) {
                 $this->map[count($this->map) - 1][] = new Tile($tile);
             }
+        }
+    }
+
+    public function fillHeroes($heroes) {
+        // список героев
+        $this->heroes = [];
+        foreach ($heroes as $value) {
+            $this->heroes[] = new Hero($value);
         }
     }
 }

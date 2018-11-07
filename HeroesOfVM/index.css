@@ -5,38 +5,42 @@
 
 body {
 	background-image: url(public/img/indexImages/backgroundImage.jpg);
+	background-repeat: no-repeat;
+	width: 100%;
+	height: auto;
 	background-attachment: fixed;
 }
 
 .logo {
-	background: url(public/img/indexImages/headerLogo.png) no-repeat center;
+	background: url(public/img/indexImages/headerLogo.png);
 	height: 120px;
 	width: 400px;
-	margin-left: 490px;
+	margin: auto;
 }
 
 header {
 	background-image: url(public/img/indexImages/headerBackground.png);
-	background-size: cover;
 	border: 10px outset saddlebrown;
+	max-width: 100%;
 }
 
 #user {
 	border: 4px outset black;
 	background-color: rgba(105,105,105,0.7);
-	margin-top: 120px;
-	margin-left: 575px;
 	width: 200px;
 	height: 100px;
+	margin: auto;
+	margin-top: 25vh;
+	
  }
 
  #offer {
- 	margin-top: 120px;
- 	border: 4px outset black;
+	border: 4px outset black;
 	background-color: rgba(105,105,105,0.7);
-	margin-left: 575px;
 	width: 200px;
 	height: 100px;
+	margin: auto;
+	margin-top: 25vh;
  }
 
  #game {

@@ -92,15 +92,30 @@ class DB {
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
     }
 
+    public function getHeroes($gameId) {
+        $query = 'SELECT * FROM hero WHERE game_id=' . $gameId;
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
     /***************/
     /* UPDATE DATA */
     /***************/
     public function updateGamers($gameId, $gamers) {
         $query = '';
         foreach ($gamers as $gamer) {
-            $query .= 'UPDATE heroes_of_vm.users_games 
+            $query .= 'UPDATE users_games 
                        SET is_active=' . $gamer->isActive . ' 
                        WHERE user_id=' . $gamer->id . ' AND game_id=' . $gameId . ';';
+        }
+        return $this->connection->query($query)->execute();
+    }
+
+    public function updateHeroes($gameId, $heroes) {
+        $query = '';
+        foreach ($heroes as $hero) {
+            $query .= 'UPDATE hero 
+                       SET x=' . $hero->x . ', y=' . $hero->y . '  
+                       WHERE id=' . $hero->id . ';';
         }
         return $this->connection->query($query)->execute();
     }

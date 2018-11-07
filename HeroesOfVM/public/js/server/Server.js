@@ -30,4 +30,5 @@ function Server() {
     // Game API
     this.getStruct = () => { return $.get('api', { method: 'getStruct', token, gameId }); };
     this.endTurn   = () => { return $.get('api', { method: 'endTurn'  , token, gameId }); };
+    this.moveHero = (heroId, direction) => { return $.get('api', { method: 'moveHero', heroId, direction, token, gameId }); };
 }
