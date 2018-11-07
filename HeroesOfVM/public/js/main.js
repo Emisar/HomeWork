@@ -6,7 +6,7 @@ $(document).ready(async () => {
 
     function findGameSuccess() {
         user.hide();
-        game.show();
+        game.hide();
         offer.hide();
         game.init();
     }
@@ -26,5 +26,6 @@ $(document).ready(async () => {
     }
 
     // start point
-    startPoint();
+    //startPoint();
+    loginSuccess();
 });
