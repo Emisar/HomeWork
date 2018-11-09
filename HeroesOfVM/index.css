@@ -33,8 +33,14 @@ body {
 
 header {
 	background-image: url(public/img/indexImages/headerBackground.png);
-	border: 10px outset saddlebrown;
-	max-width: 100%;
+	border: 20px solid transparent;
+	border-image: url(public/img/indexImages/borderAuth.png) 20;
+	max-width: 98%;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.4);
+	margin: 15px auto;
+
 }
 
 
@@ -46,7 +52,7 @@ header {
 	height: 300px;
 	margin: 0 auto;
 	margin-top: 100px;
-	box-shadow: 10px 10px 5px 0px rgba(0,0,0,75);	
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);	
  }
 
  #login, #continueGame {
@@ -69,7 +75,7 @@ header {
 	height: 300px;
 	margin: 0 auto;
 	margin-top: 100px;
-	box-shadow: 10px 10px 5px 0px rgba(0,0,0,75);
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);
  }
 
  #game {
@@ -80,7 +86,7 @@ header {
  		border: 20px solid transparent;
 	border-image: url(public/img/indexImages/borderAuth.png) 20;
 	background-image: url(public/img/indexImages/backgroundAuth.png);
-	box-shadow: 10px 10px 5px 0px rgba(0,0,0,75);
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);
  }
 
 #user span {
