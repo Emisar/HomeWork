@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
+<<<<<<< HEAD
 -- Время создания: Ноя 07 2018 г., 07:51
+=======
+-- Время создания: Ноя 03 2018 г., 12:39
+>>>>>>> 902057eec6ed81af815787194765c3b7346308b6
 -- Версия сервера: 5.6.38
 -- Версия PHP: 7.2.0
 
@@ -50,6 +54,7 @@ INSERT INTO `games` (`id`, `map_id`, `status`) VALUES
 CREATE TABLE `Hero` (
   `id` int(11) NOT NULL,
   `game_id` int(11) NOT NULL,
+<<<<<<< HEAD
   `user_id` int(11) NOT NULL,
   `x` int(11) DEFAULT NULL,
   `y` int(11) DEFAULT NULL,
@@ -66,6 +71,14 @@ CREATE TABLE `Hero` (
 INSERT INTO `Hero` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
 (1, 1, 1, 2, 1, 0, 1, 'супер герой', 'Это супер герой');
 
+=======
+  `default_properties` varchar(45) DEFAULT NULL,
+  `army` varchar(45) DEFAULT NULL,
+  `inventory` varchar(45) DEFAULT NULL,
+  `backpack` varchar(45) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+>>>>>>> 902057eec6ed81af815787194765c3b7346308b6
 -- --------------------------------------------------------
 
 --
@@ -136,8 +149,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `login`, `password`, `token`) VALUES
+<<<<<<< HEAD
 (1, 'Вася', 'vasya', '123', '702f5c792fc825f4081811c3079abdc2'),
 (2, 'Петя', 'petya', '321', 'ee8af6b5653cd628174012ba156db7e7');
+=======
+(1, 'Вася', 'vasya', '123', '067b6b39f878556f57e024a1e8014e62'),
+(2, 'Петя', 'petya', '321', '');
+>>>>>>> 902057eec6ed81af815787194765c3b7346308b6
 
 -- --------------------------------------------------------
 
@@ -178,8 +196,14 @@ ALTER TABLE `games`
 -- Индексы таблицы `Hero`
 --
 ALTER TABLE `Hero`
+<<<<<<< HEAD
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id_UNIQUE` (`id`);
+=======
+  ADD PRIMARY KEY (`id`,`game_id`),
+  ADD UNIQUE KEY `id_UNIQUE` (`id`),
+  ADD UNIQUE KEY `game_id_UNIQUE` (`game_id`);
+>>>>>>> 902057eec6ed81af815787194765c3b7346308b6
 
 --
 -- Индексы таблицы `map`
@@ -223,7 +247,11 @@ ALTER TABLE `games`
 -- AUTO_INCREMENT для таблицы `Hero`
 --
 ALTER TABLE `Hero`
+<<<<<<< HEAD
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+=======
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+>>>>>>> 902057eec6ed81af815787194765c3b7346308b6
 
 --
 -- AUTO_INCREMENT для таблицы `map`
@@ -247,7 +275,11 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `users_games`
 --
 ALTER TABLE `users_games`
+<<<<<<< HEAD
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+=======
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+>>>>>>> 902057eec6ed81af815787194765c3b7346308b6
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
