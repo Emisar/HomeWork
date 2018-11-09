@@ -225,7 +225,6 @@ class Logic {
                         $hero->x++;
                         return true;
                         break;
-<<<<<<< HEAD
 
                     case 'LEFT':
                         $hero->x--;
@@ -250,14 +249,6 @@ class Logic {
         return false;
     }
 
-=======
-                }
-            }
-        }
-        return false;
-    }
-
->>>>>>> 902057eec6ed81af815787194765c3b7346308b6
     /*public function moveHero($id, $direction) {
         $map = $this->struct->map;
         $hero = $this->getHero($id);
