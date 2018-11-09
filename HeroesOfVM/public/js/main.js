@@ -14,7 +14,7 @@ $(document).ready(async () => {
     function loginSuccess() {
         user.hide();
         game.hide();
-        $("header").slideToggle(600);
+        $("header").slideToggle(400);
         offer.show();
     }
 
