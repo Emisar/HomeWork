@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Герои Вычислительной Техники и Механики</title>
+    <script src="public/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="public/js/server/Server.js"></script>
+    <script src="public/js/user/User.js"></script>
+    <script src="public/js/offer/Offer.js"></script>
+    <script src="public/js/game/Canvas.js"></script>
+    <script src="public/js/game/Game.js"></script>
+    <script src="public/js/main.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="public/bootstrap/css/bootstrap-grid.min.css">
+    <link rel="icon" href="public/img/indexImages/favicon.png" type="images/png">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                        <div class="logo" onclick="window.location.reload();"></div> 
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="log-in">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    
+                </div>
+                <div class="col-md-4">
+                    <div id="user" align="center">
+                        <span class="text">Авторизация</span><br>
+                        <input id="login" type="text" placeholder="login" /><br>
+                        <input id="password" type="password" placeholder="password" /><br>
+                        <input id="auth" type="button" value="Войти"/>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="game-menu">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    
+                </div>
+                <div class="col-md-4">
+                    <div id="offer" align="center">
+                        <span>Выбор игры</span><br>
+                        <input id="continueGame" type="button" value="Продолжить игру" /><br>
+                        <input id="createGame" type="button" value="Создать игру" /><br>
+                        <input class="logout" type="button" value="Выйти" /><br>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="game-btn">
+        <div class="container-">
+            <div class="row-">
+                <div class="col-md-4">
+                    
+                </div>
+                <div class="col-md-4">
+                    <div id="game" align="center">
+                        <input id="endTurn" type="button" value="Закончить ход" /><br>
+                        <canvas id="game-field"></canvas><br>
+                        <input id="moveHeroRight" type="button" value="Шагнуть вправо" /><br>
+                        <input id="moveHeroLeft" type="button" value="Шагнуть влево" /><br>
+                        <input id="moveHeroUp" type="button" value="Шагнуть вверх" /><br>
+                        <input id="moveHeroDown" type="button" value="Шагнуть вниз" />
+                        <input class="logout" type="button" value="Выйти" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
