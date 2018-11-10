@@ -96,6 +96,26 @@ class DB {
         $query = 'SELECT * FROM hero WHERE game_id=' . $gameId;
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
     }
+	
+    public function getArtifacts($gameId) {
+        $query = 'SELECT * FROM artifact WHERE game_id=' . $gameId;
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public function getMapBuildings($gameId) {
+        $query = 'SELECT * FROM map_building WHERE game_id=' . $gameId;
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public function getTowns($gameId) {
+        $query = 'SELECT * FROM town WHERE game_id=' . $gameId;
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public function getItems($gameId) {
+        $query = 'SELECT * FROM item WHERE game_id=' . $gameId;
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
 
     /***************/
     /* UPDATE DATA */
@@ -118,5 +138,45 @@ class DB {
                        WHERE id=' . $hero->id . ';';
         }
         return $this->connection->query($query)->execute();
+    }
+
+    public function updateArtifacts($gameId, $artifacts) {
+        $query = '';
+        foreach ($artifacts as $artifact) {
+            $query .= 'UPDATE artifact 
+                       SET x=' . $artifact->x . ', y=' . $artifact->y . '  
+                       WHERE id=' . $artifact->id . ';';
+        }
+        return ($query) ? $this->connection->query($query)->execute() : false;
+    }
+
+    public function updateMapBuildings($mapBuildings) {
+        $query = '';
+        foreach ($mapBuildings as $mapBuilding) {
+            $query .= 'UPDATE mapBuilding 
+                       SET x=' . $mapBuilding->x . ', y=' . $mapBuilding->y . '  
+                       WHERE id=' . $mapBuilding->id . ';';
+        }
+        return ($query) ? $this->connection->query($query)->execute() : false;
+    }
+
+    public function updateTowns($towns) {
+        $query = '';
+        foreach ($towns as $town) {
+            $query .= 'UPDATE town
+                       SET x=' . $town->x . ', y=' . $town->y . '
+                       WHERE id=' . $town->id . ';';
+        }
+        return ($query) ? $this->connection->query($query)->execute() : false;
+    }
+
+    public function updateItems($items) {
+        $query = '';
+        foreach ($items as $item) {
+            $query .= 'UPDATE item
+                       SET x=' . $item->x . ', y=' . $item->y . '
+                       WHERE id=' . $item->id . ';';
+        }
+        return ($query) ? $this->connection->query($query)->execute() : false;
     }
 }

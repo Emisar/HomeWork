@@ -47,9 +47,18 @@ class Game {
                 // заполнить героев
                 $heroes = $this->db->getHeroes($gameId);
                 $this->struct->fillHeroes($heroes);
-                // заполнить предметы
+                // заполнить артефакты
+                $artifacts = $this->db->getArtifacts($gameId);
+                $this->struct->fillArtifacts($artifacts);
                 // заполнить строения
+                $mapBuildings = $this->db->getMapBuildings($gameId);
+                $this->struct->fillMapBuildings($mapBuildings);
                 // заполнить города
+                $towns = $this->db->getTowns($gameId);
+                $this->struct->fillTowns($towns);
+                // заполнить предметы
+                $items = $this->db->getItems($gameId);
+                $this->struct->fillItems($items);
                 return true;
             }
         }
@@ -65,9 +74,14 @@ class Game {
                 $this->db->updateGamers($gameId, $this->struct->gamers);
                 // записать героев
                 $this->db->updateHeroes($gameId, $this->struct->heroes);
-                // записать предметы
+                // записать артефакты
+                $this->db->updateArtifacts($gameId, $this->struct->artifacts);
                 // записать строения
+                $this->db->updateMapBuildings($gameId, $this->struct->mapBuildings);
                 // записать города
+                $this->db->updateTowns($gameId, $this->struct->towns);
+                // записать предметы
+                $this->db->updateItems($gameId, $this->struct->items);
                 return true;
             }
         }

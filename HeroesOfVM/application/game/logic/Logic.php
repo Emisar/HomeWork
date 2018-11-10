@@ -5,8 +5,7 @@ class Logic {
 
     private $MOVE_POINTS_LINE = 100;
     private $MOVE_POINTS_DIAG = 141;
-
-    
+	
     private $struct;
 
     public function __construct($struct) {
@@ -121,6 +120,7 @@ class Logic {
         }
         return null;
     }
+	
     // задать владельца элемента
     public function setElemOwner($gamerOwner, $elemChild) {
         if ($gamerOwner && $elemChild) {
@@ -319,6 +319,7 @@ class Logic {
         }
         return false;
     }
+	
     // передача юнита                                                             (доделать количество)
     public function passUnit($options) {
         $idGive = intval($options->idGive);
@@ -371,6 +372,7 @@ class Logic {
         }
         return false;
     }
+	
     // подобрать ресуры
     public function pickupItem($options) {
         $idHero = intval($options->idHero);
@@ -387,6 +389,7 @@ class Logic {
         }
         return false;
     }
+	
     // подобрать артефакт
     public function pickupArtifact($options) {
         $idHero = intval($options->idHero);
@@ -406,6 +409,7 @@ class Logic {
         }
         return false;
     }
+	
     // умереть героя
     public function dieHero($options) {
         $idHero = intval($options->idHero);
@@ -421,6 +425,7 @@ class Logic {
         }
         return false;
     }
+	
     // надеть предмет
     public function equipArtifact($options) {
         $idArtifact = intval($options->idArtifact);
@@ -447,6 +452,7 @@ class Logic {
         }
         return false;
     }
+	
     // изменить армию героя
     public function changeArmy($options) {
         $idHero = intval($options->idHero);
@@ -478,6 +484,7 @@ class Logic {
         }
         return false;
     }
+	
     // купить героя, юнита, здание (доделать количество)
     public function buyObj($options) {
 

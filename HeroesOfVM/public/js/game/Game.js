@@ -15,6 +15,18 @@ function Game(options) {
     // картинка с героями
     const imgHero = new Image();
     imgHero.src = "public/img/sprites/hero_45x60.png"
+    // картинки с артефактами
+    const imgArtifact = new Image();
+    imgArtifact.src = "public/img/sprites/artifacts_32x32.png";
+    // спрайты здании на карте
+    const imgMapBuilding = new Image();
+    imgMapBuilding.src = "public/img/sprites/map_buildings_96x64.png";
+    // спрайты городов на карте
+    const imgTown = new Image();
+    imgTown.src = "public/img/sprites/towns_160x160.png";
+    // спрайты предметов
+    const imgItem = new Image();
+    imgItem.src = "public/img/sprites/items_32x32.png";
 
     const SIZE = 32;
     const SPRITES = {
@@ -39,6 +51,34 @@ function Game(options) {
                 { x: 0, y: 0 },
                 //...
             ]
+        },
+        artifact: {
+            img: imgArtifact,
+            sprite: [
+                { x: 0, y: 0 },
+                //...
+            ]
+        },
+        mapBuilding: {
+            img: imgMapBuilding,
+            sprite: [
+                { x: 0, y: 0 },
+            ]
+        },
+        town: {
+            img: imgTown,
+            sprite: [
+                { x: 0, y: 0 },
+                { x: 160, y: 0},
+                { x: 320, y: 0},
+                { x: 480, y: 0}
+            ]
+        },
+        item: {
+            img: imgItem,
+            sprite: [
+                { x: 0, y: 0 },
+            ]
         }
     };
 
@@ -61,6 +101,42 @@ function Game(options) {
                 hero.x * SIZE, hero.y * SIZE - (60 - SIZE), 45, 60);
         }
     }
+	
+    function printArtifactSprite(artifact) {
+        if (artifact && artifact.type) {
+            const sprite = SPRITES.artifact;
+            canvas.sprite(sprite.img,
+                sprite.sprite[artifact.type - 0].x, sprite.sprite[artifact.type - 0].y, SIZE, SIZE,
+                artifact.x * SIZE, artifact.y * SIZE, SIZE, SIZE);
+        }
+    }
+	
+    function printMapBuildingSprite(mapBuilding) {
+        if (mapBuilding && mapBuilding.type) {
+            const sprite = SPRITES.mapBuilding;
+            canvas.sprite(sprite.img,
+                sprite.sprite[mapBuilding.type - 0].x, sprite.sprite[mapBuilding.type - 0].y, 96, 64,
+                mapBuilding.x * SIZE - 32, mapBuilding.y * SIZE - 32, SIZE + 64, SIZE + 32);
+        }
+    }
+	
+    function printTownSprite(town) {
+        if(town && town.type) {
+            const sprite = SPRITES.town;
+            canvas.sprite(sprite.img,
+                sprite.sprite[town.type - 0].x, sprite.sprite[town.type - 0].y, 160, 160,
+                town.x * SIZE - 64, town.y * SIZE - 128, 160, 160);
+        }
+    }
+	
+    function printItemSprite(item) {
+        if(item && item.type) {
+            const sprite = SPRITES.item;
+            canvas.sprite(sprite.img,
+                sprite.sprite[item.type - 0].x, sprite.sprite[item.type - 0].y, 32, 32,
+                item.x * SIZE, item.y * SIZE, 32, 32);
+        }
+    }
 
     function render(struct) {
         canvas.fillRect('yellow');
@@ -71,8 +147,14 @@ function Game(options) {
                 printSprite(map[i][j], i, j);
             }
         }
-        // нарисовать всё остальное
-        //...
+        // нарисовать артефакты
+        struct.artifacts.forEach(artifact => printArtifactSprite(artifact));
+        // нарисовать предметы
+        struct.items.forEach(item => printItemSprite(item));
+        // нарисовать здания на карте
+        struct.mapBuildings.forEach(mapBuilding => printMapBuildingSprite(mapBuilding));
+        // нарисовать города на карте
+        struct.towns.forEach(town => printTownSprite(town));
         // нарисовать героев
         struct.heroes.forEach(hero => printHeroSprite(hero));
     }

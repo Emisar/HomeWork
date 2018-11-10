@@ -77,4 +77,36 @@ class Struct {
             $this->heroes[] = new Hero($value);
         }
     }
+
+    public function fillArtifacts($artifacts) {
+        // список артефактов
+        $this->artifacts = [];
+        foreach ($artifacts as $value) {
+            $this->artifacts[] = new Artifact($value);
+        }
+    }
+
+    public function fillMapBuildings($mapBuildings) {
+        // список зданий
+        $this->mapBuildings = [];
+        foreach ($mapBuildings as $value) {
+            $this->mapBuildings[] = new MapBuilding($value);
+        }
+    }
+
+    public function fillTowns($towns) {
+        // список городов
+        $this->towns = [];
+        foreach ($towns as $value) {
+            $this->towns[] = new Town($value);
+        }
+    }
+
+    public function fillItems($items) {
+        // список городов
+        $this->items = [];
+        foreach ($items as $value) {
+            $this->items[] = new Item($value);
+        }
+    }
 }
