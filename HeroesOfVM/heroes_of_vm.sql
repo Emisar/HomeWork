@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 07 2018 г., 07:51
+-- Время создания: Ноя 10 2018 г., 09:36
 -- Версия сервера: 5.6.38
 -- Версия PHP: 7.2.0
 
@@ -21,6 +21,31 @@ SET time_zone = "+00:00";
 --
 -- База данных: `heroes_of_vm`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `artifact`
+--
+
+CREATE TABLE `artifact` (
+  `id` int(11) NOT NULL,
+  `game_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  `type` int(11) NOT NULL,
+  `owner` int(11) NOT NULL,
+  `name` varchar(45) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Дамп данных таблицы `artifact`
+--
+
+INSERT INTO `artifact` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
+(1, 1, 1, 11, 1, 0, 1, 'Щит', 'Ну Щит, что такого то?');
 
 -- --------------------------------------------------------
 
@@ -44,10 +69,10 @@ INSERT INTO `games` (`id`, `map_id`, `status`) VALUES
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `Hero`
+-- Структура таблицы `hero`
 --
 
-CREATE TABLE `Hero` (
+CREATE TABLE `hero` (
   `id` int(11) NOT NULL,
   `game_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -60,11 +85,36 @@ CREATE TABLE `Hero` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Дамп данных таблицы `Hero`
+-- Дамп данных таблицы `hero`
 --
 
-INSERT INTO `Hero` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
-(1, 1, 1, 2, 1, 0, 1, 'супер герой', 'Это супер герой');
+INSERT INTO `hero` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
+(1, 1, 1, 1, 1, 0, 1, 'супер герой', 'Это супер герой');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `item`
+--
+
+CREATE TABLE `item` (
+  `id` int(11) NOT NULL,
+  `game_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  `type` int(11) NOT NULL,
+  `name` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `resources` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Дамп данных таблицы `item`
+--
+
+INSERT INTO `item` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `name`, `description`, `resources`) VALUES
+(1, 1, 1, 11, 0, 0, 'Сундук', 'Бабушкин сундук, ну там, какое то барахло лежит', NULL);
 
 -- --------------------------------------------------------
 
@@ -83,7 +133,53 @@ CREATE TABLE `map` (
 --
 
 INSERT INTO `map` (`id`, `size_x`, `sixe_y`) VALUES
-(1, 8, 8);
+(1, 3, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `map_building`
+--
+
+CREATE TABLE `map_building` (
+  `id` int(11) NOT NULL,
+  `game_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  `type` int(11) NOT NULL,
+  `owner` int(11) NOT NULL,
+  `name` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `resources` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Дамп данных таблицы `map_building`
+--
+
+INSERT INTO `map_building` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`, `resources`) VALUES
+(1, 1, 1, 9, 1, 0, 1, 'Шахта', 'Шахата - где ты батрачишь, лол', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `properties`
+--
+
+CREATE TABLE `properties` (
+  `id` int(11) NOT NULL,
+  `elem_id` int(11) NOT NULL,
+  `elem_type` varchar(45) NOT NULL,
+  `move_points` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `properties`
+--
+
+INSERT INTO `properties` (`id`, `elem_id`, `elem_type`, `move_points`) VALUES
+(1, 1, 'hero', 0);
 
 -- --------------------------------------------------------
 
@@ -192,6 +288,31 @@ INSERT INTO `tile` (`id`, `map_id`, `x`, `y`, `name`, `type`, `sprite`, `passabi
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `town`
+--
+
+CREATE TABLE `town` (
+  `id` int(11) NOT NULL,
+  `game_id` int(11) NOT NULL,
+  `used_id` int(11) NOT NULL,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  `type` int(11) NOT NULL,
+  `owner` int(11) NOT NULL,
+  `name` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8 DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Дамп данных таблицы `town`
+--
+
+INSERT INTO `town` (`id`, `game_id`, `used_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
+(1, 1, 1, 9, 8, 1, 1, 'Город', 'Ты здесь живешь, мда...');
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `users`
 --
 
@@ -208,8 +329,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `login`, `password`, `token`) VALUES
-(1, 'Вася', 'vasya', '123', '702f5c792fc825f4081811c3079abdc2'),
-(2, 'Петя', 'petya', '321', 'ee8af6b5653cd628174012ba156db7e7');
+(1, 'Вася', 'vasya', '123', 'cac490c1369fa16b0d52514b9a5b6df5'),
+(2, 'Петя', 'petya', '321', '6b6f5f10b13a6d0be491dd8c2c23c165');
 
 -- --------------------------------------------------------
 
@@ -231,12 +352,18 @@ CREATE TABLE `users_games` (
 --
 
 INSERT INTO `users_games` (`id`, `user_id`, `game_id`, `color`, `order`, `is_active`) VALUES
-(1, 1, 1, 'red', 0, 0),
-(4, 2, 1, 'blue', 1, 1);
+(1, 1, 1, 'red', 0, 1),
+(4, 2, 1, 'blue', 1, 0);
 
 --
 -- Индексы сохранённых таблиц
 --
+
+--
+-- Индексы таблицы `artifact`
+--
+ALTER TABLE `artifact`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `games`
@@ -247,11 +374,17 @@ ALTER TABLE `games`
   ADD UNIQUE KEY `map_id_UNIQUE` (`map_id`);
 
 --
--- Индексы таблицы `Hero`
+-- Индексы таблицы `hero`
 --
-ALTER TABLE `Hero`
+ALTER TABLE `hero`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id_UNIQUE` (`id`);
+
+--
+-- Индексы таблицы `item`
+--
+ALTER TABLE `item`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `map`
@@ -261,11 +394,30 @@ ALTER TABLE `map`
   ADD UNIQUE KEY `id_UNIQUE` (`id`);
 
 --
+-- Индексы таблицы `map_building`
+--
+ALTER TABLE `map_building`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `properties`
+--
+ALTER TABLE `properties`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id_UNIQUE` (`id`);
+
+--
 -- Индексы таблицы `tile`
 --
 ALTER TABLE `tile`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id_UNIQUE` (`id`);
+
+--
+-- Индексы таблицы `town`
+--
+ALTER TABLE `town`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `users`
@@ -286,15 +438,27 @@ ALTER TABLE `users_games`
 --
 
 --
+-- AUTO_INCREMENT для таблицы `artifact`
+--
+ALTER TABLE `artifact`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT для таблицы `games`
 --
 ALTER TABLE `games`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT для таблицы `Hero`
+-- AUTO_INCREMENT для таблицы `hero`
 --
-ALTER TABLE `Hero`
+ALTER TABLE `hero`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT для таблицы `item`
+--
+ALTER TABLE `item`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
@@ -304,10 +468,28 @@ ALTER TABLE `map`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT для таблицы `map_building`
+--
+ALTER TABLE `map_building`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT для таблицы `properties`
+--
+ALTER TABLE `properties`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT для таблицы `tile`
 --
 ALTER TABLE `tile`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+
+--
+-- AUTO_INCREMENT для таблицы `town`
+--
+ALTER TABLE `town`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
