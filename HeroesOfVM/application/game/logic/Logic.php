@@ -288,6 +288,7 @@ class Logic {
                             if ($hero->y - 1 >= 0 && $hero->x + 1 <= $mapWidth) {
                                 if ($this->isPassable($hero->x + 1, $hero->y - 1)) {
                                     $hero->x++;
+                                    $hero->y--;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
                                     return true;
                                 }
@@ -300,6 +301,7 @@ class Logic {
                             if ($hero->y - 1 >= 0 && $hero->x - 1 >= 0) {
                                 if ($this->isPassable($hero->x - 1, $hero->y - 1)) {
                                     $hero->x--;
+                                    $hero->y--;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
                                     return true;
                                 }
@@ -311,7 +313,8 @@ class Logic {
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y + 1 <= $mapHeight && $hero->x + 1 <= $mapWidth) {
                                 if ($this->isPassable($hero->x + 1, $hero->y + 1)) {
-                                    $hero->y--;
+                                    $hero->y++;
+                                    $hero->x++;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
                                     return true;
                                 }
@@ -324,6 +327,7 @@ class Logic {
                             if ($hero->y + 1 <= $mapHeight && $hero->x - 1 >= 0) {
                                 if ($this->isPassable($hero->x - 1, $hero->y + 1)) {
                                     $hero->y++;
+                                    $hero->x--;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
                                     return true;
                                 }

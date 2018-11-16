@@ -3,8 +3,10 @@ function Game(options) {
     const DOM_ID = options.id;
     const server = options.server;
     const callbacks = options.callbacks;
-
-    const canvas = new Canvas(500, 300);
+    width = document.documentElement.clientWidth * 0.62;
+    height = document.documentElement.clientHeight * 0.85
+    alert(width);
+    const canvas = new Canvas(width, height);
 
     // картинка с травой
     const imgGrass = new Image();
@@ -139,7 +141,7 @@ function Game(options) {
     }
 
     function render(struct) {
-        canvas.fillRect('yellow');
+        canvas.fillRect('black');
         // нарисовать карту
         const map = struct.map;
         for (let i = 0; i < map.length; i++) {
