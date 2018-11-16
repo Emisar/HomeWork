@@ -1,7 +1,7 @@
 function Canvas(width, height) {
 
     var canvas = document.getElementById('game-field');
-    canvas.width = width || 300;
+    canvas.width = width || 500;
     canvas.height = height || 300;
     var context = canvas.getContext("2d");
 

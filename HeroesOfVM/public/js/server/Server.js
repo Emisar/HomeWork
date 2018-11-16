@@ -4,7 +4,7 @@ function Server() {
     var gameId;
     // User API
     this.login = async (login, password) => {
-        const result = await $.get('api', { method: 'login', login, password });
+        const result = await $.get('api/', { method: 'login', login, password });
         if (result && result.result) {
             token = result.data.token;
             return result.data.name;
@@ -13,12 +13,12 @@ function Server() {
     };
 
     this.logout = () => {
-        return $.get('api', { method: 'logout', token });
+        return $.get('api/', { method: 'logout', token });
     };
 
     // Offer API
     this.findGame = async () => {
-        const result = await $.get('api', { method: 'findGame', token });
+        const result = await $.get('api/', { method: 'findGame', token });
         if (result && result.result) {
             gameId = result.data.id - 0;
             return true;
@@ -28,7 +28,7 @@ function Server() {
     };
 
     // Game API
-    this.getStruct = () => { return $.get('api', { method: 'getStruct', token, gameId }); };
-    this.endTurn   = () => { return $.get('api', { method: 'endTurn'  , token, gameId }); };
-    this.moveHero = (heroId, direction) => { return $.get('api', { method: 'moveHero', heroId, direction, token, gameId }); };
+    this.getStruct = () => { return $.get('api/', { method: 'getStruct', token, gameId }); };
+    this.endTurn   = () => { return $.get('api/', { method: 'endTurn'  , token, gameId }); };
+    this.moveHero = (heroId, direction) => { return $.get('api/', { method: 'moveHero', heroId, direction, token, gameId }); };
 }

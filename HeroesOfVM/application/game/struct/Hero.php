@@ -9,10 +9,11 @@ class Hero extends BaseElement {
     public $inventory;         // инвентарь (что надето)
     public $backpack;          // мешок (карманы)
 
-    public function __construct($options) {
+    public function __construct($options, $defaultProperties) {
         parent::__construct($options);
         $this->backpack = $options->backpack;
         $this->army = $options->army;
         $this->inventory = $options->inventory;
+        $this->defaultProperties = new Properties($defaultProperties);
     }
 }

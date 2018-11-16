@@ -93,7 +93,58 @@ class DB {
     }
 
     public function getHeroes($gameId) {
-        $query = 'SELECT * FROM hero WHERE game_id=' . $gameId;
+        $query = 'SELECT 
+                    p.move_points AS movePoints,
+                    h.id AS id,
+                    h.x AS x,
+                    h.y AS y,
+                    h.type AS type,
+                    h.owner AS owner,
+                    h.name AS name,
+                    h.description AS description
+                  FROM 
+                    hero AS h, 
+                    properties AS p 
+                  WHERE 
+                    h.game_id=' . $gameId . ' AND 
+                    h.id=p.elem_id AND 
+                    p.elem_type=\'hero\'';
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public function getHeroesDefaultProperties($heroes) {
+        $temp = [];
+        foreach ($heroes as $hero) {
+            $temp[] = 'elem_id='.$hero->id;
+        }
+        $str = join(' OR ', $temp);
+        $query = 'SELECT 
+                    move_points AS movePoints,
+                    elem_id AS id
+                  FROM
+                    properties
+                  WHERE
+                    (' . $str . ') AND elem_type="hero_default"';
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+	
+    public function getArtifacts($gameId) {
+        $query = 'SELECT * FROM artifact WHERE game_id=' . $gameId;
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public function getMapBuildings($gameId) {
+        $query = 'SELECT * FROM map_building WHERE game_id=' . $gameId;
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public function getTowns($gameId) {
+        $query = 'SELECT * FROM town WHERE game_id=' . $gameId;
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public function getItems($gameId) {
+        $query = 'SELECT * FROM item WHERE game_id=' . $gameId;
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
     }
 
@@ -115,8 +166,51 @@ class DB {
         foreach ($heroes as $hero) {
             $query .= 'UPDATE hero 
                        SET x=' . $hero->x . ', y=' . $hero->y . '  
-                       WHERE id=' . $hero->id . ';';
+                       WHERE id=' . $hero->id . ';
+                       UPDATE properties
+                       SET move_points=' . $hero->properties->movePoints . '
+                       WHERE elem_id=' . $hero->id . ' AND elem_type="hero"';
         }
         return $this->connection->query($query)->execute();
+    }
+
+    public function updateArtifacts($gameId, $artifacts) {
+        $query = '';
+        foreach ($artifacts as $artifact) {
+            $query .= 'UPDATE artifact 
+                       SET x=' . $artifact->x . ', y=' . $artifact->y . '  
+                       WHERE id=' . $artifact->id . ';';
+        }
+        return ($query) ? $this->connection->query($query)->execute() : false;
+    }
+
+    public function updateMapBuildings($mapBuildings) {
+        $query = '';
+        foreach ($mapBuildings as $mapBuilding) {
+            $query .= 'UPDATE mapBuilding 
+                       SET x=' . $mapBuilding->x . ', y=' . $mapBuilding->y . '  
+                       WHERE id=' . $mapBuilding->id . ';';
+        }
+        return ($query) ? $this->connection->query($query)->execute() : false;
+    }
+
+    public function updateTowns($towns) {
+        $query = '';
+        foreach ($towns as $town) {
+            $query .= 'UPDATE town
+                       SET x=' . $town->x . ', y=' . $town->y . '
+                       WHERE id=' . $town->id . ';';
+        }
+        return ($query) ? $this->connection->query($query)->execute() : false;
+    }
+
+    public function updateItems($items) {
+        $query = '';
+        foreach ($items as $item) {
+            $query .= 'UPDATE item
+                       SET x=' . $item->x . ', y=' . $item->y . '
+                       WHERE id=' . $item->id . ';';
+        }
+        return ($query) ? $this->connection->query($query)->execute() : false;
     }
 }

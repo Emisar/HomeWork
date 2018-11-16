@@ -66,19 +66,31 @@
             </div>
         </div>
     </div>
-    <div class="game-btn">
-        <div class="container-">
-            <div class="row-">
-                <div class="col-md-12">
-                    <div id="game" align="center">
-                        <input id="endTurn" type="button" value="Закончить ход" /><br>
-                        <canvas id="game-field"></canvas><br>
-                        <input id="moveHeroRight" type="button" value="Шагнуть вправо" /><br>
-                        <input id="moveHeroLeft" type="button" value="Шагнуть влево" /><br>
-                        <input id="moveHeroUp" type="button" value="Шагнуть вверх" /><br>
-                        <input id="moveHeroDown" type="button" value="Шагнуть вниз" />
-                        <input class="logout" type="button" value="Выйти" />
+    <div id="game" class="game-btn">
+        <div class="container-fluid">
+            <div class="row">
+                <div class=" col-md-3">
+                    <div class="left_side_bar">
+                        <input class="btn btn_left_top" id="moveHeroTopLeft" type="button" value="top_L" />
+                        <input class="btn btn_top" id="moveHeroUp" type="button" value="Вверх" />
+                        <input class="btn btn_right_top" id="moveHeroTopRight" type="button" value="top_R" /><br>
+                        <div id="btn_row">
+                            <input class="btn btn_row_mid" id="moveHeroRight" type="button" value="Вправо" />
+                            <input class="btn btn_row_mid" id="moveHeroLeft" type="button" value="Влево" />
+                        </div>
+                        <input class=" btn btn_left_bott" id="moveHeroDownLeft" type="button" value="bot_L" />
+                        <input class=" btn btn_bott" id="moveHeroDown" type="button" value="Вниз" />
+                        <input class=" btn btn_right_bott" id="moveHeroDownRight" type="button" value="bot_R" />
                     </div>
+                </div>
+                <div class="col-md-8">
+                    <div align="center">                        
+                        <canvas id="game-field"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <input class="btn" id="endTurn" type="button" value="Закончить ход" /><br>
+                    <input class="btn" class="logout" type="button" value="Выйти" />
                 </div>
             </div>
         </div>

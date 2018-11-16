@@ -70,11 +70,48 @@ class Struct {
         }
     }
 
-    public function fillHeroes($heroes) {
+    public function fillHeroes($heroes, $defaultProperties) {
         // список героев
         $this->heroes = [];
         foreach ($heroes as $value) {
-            $this->heroes[] = new Hero($value);
+            foreach ($defaultProperties as $default) {
+                if ($default->id == $value->id) {
+                    $this->heroes[] = new Hero($value, $default);
+                    break;
+                }
+            }
+        }
+    }
+
+    public function fillArtifacts($artifacts) {
+        // список артефактов
+        $this->artifacts = [];
+        foreach ($artifacts as $value) {
+            $this->artifacts[] = new Artifact($value);
+        }
+    }
+
+    public function fillMapBuildings($mapBuildings) {
+        // список зданий
+        $this->mapBuildings = [];
+        foreach ($mapBuildings as $value) {
+            $this->mapBuildings[] = new MapBuilding($value);
+        }
+    }
+
+    public function fillTowns($towns) {
+        // список городов
+        $this->towns = [];
+        foreach ($towns as $value) {
+            $this->towns[] = new Town($value);
+        }
+    }
+
+    public function fillItems($items) {
+        // список городов
+        $this->items = [];
+        foreach ($items as $value) {
+            $this->items[] = new Item($value);
         }
     }
 }
