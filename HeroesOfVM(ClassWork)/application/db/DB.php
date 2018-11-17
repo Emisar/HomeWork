@@ -106,8 +106,7 @@ class DB {
                     hero AS h, 
                     properties AS p 
                   WHERE 
-                    h.game_id=' . $gameId . ' AND 
-                    h.id=p.elem_id AND 
+                    h.game_id=' . $gameId . ' AND
                     p.elem_type=\'hero\'';
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
     }
@@ -118,9 +117,18 @@ class DB {
             $temp[] = 'elem_id='.$hero->id;
         }
         $str = join(' OR ', $temp);
-        $query = 'SELECT 
+        $query = 'SELECT
+                    spell_power AS spellPower, 
+                    min_damage AS minDamage,
+                    max_damage AS maxDamage,
+                    mana_points AS manaPoints,
                     move_points AS movePoints,
-                    elem_id AS id
+                    knowledge,
+                    health,
+                    speed,
+                    elem_id AS id,
+                    attack,
+                    defence
                   FROM
                     properties
                   WHERE
@@ -168,8 +176,16 @@ class DB {
                        SET x=' . $hero->x . ', y=' . $hero->y . '  
                        WHERE id=' . $hero->id . ';
                        UPDATE properties
-                       SET move_points=' . $hero->properties->movePoints . '
-                       WHERE elem_id=' . $hero->id . ' AND elem_type="hero"';
+                       SET move_points=' . $hero->properties->movePoints . ',
+                           attack=' . $hero->properties->attack . ',
+                           defence=' . $hero->properties->defence . '
+                           spell_power=' . $hero->properties->spellPower . ',
+                           knowledge=' . $hero->properties->knowledge . ',
+                           min_damage=' . $hero->properties->minDamage . ',
+                           max_damage=' . $hero->properties->maxDamage . ',
+                           speed=' . $hero->properties->speed . ',                           
+                           mana_points=' . $hero->properties->manaPoints . '    
+                       WHERE elem_id=' . $hero->id . ' AND elem_type="hero";';
         }
         return $this->connection->query($query)->execute();
     }
@@ -179,7 +195,17 @@ class DB {
         foreach ($artifacts as $artifact) {
             $query .= 'UPDATE artifact 
                        SET x=' . $artifact->x . ', y=' . $artifact->y . '  
-                       WHERE id=' . $artifact->id . ';';
+                       WHERE id=' . $artifact->id . ';
+                       SET move_points=' . $artifact->properties->movePoints . ',
+                           attack=' . $artifact->properties->attack . ',
+                           defence=' . $artifact->properties->defence . '
+                           spell_power=' . $artifact->properties->spellPower . ',
+                           knowledge=' . $artifact->properties->knowledge . ',
+                           min_damage=' . $artifact->properties->minDamage . ',
+                           max_damage=' . $artifact->properties->maxDamage . ',
+                           speed=' . $artifact->properties->speed . ',                           
+                           mana_points=' . $artifact->properties->manaPoints . '    
+                       WHERE elem_id=' . $artifact->id . ' AND elem_type="hero";';
         }
         return ($query) ? $this->connection->query($query)->execute() : false;
     }

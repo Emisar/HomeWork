@@ -3,9 +3,10 @@
 class Logic {
 
 
-    const MOVE_POINTS_LINE = 100;
-    const MOVE_POINTS_DIAG = 141;
-	
+    private $MOVE_POINTS_LINE = 100;
+    private $MOVE_POINTS_DIAG = 141;
+
+    
     private $struct;
 
     public function __construct($struct) {
@@ -120,7 +121,6 @@ class Logic {
         }
         return null;
     }
-	
     // задать владельца элемента
     public function setElemOwner($gamerOwner, $elemChild) {
         if ($gamerOwner && $elemChild) {
@@ -158,15 +158,6 @@ class Logic {
         // получить текущего игрока
         $curGamer = $this->getGamer($id);
         if ($curGamer) {
-            // Обновить данные
-            // Обновить героев
-            foreach ($this->struct->heroes as $hero) {
-                if ($hero->owner == $curGamer->id) {
-                    $hero->properties->movePoints = $hero->defaultProperties->movePoints;
-                }
-            }
-            // Обновить статистику
-            // Завершить ход за игрока
             $order = intval($curGamer->order); // порядковый номер текущего
             // потушить всех игроков
             $gamers = $this->struct->gamers;
@@ -218,7 +209,7 @@ class Logic {
     public function isPassable($x, $y)
     {
         $map = $this->struct->map;
-        if ($map[$x][$y]->passability == 1) {
+        if ($map[$x][$y]->passability) {
             return true;
         }
         return false;
@@ -226,114 +217,77 @@ class Logic {
 	
     // Передвинуть героя
     public function moveHero($options) {
-		//$map = $this->struct->map;
+		$map = $this->struct->map;
         $mapWidth = count($this->struct->map[0])-1;
         $mapHeight  = count($this->struct->map)-1;
-        $userId = intval($options->id);
         $id = intval($options->heroId);
         $direction = $options->direction;
         if ($id && $direction) {
             $hero = $this->getHero(intval($id));
-            $gamer = $this->getGamer($userId);
-            if ($hero && intval($hero->owner) === $userId && intval($gamer->isActive)) {
+            if ($hero) {
                 switch ($direction) {
                     case 'RIGHT':
-                        if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
-                            if ($hero->x+1 <= $mapWidth){
-                                if ($this->isPassable($hero->x+1, $hero->y)){
-                                    $hero->x++;
-                                    $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
-                                    return true;
-                                }
-                            } break;
-                        }
+                        if ($hero->x+1 <= $mapWidth){
+							if ($this->isPassable($hero->x+1, $hero->y)){
+								$hero->x++;
+								return true;
+							}
+                        } break;
                         
                     case 'LEFT':
-                        if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
-                            if ($hero->x - 1 >= 0) {
-                                if ($this->isPassable($hero->x - 1, $hero->y)) {
-                                    $hero->x--;
-                                    $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
-                                    return true;
-                                }
-                            }
-                            break;
-                        }
+                        if ($hero->x-1 >= 0){
+							if ($this->isPassable($hero->x-1, $hero->y)){
+								$hero->x--;
+								return true;
+							}
+                        } break;
                         
                     case 'UP':
-                        if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
-                            if ($hero->y-1 >= 0){
-                                if ($this->isPassable($hero->x, $hero->y-1)){
-                                    $hero->y--;
-                                    $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
-                                    return true;
-                                }
-                            } break;
-                        }
+                        if ($hero->y-1 >= 0){
+							if ($this->isPassable($hero->x, $hero->y-1)){
+								$hero->y--;
+								return true;
+							}
+                        } break;
                          
                     case 'DOWN':
-                        if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
-                            if ($hero->y + 1 <= $mapHeight) {
-                                if ($this->isPassable($hero->x, $hero->y + 1)) {
-                                    $hero->y++;
-                                    $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
-                                    return true;
-                                }
-                            }
-                            break;
-                        }
-
+                        if ($hero->y+1 <= $mapHeight){
+							if ($this->isPassable($hero->x, $hero->y+1)){
+								$hero->y++;
+								return true;
+							}
+                        } break;
 					case 'UP-RIGHT':
-                        if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
-                            if ($hero->y - 1 >= 0 && $hero->x + 1 <= $mapWidth) {
-                                if ($this->isPassable($hero->x + 1, $hero->y - 1)) {
-                                    $hero->x++;
-                                    $hero->y--;
-                                    $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
-                                    return true;
-                                }
-                            }
-                            break;
-                        }
+                        if ($hero->y-1 >= 0 && $hero->x+1 <= $mapWidth){
+							if ($this->isPassable($hero->x+1, $hero->y-1)){
+								$hero->x++;
+								return true;
+							}
+                        } break;
                         
                     case 'UP-LEFT':
-                        if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
-                            if ($hero->y - 1 >= 0 && $hero->x - 1 >= 0) {
-                                if ($this->isPassable($hero->x - 1, $hero->y - 1)) {
-                                    $hero->x--;
-                                    $hero->y--;
-                                    $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
-                                    return true;
-                                }
-                            }
-                            break;
-                        }
+                        if ($hero->y-1 >= 0 && $hero->x-1 >= 0){
+							if ($this->isPassable($hero->x-1, $hero->y-1)){
+								$hero->x--;
+								return true;
+							}
+                        } break;
                         
                     case 'DOWN-RIGHT':
-                        if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
-                            if ($hero->y + 1 <= $mapHeight && $hero->x + 1 <= $mapWidth) {
-                                if ($this->isPassable($hero->x + 1, $hero->y + 1)) {
-                                    $hero->y++;
-                                    $hero->x++;
-                                    $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
-                                    return true;
-                                }
-                            }
-                            break;
-                        }
+                        if ($hero->y+1 <= $mapHeight && $hero->x+1 <= $mapWidth){
+							if ($this->isPassable($hero->x+1, $hero->y+1)){
+								$hero->y--;
+								return true;
+							}
+                        } break;
                          
                     case 'DOWN-LEFT':
-                        if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
-                            if ($hero->y + 1 <= $mapHeight && $hero->x - 1 >= 0) {
-                                if ($this->isPassable($hero->x - 1, $hero->y + 1)) {
-                                    $hero->y++;
-                                    $hero->x--;
-                                    $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
-                                    return true;
-                                }
-                            }
-                            break;
-                        }
+                        if ($hero->y+1 <= $mapHeight && $hero->x-1 >= 0){
+							if ($this->isPassable($hero->x-1, $hero->y+1)){
+								$hero->y++;
+								return true;
+							}
+                        } break;
                 }
             }
         }
@@ -365,7 +319,6 @@ class Logic {
         }
         return false;
     }
-	
     // передача юнита                                                             (доделать количество)
     public function passUnit($options) {
         $idGive = intval($options->idGive);
@@ -418,7 +371,6 @@ class Logic {
         }
         return false;
     }
-	
     // подобрать ресуры
     public function pickupItem($options) {
         $idHero = intval($options->idHero);
@@ -435,7 +387,6 @@ class Logic {
         }
         return false;
     }
-	
     // подобрать артефакт
     public function pickupArtifact($options) {
         $idHero = intval($options->idHero);
@@ -455,7 +406,6 @@ class Logic {
         }
         return false;
     }
-	
     // умереть героя
     public function dieHero($options) {
         $idHero = intval($options->idHero);
@@ -471,7 +421,6 @@ class Logic {
         }
         return false;
     }
-	
     // надеть предмет
     public function equipArtifact($options) {
         $idArtifact = intval($options->idArtifact);
@@ -498,7 +447,6 @@ class Logic {
         }
         return false;
     }
-	
     // изменить армию героя
     public function changeArmy($options) {
         $idHero = intval($options->idHero);
@@ -530,7 +478,6 @@ class Logic {
         }
         return false;
     }
-	
     // купить героя, юнита, здание (доделать количество)
     public function buyObj($options) {
 

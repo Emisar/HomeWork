@@ -16,12 +16,48 @@ input {
 	height: 40px;
 }
 
+.btn_end_turn {
+	margin-top: 90%;
+}
+
+.left_sidebar {
+	margin-top: 180px;
+	margin-left: 50px;
+}
+
+.right_sidebar {
+	height: 100%;
+}
+
+
+.right_sidebar>.btn {
+	width: 70px;
+	height: 70px;
+}
+
+.btn {
+	width: 55px ;
+	height: 55px;
+	color: yellow;
+	background-image: url(public/img/indexImages/backgroundAuth.png);
+	overflow: hidden;
+	border-image: url(public/img/indexImages/borderAuth.png) 10;
+	box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.7);
+}
+
+.btn_row_mid {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.btn_row_mid:last-child {
+	margin-left: 58px;
+}
+
 body {
 	background-image: url(public/img/indexImages/backgroundImage.jpg);
 	width: 100%;
-	height: auto;
-
-	
+	height: auto;	
 }
 
 .logo {
@@ -79,20 +115,26 @@ header {
  }
 
  #game {
- 	width: 600px;
- 	height: 600px;
- 	margin: auto;
+ 	width: 98%;
+ 	height: 92vh;
+ 	margin: 0 auto;
  	margin-top: 25px;
- 		border: 20px solid transparent;
+ 	border: 20px solid transparent;
 	border-image: url(public/img/indexImages/borderAuth.png) 20;
 	background-image: url(public/img/indexImages/backgroundAuth.png);
 	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);
  }
+ 
 
 #user span {
 	font-family: hero_font;
 	font-size: 20pt;
 	color: yellow;
+}
+
+#game_field {
+	display: block;
+	align-content: center;
 }
 
 

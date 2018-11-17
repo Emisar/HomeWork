@@ -3,8 +3,10 @@ function Game(options) {
     const DOM_ID = options.id;
     const server = options.server;
     const callbacks = options.callbacks;
-
-    const canvas = new Canvas(400, 300);
+    width = document.documentElement.clientWidth * 0.62;
+    height = document.documentElement.clientHeight * 0.85
+    alert(width);
+    const canvas = new Canvas(width, height);
 
     // картинка с травой
     const imgGrass = new Image();
@@ -139,7 +141,7 @@ function Game(options) {
     }
 
     function render(struct) {
-        canvas.fillRect('yellow');
+        canvas.fillRect('black');
         // нарисовать карту
         const map = struct.map;
         for (let i = 0; i < map.length; i++) {
@@ -174,13 +176,13 @@ function Game(options) {
         refreshData();
         this.deinit();
         interval = setInterval(refreshData, 1000);
-    }
+    };
 
     this.deinit = () => {
         if (interval) {
             clearInterval(interval);
         }
-    }
+    };
     
     function init() {
         $('#endTurn').on('click', async () => {
@@ -210,6 +212,30 @@ function Game(options) {
         });
          $('#moveHeroDown').on('click', async () => {
             const result = await server.moveHero(1, 'DOWN');
+            if (result.result) {
+                render(result.data);
+            }
+        });
+        $('#moveHeroTopLeft').on('click', async () => {
+            const result = await server.moveHero(1, 'UP-LEFT');
+            if (result.result) {
+                render(result.data);
+            }
+        });
+        $('#moveHeroTopRight').on('click', async () => {
+            const result = await server.moveHero(1, 'UP-RIGHT');
+            if (result.result) {
+                render(result.data);
+            }
+        });
+        $('#moveHeroDownLeft').on('click', async () => {
+            const result = await server.moveHero(1, 'DOWN-LEFT');
+            if (result.result) {
+                render(result.data);
+            }
+        });
+        $('#moveHeroDownRight').on('click', async () => {
+            const result = await server.moveHero(1, 'DOWN-RIGHT');
             if (result.result) {
                 render(result.data);
             }
