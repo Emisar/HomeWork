@@ -1,7 +1,6 @@
 <?php
 
 require_once 'BaseElement.php';
-require_once 'Army.php';
 require_once 'Building.php';
 
 class Town extends BaseElement {
@@ -12,8 +11,8 @@ class Town extends BaseElement {
 
     public function __construct($options) {
         parent::__construct($options);
-        $this->army = new Army();
-        $this->buildings = [Building(), Building(), Building()];
+        $this->army = $options->army;
+        $this->buildings = $options->buildings;
         $this->width  = $options->width;
         $this->height = $options->height;
     }

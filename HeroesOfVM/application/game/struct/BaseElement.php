@@ -11,6 +11,7 @@ class BaseElement {
     public $owner;       // владелец
     public $properties;  // характеристики
     public $description; // описание
+    public $cost;
 
     public function __construct($options) {
         $this->id = $options->id;
@@ -19,7 +20,8 @@ class BaseElement {
         $this->type = $options->type;
         $this->owner = $options->owner;
         $this->name = $options->name;
+        $this->cost = $options->cost;
         $this->description = $options->description;
-        $this->properties = new Properties($options->properties);
+        $this->properties = new Properties($options);
     }
 }

@@ -1,0 +1,103 @@
+*{
+	margin: 0;
+	padding: 0;
+	cursor: url(public/img/indexImages/cursor.cur), default;
+}
+
+@font-face{
+	font-family: hero_font;
+	src: url(public/bootstrap/fonts/HoMMFontCyr.ttf);
+}
+
+input {
+	text-align: center;
+	border-radius: 5px;
+	width: 250px;
+	height: 40px;
+}
+
+body {
+	background-image: url(public/img/indexImages/backgroundImage.jpg);
+	width: 100%;
+	height: auto;
+
+	
+}
+
+.logo {
+	background: url(public/img/indexImages/headerLogo.png);
+	height: 120px;
+	width: 400px;
+	margin: auto;
+}
+
+header {
+	background-image: url(public/img/indexImages/headerBackground.png);
+	border: 20px solid transparent;
+	border-image: url(public/img/indexImages/borderAuth.png) 20;
+	max-width: 98%;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.4);
+	margin: 15px auto;
+
+}
+
+
+#user {
+	border: 20px solid transparent;
+	border-image: url(public/img/indexImages/borderAuth.png) 20;
+	background-image: url(public/img/indexImages/backgroundAuth.png);
+	width: 100%;
+	height: 300px;
+	margin: 0 auto;
+	margin-top: 100px;
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);	
+ }
+
+ #login, #continueGame {
+	 margin-top: 40px;
+ }
+
+ #password, #createGame {
+	 margin-top: 20px;
+ }
+
+ #auth, .logout {
+	 margin-top: 40px;
+ }
+
+ #offer {
+ 	border: 20px solid transparent;
+	border-image: url(public/img/indexImages/borderAuth.png) 20;
+	background-image: url(public/img/indexImages/backgroundAuth.png);
+	width: 100%;
+	height: 300px;
+	margin: 0 auto;
+	margin-top: 100px;
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);
+ }
+
+ #game {
+ 	width: 600px;
+ 	height: 600px;
+ 	margin: auto;
+ 	margin-top: 25px;
+ 		border: 20px solid transparent;
+	border-image: url(public/img/indexImages/borderAuth.png) 20;
+	background-image: url(public/img/indexImages/backgroundAuth.png);
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);
+ }
+
+#user span {
+	font-family: hero_font;
+	font-size: 20pt;
+	color: yellow;
+}
+
+
+#offer span {
+	font-family: hero_font;
+	font-size: 20pt;
+	color: yellow;
+}
