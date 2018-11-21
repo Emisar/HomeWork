@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Ноя 17 2018 г., 01:25
+-- Время создания: Ноя 21 2018 г., 00:49
 -- Версия сервера: 5.7.17
 -- Версия PHP: 7.1.3
 
@@ -45,7 +45,10 @@ CREATE TABLE `artifact` (
 --
 
 INSERT INTO `artifact` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
-(1, 1, 1, 11, 1, 0, 1, 'Щит', 'Ну Щит, что такого то?');
+(1, 1, 1, 0, 0, 0, 1, 'Щит', 'Ну Щит, что такого то?'),
+(2, 1, 1, 4, 5, 0, 1, 'щит', 'щит 2'),
+(3, 1, 1, 7, 4, 0, 1, 'щит', 'щит 3'),
+(4, 1, 1, 7, 3, 0, 1, 'щит', '2323');
 
 -- --------------------------------------------------------
 
@@ -89,7 +92,7 @@ CREATE TABLE `hero` (
 --
 
 INSERT INTO `hero` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
-(1, 1, 1, 0, 5, 0, 1, 'супер герой', 'Это супер герой'),
+(1, 1, 1, 8, 1, 0, 1, 'супер герой', 'Это супер герой'),
 (2, 1, 2, 1, 2, 0, 2, 'Петькин герой', 'Петя, твой герой, ты и расскажи');
 
 -- --------------------------------------------------------
@@ -115,8 +118,7 @@ CREATE TABLE `item` (
 --
 
 INSERT INTO `item` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `name`, `description`, `resources`) VALUES
-(1, 1, 1, 11, 0, 0, 'Сундук', 'Бабушкин сундук, ну там, какое то барахло лежит', NULL),
-(2, 1, 1, 0, 0, 0, 'Сундук', NULL, NULL);
+(1, 1, 1, 11, 0, 0, 'Сундук', 'Бабушкин сундук, ну там, какое то барахло лежит', NULL);
 
 -- --------------------------------------------------------
 
@@ -173,18 +175,28 @@ CREATE TABLE `properties` (
   `id` int(11) NOT NULL,
   `elem_id` int(11) NOT NULL,
   `elem_type` varchar(45) NOT NULL,
-  `move_points` int(11) DEFAULT NULL
+  `attack` int(11) DEFAULT NULL,
+  `defence` int(11) DEFAULT NULL,
+  `spell_power` int(11) DEFAULT NULL,
+  `knowledge` int(11) DEFAULT NULL,
+  `min_damage` int(11) DEFAULT NULL,
+  `max_damage` int(11) DEFAULT NULL,
+  `health` int(11) DEFAULT NULL,
+  `speed` int(11) DEFAULT NULL,
+  `move_points` int(11) DEFAULT NULL,
+  `mana_points` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `properties`
 --
 
-INSERT INTO `properties` (`id`, `elem_id`, `elem_type`, `move_points`) VALUES
-(1, 1, 'hero', 850),
-(2, 1, 'hero_default', 950),
-(3, 2, 'hero', 850),
-(4, 2, 'hero_default', 950);
+INSERT INTO `properties` (`id`, `elem_id`, `elem_type`, `attack`, `defence`, `spell_power`, `knowledge`, `min_damage`, `max_damage`, `health`, `speed`, `move_points`, `mana_points`) VALUES
+(1, 1, 'hero', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, 950, 0),
+(2, 1, 'hero_default', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, 950, 0),
+(3, 2, 'hero', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 950, 0),
+(4, 2, 'hero_default', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 950, 0),
+(5, 1, 'artifact', 2, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -208,7 +220,7 @@ CREATE TABLE `tile` (
 --
 
 INSERT INTO `tile` (`id`, `map_id`, `x`, `y`, `name`, `type`, `sprite`, `passability`) VALUES
-(1, 1, 0, 0, 'трава', 'grass', 1, 1),
+(1, 1, 0, 0, 'трава', 'water', 2, 1),
 (2, 1, 0, 1, 'трава', 'grass', 1, 1),
 (3, 1, 0, 2, 'трава', 'grass', 1, 1),
 (4, 1, 0, 3, 'трава', 'grass', 1, 1),
@@ -334,8 +346,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `login`, `password`, `token`) VALUES
-(1, 'Вася', 'vasya', '123', '8d04c66e2a790b85e64da11b1bafc18d'),
-(2, 'Петя', 'petya', '321', 'c5b1ee05a48e639c6e9f0706f8afee12');
+(1, 'Вася', 'vasya', '123', '478ceea5551e41bc70978497779fe77e'),
+(2, 'Петя', 'petya', '321', '25fef551a93c5231be5893e2ae353b68');
 
 -- --------------------------------------------------------
 
@@ -357,8 +369,8 @@ CREATE TABLE `users_games` (
 --
 
 INSERT INTO `users_games` (`id`, `user_id`, `game_id`, `color`, `order`, `is_active`) VALUES
-(1, 1, 1, 'red', 0, 0),
-(4, 2, 1, 'blue', 1, 1);
+(1, 1, 1, 'red', 0, 1),
+(4, 2, 1, 'blue', 1, 0);
 
 --
 -- Индексы сохранённых таблиц
@@ -446,7 +458,7 @@ ALTER TABLE `users_games`
 -- AUTO_INCREMENT для таблицы `artifact`
 --
 ALTER TABLE `artifact`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT для таблицы `games`
 --
@@ -476,12 +488,12 @@ ALTER TABLE `map_building`
 -- AUTO_INCREMENT для таблицы `properties`
 --
 ALTER TABLE `properties`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT для таблицы `tile`
 --
 ALTER TABLE `tile`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 --
 -- AUTO_INCREMENT для таблицы `town`
 --

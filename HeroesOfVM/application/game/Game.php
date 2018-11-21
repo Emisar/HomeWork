@@ -76,7 +76,7 @@ class Game {
                 // записать героев
                 $this->db->updateHeroes($gameId, $this->struct->heroes);
                 // записать артефакты
-                $this->db->updateArtifacts($gameId, $this->struct->artifacts);
+                //$this->db->updateArtifacts($gameId, $this->struct->artifacts);
                 // записать строения
                 $this->db->updateMapBuildings($gameId, $this->struct->mapBuildings);
                 // записать города

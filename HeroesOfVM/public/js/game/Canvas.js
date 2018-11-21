@@ -1,7 +1,7 @@
-function Canvas(width, height) {
+function Canvas(width, height, idCanvas) {
 
-    var canvas = document.getElementById('game-field');
-    canvas.width = width || 300;
+    var canvas = document.getElementById(idCanvas);
+    canvas.width = width || 500;
     canvas.height = height || 300;
     var context = canvas.getContext("2d");
 
@@ -64,5 +64,6 @@ function Canvas(width, height) {
 
     this.translate = function(x, y){
         context.translate(x, y);
-    }
+    };
+
 }

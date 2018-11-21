@@ -3,9 +3,19 @@ function Game(options) {
     const DOM_ID = options.id;
     const server = options.server;
     const callbacks = options.callbacks;
+    width = document.documentElement.clientWidth * 0.62;
+    height = document.documentElement.clientHeight * 0.85;
 
-    const canvas = new Canvas(400, 300);
+    var invActive = false;
 
+    const canvas = new Canvas(width, height, 'game-field');
+
+    const canvasInv = new Canvas(600, 600, 'inv-screen');
+    var dataStruct;
+    var activeHero;
+
+
+    canvasInv.fillRect('brown');
     // картинка с травой
     const imgGrass = new Image();
     imgGrass.src = "public/img/sprites/grass_32x32.png";
@@ -138,8 +148,48 @@ function Game(options) {
         }
     }
 
+    function printArtifactBackpack(artifact, i, j) {
+        if (artifact && artifact.type) {
+            const sprite = SPRITES.artifact;
+            canvasInv.sprite(sprite.img,
+                sprite.sprite[artifact.type - 0].x, sprite.sprite[artifact.type - 0].y, SIZE, SIZE,
+                25 + 100 * i, 25 + 100 * j, 50, 50);
+        }
+    }
+
+    function drawInventoryGrid() {
+        canvasInv.line(301, 0, 301, 600, 'yellow');
+        for (var i = 1; i <= 2; i++) {
+            canvasInv.line(i * 100, 0, i * 100, 600, 'yellow');
+        }
+        for (var i = 1; i <= 5; i++) {
+            canvasInv.line(0, i * 100, 301, i * 100, 'yellow');
+        }
+    }
+
+    function setInventory(struct) {
+        var x = 0;
+        var y = 0;
+        for (var i = 0; i < struct.heroes.length; i++) {
+            if (struct.heroes[i] == activeHero) {
+                for (var j = 0; j < struct.heroes.backpack.length; j++) {
+                    if (x == 3) {
+                        x = 0;
+                        y++;
+                    }
+                    printArtifactBackpack(struct.heroes[i].backpack, x, y);
+                    x++;
+                }
+            }
+        }
+    }
+
+
+
     function render(struct) {
-        canvas.fillRect('yellow');
+        canvas.fillRect('black');
+        dataStruct = struct;
+        setInventory(struct);
         // нарисовать карту
         const map = struct.map;
         for (let i = 0; i < map.length; i++) {
@@ -174,13 +224,15 @@ function Game(options) {
         refreshData();
         this.deinit();
         interval = setInterval(refreshData, 1000);
-    }
+    };
 
     this.deinit = () => {
         if (interval) {
             clearInterval(interval);
         }
-    }
+    };
+
+
     
     function init() {
         $('#endTurn').on('click', async () => {
@@ -190,30 +242,76 @@ function Game(options) {
             }
         });
         $('#moveHeroLeft').on('click', async () => {
-            const result = await server.moveHero(1, 'LEFT');
+            const result = await server.moveHero(activeHero.id, 'LEFT');
             if (result.result) {
                 render(result.data);
             }
         });
         $('#moveHeroRight').on('click', async () => {
-            const result = await server.moveHero(1, 'RIGHT');
+            const result = await server.moveHero(activeHero.id, 'RIGHT');
             if (result.result) {
                 render(result.data);
             }
         });
-
          $('#moveHeroUp').on('click', async () => {
-            const result = await server.moveHero(1, 'UP');
+            const result = await server.moveHero(activeHero.id, 'UP');
             if (result.result) {
                 render(result.data);
             }
         });
          $('#moveHeroDown').on('click', async () => {
-            const result = await server.moveHero(1, 'DOWN');
+            const result = await server.moveHero(activeHero.id, 'DOWN');
             if (result.result) {
                 render(result.data);
             }
         });
+        $('#moveHeroTopLeft').on('click', async () => {
+            const result = await server.moveHero(activeHero.id, 'UP-LEFT');
+            if (result.result) {
+                render(result.data);
+            }
+        });
+        $('#moveHeroTopRight').on('click', async () => {
+            const result = await server.moveHero(activeHero.id, 'UP-RIGHT');
+            if (result.result) {
+                render(result.data);
+            }
+        });
+        $('#moveHeroDownLeft').on('click', async () => {
+            const result = await server.moveHero(activeHero.id, 'DOWN-LEFT');
+            if (result.result) {
+                render(result.data);
+            }
+        });
+        $('#moveHeroDownRight').on('click', async () => {
+            const result = await server.moveHero(activeHero.id, 'DOWN-RIGHT');
+            if (result.result) {
+                render(result.data);
+            }
+        });
+
+        document.getElementById('inventory').addEventListener('click', function() {
+            if (invActive == false) {
+                document.getElementById('inv-screen').style.display = 'block';
+                invActive = true;
+            } else {
+                document.getElementById('inv-screen').style.display = 'none';
+                invActive = false;
+            }
+        });
+
+        document.getElementById('game-field').addEventListener('click', function (canvas) {
+            var x = Math.floor(canvas.offsetX / 32);
+            var y = Math.floor(canvas.offsetY / 32);
+            console.log(x, y);
+            for (var i = 0; i < dataStruct.heroes.length; i++) {
+                if (x == dataStruct.heroes[i].x && y == dataStruct.heroes[i].y) {
+                    activeHero = dataStruct.heroes[i];
+                }
+            }
+        });
+
     }
     init();
+    drawInventoryGrid();
 }
