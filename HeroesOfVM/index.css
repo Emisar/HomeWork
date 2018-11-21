@@ -1,7 +1,7 @@
 *{
 	margin: 0;
 	padding: 0;
-	cursor: url(public/img/indexImages/cursor.cur), default;
+
 }
 
 @font-face{
@@ -135,6 +135,7 @@ header {
 #game_field {
 	display: block;
 	align-content: center;
+	display: none;
 }
 
 
@@ -142,4 +143,16 @@ header {
 	font-family: hero_font;
 	font-size: 20pt;
 	color: yellow;
+}
+
+.inventory {
+	display: none;
+	position: absolute;
+	margin-left: 50%;
+	margin-top: -30px;
+	left: -300px;
+	border: 20px solid transparent;
+	border-image: url(public/img/indexImages/borderAuth.png) 20;
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);
+	background-color: yellow;
 }

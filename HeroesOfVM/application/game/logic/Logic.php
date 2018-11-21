@@ -218,7 +218,7 @@ class Logic {
     public function isPassable($x, $y)
     {
         $map = $this->struct->map;
-        if ($map[$x][$y]->passability) {
+        if ($map[$x][$y]->passability == 1) {
             return true;
         }
         return false;
