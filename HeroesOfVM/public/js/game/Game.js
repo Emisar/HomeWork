@@ -11,6 +11,8 @@ function Game(options) {
     const canvas = new Canvas(width, height, 'game-field');
 
     const canvasInv = new Canvas(600, 600, 'inv-screen');
+    var dataStruct;
+    var activeHero;
 
 
     canvasInv.fillRect('brown');
@@ -169,12 +171,16 @@ function Game(options) {
         var x = 0;
         var y = 0;
         for (var i = 0; i < struct.heroes.length; i++) {
-            if (x == 3) {
-                x = 0;
-                y++;
+            if (struct.heroes[i] == activeHero) {
+                for (var j = 0; j < struct.heroes.backpack.length; j++) {
+                    if (x == 3) {
+                        x = 0;
+                        y++;
+                    }
+                    printArtifactBackpack(struct.heroes[i].backpack, x, y);
+                    x++;
+                }
             }
-            printArtifactBackpack(struct.artifacts[i], x, y);
-            x++;
         }
     }
 
@@ -182,7 +188,7 @@ function Game(options) {
 
     function render(struct) {
         canvas.fillRect('black');
-
+        dataStruct = struct;
         setInventory(struct);
         // нарисовать карту
         const map = struct.map;
@@ -236,49 +242,49 @@ function Game(options) {
             }
         });
         $('#moveHeroLeft').on('click', async () => {
-            const result = await server.moveHero(1, 'LEFT');
+            const result = await server.moveHero(activeHero.id, 'LEFT');
             if (result.result) {
                 render(result.data);
             }
         });
         $('#moveHeroRight').on('click', async () => {
-            const result = await server.moveHero(1, 'RIGHT');
+            const result = await server.moveHero(activeHero.id, 'RIGHT');
             if (result.result) {
                 render(result.data);
             }
         });
          $('#moveHeroUp').on('click', async () => {
-            const result = await server.moveHero(1, 'UP');
+            const result = await server.moveHero(activeHero.id, 'UP');
             if (result.result) {
                 render(result.data);
             }
         });
          $('#moveHeroDown').on('click', async () => {
-            const result = await server.moveHero(1, 'DOWN');
+            const result = await server.moveHero(activeHero.id, 'DOWN');
             if (result.result) {
                 render(result.data);
             }
         });
         $('#moveHeroTopLeft').on('click', async () => {
-            const result = await server.moveHero(1, 'UP-LEFT');
+            const result = await server.moveHero(activeHero.id, 'UP-LEFT');
             if (result.result) {
                 render(result.data);
             }
         });
         $('#moveHeroTopRight').on('click', async () => {
-            const result = await server.moveHero(1, 'UP-RIGHT');
+            const result = await server.moveHero(activeHero.id, 'UP-RIGHT');
             if (result.result) {
                 render(result.data);
             }
         });
         $('#moveHeroDownLeft').on('click', async () => {
-            const result = await server.moveHero(1, 'DOWN-LEFT');
+            const result = await server.moveHero(activeHero.id, 'DOWN-LEFT');
             if (result.result) {
                 render(result.data);
             }
         });
         $('#moveHeroDownRight').on('click', async () => {
-            const result = await server.moveHero(1, 'DOWN-RIGHT');
+            const result = await server.moveHero(activeHero.id, 'DOWN-RIGHT');
             if (result.result) {
                 render(result.data);
             }
@@ -294,14 +300,13 @@ function Game(options) {
             }
         });
 
-        document.getElementById('game-field').addEventListener('click', function (canvas, struct) {
-            console.log(struct);
+        document.getElementById('game-field').addEventListener('click', function (canvas) {
             var x = Math.floor(canvas.offsetX / 32);
             var y = Math.floor(canvas.offsetY / 32);
             console.log(x, y);
-            for (var i = 0; i < struct.heroes.length; i++) {
-                if (x == struct.artifacts[i].x && y == struct.heroes[i].y) {
-                    console.log(struct.heroes[i]);
+            for (var i = 0; i < dataStruct.heroes.length; i++) {
+                if (x == dataStruct.heroes[i].x && y == dataStruct.heroes[i].y) {
+                    activeHero = dataStruct.heroes[i];
                 }
             }
         });

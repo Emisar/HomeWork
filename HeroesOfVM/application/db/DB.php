@@ -106,6 +106,7 @@ class DB {
                     hero AS h, 
                     properties AS p 
                   WHERE 
+                    h.id = p.elem_id AND
                     h.game_id=' . $gameId . ' AND
                     p.elem_type=\'hero\'';
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
@@ -194,18 +195,8 @@ class DB {
         $query = '';
         foreach ($artifacts as $artifact) {
             $query .= 'UPDATE artifact 
-                       SET x=' . $artifact->x . ', y=' . $artifact->y . '  
-                       WHERE id=' . $artifact->id . ';
-                       SET move_points=' . $artifact->properties->movePoints . ',
-                           attack=' . $artifact->properties->attack . ',
-                           defence=' . $artifact->properties->defence . '
-                           spell_power=' . $artifact->properties->spellPower . ',
-                           knowledge=' . $artifact->properties->knowledge . ',
-                           min_damage=' . $artifact->properties->minDamage . ',
-                           max_damage=' . $artifact->properties->maxDamage . ',
-                           speed=' . $artifact->properties->speed . ',                           
-                           mana_points=' . $artifact->properties->manaPoints . '    
-                       WHERE elem_id=' . $artifact->id . ' AND elem_type="hero";';
+                       SET x=' . $artifact->x . ', y=' . $artifact->y . ' 
+                       WHERE id=' . $artifact->id . ';';
         }
         return ($query) ? $this->connection->query($query)->execute() : false;
     }
