@@ -173,7 +173,7 @@ function Game(options) {
         }
     }
 
-    function setUserResources(dataStruct) {
+    function setUserResources() {
         if (dataStruct){
             idGamer = server.getUserId();
             for (var i = 0; i < dataStruct.gamers.length; i++) {
@@ -183,6 +183,8 @@ function Game(options) {
                     gold.textContent = 'Золотишко : ' + dataStruct.gamers[i].resources.gold;
                 }
             }
+        } else {
+            console.log('Йа туд!!!', dataStruct);
         }
     }
 
@@ -196,11 +198,11 @@ function Game(options) {
         }
     }
 
-    function setInventory(dataStruct) {
+    function setInventory() {
         var x = 0;
         var y = 0;
         for (var i = 0; i < dataStruct.heroes.length; i++) {
-            if (dataStruct.heroes[i].id == activeHero.id) {
+            if (activeHero && dataStruct.heroes[i].id == activeHero.id) {
                 dataStruct.heroes[i].backpack.  forEach(function(artifact) {
                     if (x == 3) {
                         x = 0;
@@ -222,15 +224,10 @@ function Game(options) {
         }
     }
 
-    function renderInv(dataStruct) {
-        setInventory(dataStruct);
-    }
-
     function render(struct) {
         canvas.fillRect('black');
-        dataStruct = struct;
         setHeroInfo(activeHero);
-        setUserResources(dataStruct);
+        setUserResources();
         // нарисовать карту
         const map = struct.map;
         for (let i = 0; i < map.length; i++) {
@@ -257,6 +254,7 @@ function Game(options) {
         // послать запрос на сервер и отрисовать полученные данные
         const result = await server.getStruct();
         if (result.result) {
+            dataStruct = result.data;
             render(result.data);
         }
     }
@@ -331,7 +329,7 @@ function Game(options) {
 
         document.getElementById('inventory').addEventListener('click', function() {
             if (invActive == false) {
-                renderInv(dataStruct);
+                setInventory();
                 document.getElementById('inv-screen').style.display = 'block';
                 invActive = true;
             } else {

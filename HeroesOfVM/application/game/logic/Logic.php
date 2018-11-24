@@ -245,9 +245,9 @@ class Logic {
                                     $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
                                     return true;
                                 }
-                            } break;
+                            }
                         }
-                        
+                        break;
                     case 'LEFT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->x - 1 >= 0) {
@@ -257,9 +257,8 @@ class Logic {
                                     return true;
                                 }
                             }
-                            break;
                         }
-                        
+                        break;
                     case 'UP':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->y-1 >= 0){
@@ -268,9 +267,9 @@ class Logic {
                                     $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
                                     return true;
                                 }
-                            } break;
+                            }
                         }
-                         
+                        break;
                     case 'DOWN':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->y + 1 <= $mapHeight) {
@@ -280,9 +279,8 @@ class Logic {
                                     return true;
                                 }
                             }
-                            break;
                         }
-
+                        break;
 					case 'UP-RIGHT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y - 1 >= 0 && $hero->x + 1 <= $mapWidth) {
@@ -293,9 +291,8 @@ class Logic {
                                     return true;
                                 }
                             }
-                            break;
                         }
-                        
+                        break;
                     case 'UP-LEFT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y - 1 >= 0 && $hero->x - 1 >= 0) {
@@ -306,9 +303,8 @@ class Logic {
                                     return true;
                                 }
                             }
-                            break;
                         }
-                        
+                        break;
                     case 'DOWN-RIGHT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y + 1 <= $mapHeight && $hero->x + 1 <= $mapWidth) {
@@ -319,9 +315,8 @@ class Logic {
                                     return true;
                                 }
                             }
-                            break;
                         }
-                         
+                        break;
                     case 'DOWN-LEFT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y + 1 <= $mapHeight && $hero->x - 1 >= 0) {
@@ -332,8 +327,8 @@ class Logic {
                                     return true;
                                 }
                             }
-                            break;
                         }
+                        break;
                 }
             }
         }

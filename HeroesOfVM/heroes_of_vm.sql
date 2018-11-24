@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.0
+-- version 4.7.7
 -- https://www.phpmyadmin.net/
 --
--- Хост: 127.0.0.1
--- Время создания: Ноя 24 2018 г., 07:27
--- Версия сервера: 5.7.17
--- Версия PHP: 7.1.3
+-- Хост: 127.0.0.1:3306
+-- Время создания: Ноя 24 2018 г., 13:01
+-- Версия сервера: 5.6.38
+-- Версия PHP: 7.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -91,8 +91,8 @@ CREATE TABLE `hero` (
 --
 
 INSERT INTO `hero` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
-(1, 1, 1, 5, 2, 0, 1, 'супер герой', 'Это супер герой'),
-(2, 1, 2, 1, 2, 0, 2, 'Петькин герой', 'Петя, твой герой, ты и расскажи');
+(1, 1, 1, 4, 6, 0, 1, 'супер герой', 'Это супер герой'),
+(2, 1, 2, 4, 2, 0, 2, 'Петькин герой', 'Петя, твой герой, ты и расскажи');
 
 -- --------------------------------------------------------
 
@@ -191,10 +191,10 @@ CREATE TABLE `properties` (
 --
 
 INSERT INTO `properties` (`id`, `elem_id`, `elem_type`, `attack`, `defence`, `spell_power`, `knowledge`, `min_damage`, `max_damage`, `health`, `speed`, `move_points`, `mana_points`) VALUES
-(1, 1, 'hero', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, 950, 0),
-(2, 1, 'hero_default', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, 950, 0),
-(3, 2, 'hero', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 950, 0),
-(4, 2, 'hero_default', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 950, 0),
+(1, 1, 'hero', 1, 1, 12, 5, 0, 8, NULL, 1, 950, 0),
+(2, 1, 'hero_default', 1, 1, 12, 5, 0, 8, NULL, 1, 950, 0),
+(3, 2, 'hero', 2, 2, 5, 1, 1, 3, NULL, 2, 409, 0),
+(4, 2, 'hero_default', 2, 2, 5, 1, 1, 3, NULL, 2, 950, 0),
 (5, 1, 'artifact', 2, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
@@ -368,8 +368,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `login`, `password`, `token`) VALUES
-(1, 'Вася', 'vasya', '123', 'f3f399fb3a43496ea45d161756824303'),
-(2, 'Петя', 'petya', '321', '22c128e0ddd4ad45a95ed757225435b9');
+(1, 'Вася', 'vasya', '123', 'f7a66c7e2ebcb3f3bd6523dcb3f83217'),
+(2, 'Петя', 'petya', '321', 'af65ae9a9a11a4d85a6deb75c7a9f1f3');
 
 -- --------------------------------------------------------
 
@@ -391,8 +391,8 @@ CREATE TABLE `users_games` (
 --
 
 INSERT INTO `users_games` (`id`, `user_id`, `game_id`, `color`, `order`, `is_active`) VALUES
-(1, 1, 1, 'red', 0, 1),
-(2, 2, 1, 'blue', 1, 0);
+(1, 1, 1, 'red', 0, 0),
+(2, 2, 1, 'blue', 1, 1);
 
 --
 -- Индексы сохранённых таблиц
@@ -487,61 +487,73 @@ ALTER TABLE `users_games`
 --
 ALTER TABLE `artifact`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- AUTO_INCREMENT для таблицы `games`
 --
 ALTER TABLE `games`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT для таблицы `hero`
 --
 ALTER TABLE `hero`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT для таблицы `item`
 --
 ALTER TABLE `item`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT для таблицы `map`
 --
 ALTER TABLE `map`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT для таблицы `map_building`
 --
 ALTER TABLE `map_building`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT для таблицы `properties`
 --
 ALTER TABLE `properties`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
 -- AUTO_INCREMENT для таблицы `resources`
 --
 ALTER TABLE `resources`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT для таблицы `tile`
 --
 ALTER TABLE `tile`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+
 --
 -- AUTO_INCREMENT для таблицы `town`
 --
 ALTER TABLE `town`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT для таблицы `users_games`
 --
 ALTER TABLE `users_games`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;COMMIT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

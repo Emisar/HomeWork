@@ -119,6 +119,11 @@ class DB {
     public function getHeroes($gameId) {
         $query = 'SELECT 
                     p.move_points AS movePoints,
+                    p.attack AS attack,
+                    p.defence AS defence,
+                    p.knowledge AS knowledge,
+                    p.spell_power AS spellPower,
+                    p.mana_points AS manaPoints,
                     h.id AS id,
                     h.x AS x,
                     h.y AS y,
@@ -209,12 +214,9 @@ class DB {
                        UPDATE properties
                        SET move_points=' . $hero->properties->movePoints . ',
                            attack=' . $hero->properties->attack . ',
-                           defence=' . $hero->properties->defence . '
+                           defence=' . $hero->properties->defence . ',
                            spell_power=' . $hero->properties->spellPower . ',
                            knowledge=' . $hero->properties->knowledge . ',
-                           min_damage=' . $hero->properties->minDamage . ',
-                           max_damage=' . $hero->properties->maxDamage . ',
-                           speed=' . $hero->properties->speed . ',                           
                            mana_points=' . $hero->properties->manaPoints . '    
                        WHERE elem_id=' . $hero->id . ' AND elem_type="hero";';
         }
