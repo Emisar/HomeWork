@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Ноя 21 2018 г., 00:49
+-- Время создания: Ноя 24 2018 г., 07:27
 -- Версия сервера: 5.7.17
 -- Версия PHP: 7.1.3
 
@@ -35,7 +35,7 @@ CREATE TABLE `artifact` (
   `x` int(11) DEFAULT NULL,
   `y` int(11) DEFAULT NULL,
   `type` int(11) NOT NULL,
-  `owner` int(11) NOT NULL,
+  `owner` int(11) DEFAULT NULL,
   `name` varchar(45) CHARACTER SET utf8mb4 DEFAULT NULL,
   `description` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -45,10 +45,9 @@ CREATE TABLE `artifact` (
 --
 
 INSERT INTO `artifact` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
-(1, 1, 1, 0, 0, 0, 1, 'Щит', 'Ну Щит, что такого то?'),
-(2, 1, 1, 4, 5, 0, 1, 'щит', 'щит 2'),
-(3, 1, 1, 7, 4, 0, 1, 'щит', 'щит 3'),
-(4, 1, 1, 7, 3, 0, 1, 'щит', '2323');
+(1, 1, 1, -1, -1, 0, 1, 'щит', 'щит 2'),
+(2, 1, 1, -1, -1, 0, 1, 'щит', 'щит 3'),
+(3, 1, 1, -1, -1, 0, 1, 'щит', '2323');
 
 -- --------------------------------------------------------
 
@@ -92,7 +91,7 @@ CREATE TABLE `hero` (
 --
 
 INSERT INTO `hero` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
-(1, 1, 1, 8, 1, 0, 1, 'супер герой', 'Это супер герой'),
+(1, 1, 1, 5, 2, 0, 1, 'супер герой', 'Это супер герой'),
 (2, 1, 2, 1, 2, 0, 2, 'Петькин герой', 'Петя, твой герой, ты и расскажи');
 
 -- --------------------------------------------------------
@@ -197,6 +196,29 @@ INSERT INTO `properties` (`id`, `elem_id`, `elem_type`, `attack`, `defence`, `sp
 (3, 2, 'hero', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 950, 0),
 (4, 2, 'hero_default', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 950, 0),
 (5, 1, 'artifact', 2, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `resources`
+--
+
+CREATE TABLE `resources` (
+  `id` int(11) NOT NULL,
+  `elem_id` int(11) NOT NULL,
+  `elem_type` varchar(45) NOT NULL,
+  `ore` int(11) DEFAULT NULL,
+  `gold` int(11) DEFAULT NULL,
+  `wood` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Дамп данных таблицы `resources`
+--
+
+INSERT INTO `resources` (`id`, `elem_id`, `elem_type`, `ore`, `gold`, `wood`) VALUES
+(1, 1, 'gamer', 1000, 1000, 1000),
+(2, 2, 'gamer', 300, 300, 300);
 
 -- --------------------------------------------------------
 
@@ -346,8 +368,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `login`, `password`, `token`) VALUES
-(1, 'Вася', 'vasya', '123', '478ceea5551e41bc70978497779fe77e'),
-(2, 'Петя', 'petya', '321', '25fef551a93c5231be5893e2ae353b68');
+(1, 'Вася', 'vasya', '123', 'f3f399fb3a43496ea45d161756824303'),
+(2, 'Петя', 'petya', '321', '22c128e0ddd4ad45a95ed757225435b9');
 
 -- --------------------------------------------------------
 
@@ -370,7 +392,7 @@ CREATE TABLE `users_games` (
 
 INSERT INTO `users_games` (`id`, `user_id`, `game_id`, `color`, `order`, `is_active`) VALUES
 (1, 1, 1, 'red', 0, 1),
-(4, 2, 1, 'blue', 1, 0);
+(2, 2, 1, 'blue', 1, 0);
 
 --
 -- Индексы сохранённых таблиц
@@ -422,6 +444,12 @@ ALTER TABLE `map_building`
 ALTER TABLE `properties`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id_UNIQUE` (`id`);
+
+--
+-- Индексы таблицы `resources`
+--
+ALTER TABLE `resources`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `tile`
@@ -490,6 +518,11 @@ ALTER TABLE `map_building`
 ALTER TABLE `properties`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
+-- AUTO_INCREMENT для таблицы `resources`
+--
+ALTER TABLE `resources`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
 -- AUTO_INCREMENT для таблицы `tile`
 --
 ALTER TABLE `tile`
@@ -508,7 +541,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `users_games`
 --
 ALTER TABLE `users_games`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;COMMIT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

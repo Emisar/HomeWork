@@ -5,6 +5,12 @@ function Game(options) {
     const callbacks = options.callbacks;
     width = document.documentElement.clientWidth * 0.62;
     height = document.documentElement.clientHeight * 0.85;
+    var name = document.getElementById("name");
+    var movePoints = document.getElementById("move_points");
+    var gold = document.getElementById("gold");
+    var wood = document.getElementById("wood");
+    var ore = document.getElementById("ore");
+    var idGamer;
 
     var invActive = false;
 
@@ -167,29 +173,64 @@ function Game(options) {
         }
     }
 
-    function setInventory(struct) {
-        var x = 0;
-        var y = 0;
-        for (var i = 0; i < struct.heroes.length; i++) {
-            if (struct.heroes[i] == activeHero) {
-                for (var j = 0; j < struct.heroes.backpack.length; j++) {
-                    if (x == 3) {
-                        x = 0;
-                        y++;
-                    }
-                    printArtifactBackpack(struct.heroes[i].backpack, x, y);
-                    x++;
+    function setUserResources(dataStruct) {
+        if (dataStruct){
+            idGamer = server.getUserId();
+            for (var i = 0; i < dataStruct.gamers.length; i++) {
+                if(dataStruct.gamers[i].id == idGamer) {
+                    ore.textContent  = 'Рудишко : '   + dataStruct.gamers[i].resources.ore;
+                    wood.textContent = 'Древесина : ' + dataStruct.gamers[i].resources.wood;
+                    gold.textContent = 'Золотишко : ' + dataStruct.gamers[i].resources.gold;
                 }
             }
         }
     }
 
+    function setHeroInfo(activeHero) {
+        if(activeHero) {
+            name.textContent       = 'Имя : ' + activeHero.name;
+            movePoints.textContent = 'Очки хода : ' + activeHero.properties.movePoints;
+        } else {
+            name.textContent="Имя : ";
+            movePoints.textContent = 'Очки хода : ';
+        }
+    }
 
+    function setInventory(dataStruct) {
+        var x = 0;
+        var y = 0;
+        for (var i = 0; i < dataStruct.heroes.length; i++) {
+            if (dataStruct.heroes[i].id == activeHero.id) {
+                dataStruct.heroes[i].backpack.  forEach(function(artifact) {
+                    if (x == 3) {
+                        x = 0;
+                        y++;
+                    }
+                    printArtifactBackpack(artifact, x, y);
+                    x++;
+                });
+                /*
+                for (var j = 0; j < dataStruct.heroes.backpack.length; j++) {
+                    if (x == 3) {
+                        x = 0;
+                        y++;
+                    }
+                    printArtifactBackpack(dataStruct.heroes[i].backpack[j], x, y);
+                    x++;
+                } */
+            }
+        }
+    }
+
+    function renderInv(dataStruct) {
+        setInventory(dataStruct);
+    }
 
     function render(struct) {
         canvas.fillRect('black');
         dataStruct = struct;
-        setInventory(struct);
+        setHeroInfo(activeHero);
+        setUserResources(dataStruct);
         // нарисовать карту
         const map = struct.map;
         for (let i = 0; i < map.length; i++) {
@@ -232,8 +273,6 @@ function Game(options) {
         }
     };
 
-
-    
     function init() {
         $('#endTurn').on('click', async () => {
             const result = await server.endTurn();
@@ -292,6 +331,7 @@ function Game(options) {
 
         document.getElementById('inventory').addEventListener('click', function() {
             if (invActive == false) {
+                renderInv(dataStruct);
                 document.getElementById('inv-screen').style.display = 'block';
                 invActive = true;
             } else {

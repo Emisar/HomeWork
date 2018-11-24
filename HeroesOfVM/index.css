@@ -21,7 +21,7 @@ input {
 }
 
 .left_sidebar {
-	margin-top: 180px;
+	margin-top: 40%;
 	margin-left: 50px;
 }
 
@@ -35,14 +35,93 @@ input {
 	height: 70px;
 }
 
+#moveHeroRight {
+	background: transparent;
+	background-image: url(public/img/indexImages/buttonImg/buttonRight.png);
+	background-size: contain;
+}
+
+#moveHeroLeft {
+	background: transparent;
+	background-image: url(public/img/indexImages/buttonImg/buttonLeft.png);
+	background-size: contain;
+}
+
+#moveHeroUp {
+	background: transparent;
+	background-image: url(public/img/indexImages/buttonImg/buttonUp.png);
+	background-size: contain;
+}
+
+#moveHeroDown {
+	background: transparent;
+	background-image: url(public/img/indexImages/buttonImg/buttonDown.png);
+	background-size: contain;
+}
+
+#moveHeroTopLeft {
+	background: transparent;
+	background-image: url(public/img/indexImages/buttonImg/buttonLU.png);
+	background-size: contain;
+}
+
+#moveHeroTopRight {
+	background: transparent;
+	background-image: url(public/img/indexImages/buttonImg/buttonRU.png);
+	background-size: contain;
+}
+
+#moveHeroDownLeft {
+	background: transparent;
+	background-image: url(public/img/indexImages/buttonImg/buttonLD.png);
+	background-size: contain;
+}
+
+#moveHeroDownRight {
+	background: transparent;
+	background-image: url(public/img/indexImages/buttonImg/buttonRD.png);
+	background-size: contain;
+}
+
+#inventory {	
+	background: transparent;
+	background-image: url(public/img/indexImages/buttonImg/inv.png);
+}
+
+#endTurn {
+	background: transparent;
+	background-image: url(public/img/indexImages/buttonImg/endTurnButton.png);
+	background-size: contain;
+
+}
+.btn:active {
+	border: 4px brown inset;
+}
+
 .btn {
+	font-family: hero_font;
 	width: 55px ;
 	height: 55px;
 	color: yellow;
-	background-image: url(public/img/indexImages/backgroundAuth.png);
 	overflow: hidden;
-	border-image: url(public/img/indexImages/borderAuth.png) 10;
+	background-image: url(public/img/indexImages/backgroundAuth.png);
+	border: 4px brown outset;
 	box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.7);
+}
+
+.info_bar {
+	border: 20px solid transparent;
+	border-image: url(public/img/indexImages/borderAuth.png) 20;
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);
+	color: yellow;
+}
+
+.resources_bar {
+	border: 20px solid transparent;
+	border-image: url(public/img/indexImages/borderAuth.png) 20;
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);
+	color: yellow;
+	margin-top: 26%;
 }
 
 .btn_row_mid {

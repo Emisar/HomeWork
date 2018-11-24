@@ -14,7 +14,7 @@ class User {
             if ($user) {
                 $token = md5($user->login . rand(0, 50000));
                 if ($this->db->updateUserToken($user->id, $token)) {
-                    return (object) ['name' => $user->name, 'token' => $token];
+                    return (object) ['name' => $user->name, 'token' => $token, 'id' => $user->id];
                 }
             }
         }

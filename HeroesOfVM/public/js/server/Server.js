@@ -1,5 +1,8 @@
 function Server() {
-
+    var idUser;
+    this.getUserId = function() {
+        return idUser;
+    };
     var token;
     var gameId;
     // User API
@@ -7,6 +10,8 @@ function Server() {
         const result = await $.get('api/', { method: 'login', login, password });
         if (result && result.result) {
             token = result.data.token;
+            idUser = result.data.id;
+            console.log(idUser);
             return result.data.name;
         }
         return null;

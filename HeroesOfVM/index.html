@@ -11,6 +11,7 @@
     <script src="public/js/game/Game.js"></script>
     <script src="public/js/main.js"></script>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="media.css">
     <link rel="stylesheet" href="public/bootstrap/css/bootstrap-grid.min.css">
     <link rel="icon" href="public/img/indexImages/favicon.png" type="images/png">
     
@@ -70,17 +71,26 @@
         <div class="container-fluid">
             <div class="row">
                 <div class=" col-md-3">
+                    <div class="info_bar">  
+                        <span id="name"></span><br>
+                        <span id="move_points"></span>
+                    </div>
                     <div class="left_sidebar">
-                        <input class="btn btn_left_top" id="moveHeroTopLeft" type="button" value="top_L" />
-                        <input class="btn btn_top" id="moveHeroUp" type="button" value="Вверх" />
-                        <input class="btn btn_right_top" id="moveHeroTopRight" type="button" value="top_R" /><br>
+                        <input class="btn btn_left_top" id="moveHeroTopLeft" type="button"/>
+                        <input class="btn btn_top" id="moveHeroUp" type="button"/>
+                        <input class="btn btn_right_top" id="moveHeroTopRight" type="button" /><br>
                         <div id="btn_row">
-                            <input class="btn btn_row_mid" id="moveHeroLeft" type="button" value="Влево" />
-                            <input class="btn btn_row_mid" id="moveHeroRight" type="button" value="Вправо" />  
+                            <input class="btn btn_row_mid" id="moveHeroLeft" type="button" />
+                            <input class="btn btn_row_mid" id="moveHeroRight" type="button"/>  
                         </div>
-                        <input class=" btn btn_left_bott" id="moveHeroDownLeft" type="button" value="bot_L" />
-                        <input class=" btn btn_bott" id="moveHeroDown" type="button" value="Вниз" />
-                        <input class=" btn btn_right_bott" id="moveHeroDownRight" type="button" value="bot_R" />
+                        <input class=" btn btn_left_bott" id="moveHeroDownLeft" type="button"/>
+                        <input class=" btn btn_bott" id="moveHeroDown" type="button" />
+                        <input class=" btn btn_right_bott" id="moveHeroDownRight" type="button"/>
+                    </div>
+                    <div class="resources_bar">
+                        <span id="wood"></span><br>
+                        <span id="gold"></span><br>
+                        <span id="ore"></span>
                     </div>
                 </div>
                 <div class="col-md-8">                       
@@ -89,8 +99,8 @@
                 <div class="col-md-1">
                     <div class="right_sidebar">
                         <input class="btn btn_log_out logout"  type="button" value="Выйти"/><br>
-                        <input class="btn btn_end_turn" id="endTurn" type="button" value="Закончить ход" /><br>
-                        <input class="btn btn_Inventory" id="inventory" type="button" value="Инвентарь"/><br>
+                        <input class="btn btn_end_turn" id="endTurn" type="button"/><br>
+                        <input class="btn btn_Inventory" id="inventory" type="button"/><br>
                     </div>
                 </div>
                 <canvas class="inventory" id="inv-screen"></canvas>
