@@ -16,7 +16,7 @@ class Input {
     }
 
     public function executeCommand($name = null, $options = null) {
-        if ($name /*&& isset($this->logic->{$name}) && is_callable($this->logic->{$name})*/) {
+        if ($name) {
             return $this->logic->{$name}($options);
         }
         return false;

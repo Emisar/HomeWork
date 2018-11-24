@@ -19,7 +19,7 @@ class Properties {
             $this->spellPower = $options->spellPower;
             $this->knowledge  = $options->knowledge;
             $this->minDamage  = $options->minDamage;
-            $this->maxDamage  = $options->maxDamage ;
+            $this->maxDamage  = $options->maxDamage;
             $this->health     = $options->health;
             $this->speed      = $options->speed;
             $this->movePoints = $options->movePoints;

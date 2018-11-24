@@ -3,17 +3,20 @@
 require_once '..\application\db\DB.php';
 require_once '..\application\game\Game.php';
 require_once '..\application\user\User.php';
+require_once '..\application\offer\Offer.php';
 
 class Router {
 
     private $user;
+    private $offer;
     private $game;
     private $db;
 
     public function __construct() {
         $this->db = new DB();
-        $this->game = new Game($this->db);
-        $this->user = new User($this->db);
+        $this->game  = new Game ($this->db);
+        $this->user  = new User ($this->db);
+        $this->offer = new Offer($this->db);
     }
 
     private function bad($text) {
@@ -42,30 +45,59 @@ class Router {
             $this->bad('logout fail');
     }
 
+    /*private function getGame($params) {
+        $game = $this->game->getGame($params);
+        return ($game) ?
+            $this->good($game) :
+            $this->bad('game not found');
+    }*/
+
+    private function findGame($params) {
+        $user = $this->user->checkToken($params);
+        if ($user) {
+            $gameId = $this->offer->findGame($user->id);
+            return ($gameId) ?
+                $this->good($gameId) :
+                $this->bad('game not found');
+        }
+        return $this->bad('user not found');
+    }
+
     public function answer($params) {
-        $method = $params['method'];
-        if ($method) {
-            unset($params['method']);
+        if ($params && isset($params->method)) {
+            $method = $params->method;
+            unset($params->method);
             // вызвать методы АПИ
-            if ($this->{$method} && is_callable($this->{$method})) {
-                return $this->{$method}((object) $params);
+            switch ($method) {
+                case 'login'  : return $this->login  ($params); break;
+                case 'logout' : return $this->logout ($params); break;
+                case 'findGame': return $this->findGame($params); break;
+                //...
             }
             // вызвать команду игры
-            $commands = $this->game->getCommands();
-            if ($method == $commands->GET_STRUCT) {
-                return $this->good($this->game->getStruct());
-            }
-            foreach ($commands as $command) {
-                if ($command === $method) {
-                    if ($this->user->checkToken($params)) {
-                        $result = $this->game->executeCommand($method, (object) $params);
-                        return ($result) ?
-                            $this->good($this->game->getStruct()) :
-                            $this->bad('game method return false');
+            $user = $this->user->checkToken($params);
+            if ($user) {
+                if ($this->game->init($params->gameId)) { // данные забираем из БД
+                    $commands = $this->game->getCommands();
+                    if ($method == $commands->GET_STRUCT) {
+                        return $this->good($this->game->getStruct());
                     }
-                    return $this->bad('invalid token');
+                    foreach ($commands as $command) {
+                        if ($command === $method) {
+                            $params->id = $user->id;
+                            $result = $this->game->executeCommand($method, $params);
+                            if ($result) {
+                                $this->game->updateData($params->gameId); // записать измененные данные в БД
+                            }
+                            return ($result) ?
+                                $this->good($this->game->getStruct()) :
+                                $this->bad('game method return false');
+                        }
+                    }
                 }
+                return $this->bad('game does not exist');
             }
+            return $this->bad('invalid token');
         }
         return $this->bad('method does not exist');
     }

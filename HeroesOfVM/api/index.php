@@ -6,4 +6,6 @@ require_once '..\application\router\Router.php';
 
 $router = new Router();
 
-echo json_encode($router->answer($_GET));
+header('Content-Type: application/json');
+
+echo json_encode($router->answer((object) $_GET));
