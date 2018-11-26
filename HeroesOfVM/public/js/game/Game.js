@@ -5,6 +5,7 @@ function Game(options) {
     const callbacks = options.callbacks;
     width = document.documentElement.clientWidth * 0.62;
     height = document.documentElement.clientHeight * 0.85;
+    var TurnColor;
     var name = document.getElementById("name");
     var movePoints = document.getElementById("move_points");
     var gold = document.getElementById("gold");
@@ -170,8 +171,8 @@ function Game(options) {
         }
     }
 
-    function printHeadBand(x,y) {
-            canvasUI.rect(x, y , 32, 32 , 'red');
+    function printHeadBand(x,y, color) {
+            canvasUI.rect(x, y , 32, 32 , color);
         }
 
 
@@ -188,7 +189,14 @@ function Game(options) {
     function setUserResources() {
         if (dataStruct){
             idGamer = server.getUserId();
+            console.log(dataStruct.gamers);
             for (var i = 0; i < dataStruct.gamers.length; i++) {
+                if(dataStruct.gamers[i].isActive == 1) {
+                    $('#activePlayer').text(function(color) {
+                        return "You in " + dataStruct.gamers[idGamer - 1].color + " team"; 
+                    });
+                    TurnColor = dataStruct.gamers[i].color;
+                }
                 if(dataStruct.gamers[i].id == idGamer) {
                     ore.textContent  = 'Рудишко : '   + dataStruct.gamers[i].resources.ore;
                     wood.textContent = 'Древесина : ' + dataStruct.gamers[i].resources.wood;
@@ -270,7 +278,7 @@ function Game(options) {
             canvasUI.clearRect();
             activeHero = dataStruct.heroes[heroUpdate];
             if (typeof activeHero != "undefined"){
-                printHeadBand(0+32*activeHero.x,0+32*activeHero.y);
+                printHeadBand(-5+32*activeHero.x,0+32*activeHero.y, TurnColor);
             }
             render(result.data);
         }

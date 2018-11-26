@@ -11,7 +11,6 @@ function Server() {
         if (result && result.result) {
             token = result.data.token;
             idUser = result.data.id;
-            console.log(idUser);
             return result.data.name;
         }
         return null;
