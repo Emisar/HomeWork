@@ -51,11 +51,16 @@ class Struct {
         }*/
     }
 
-    public function fillGamers($gamers) {
+    public function fillGamers($gamers, $resources) {
         // список игроков
         $this->gamers = [];
         foreach ($gamers as $value) {
-            $this->gamers[] = new Gamer($value);
+            foreach ($resources as $resource) {
+                if ($resource->id == $value->id) {
+                    $this->gamers[] = new Gamer($value, $resource);
+                    break;
+                }
+            }
         }
     }
 

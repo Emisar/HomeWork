@@ -84,17 +84,46 @@ class DB {
     }
 
     public function getGamers($gameId) {
-        $query = 'SELECT u.id, u.name, ug.color, ug.order, ug.is_active AS isActive 
+        $query = 'SELECT u.id, 
+                         u.name, 
+                         ug.color, 
+                         ug.order, 
+                         ug.is_active AS isActive,
+                         r.gold,
+                         r.wood,
+                         r.ore
                   FROM 
-                    heroes_of_vm.users_games AS ug, 
-                    heroes_of_vm.users AS u 
-                  WHERE ug.game_id=' . $gameId . ' AND u.id=ug.user_id';
+                         resources AS r,
+                         heroes_of_vm.users_games AS ug, 
+                         heroes_of_vm.users AS u 
+                  WHERE  ug.game_id=' . $gameId . ' AND u.id=ug.user_id AND r.elem_type=\'gamer\' AND r.elem_id=ug.id';
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
     }
-
+    public function getGamersResources($gamers) {
+        $temp = [];
+        foreach ($gamers as $gamer) {
+            $temp[] = 'elem_id='.$gamer->id;
+        }
+        $str = join(' OR ', $temp);
+        $query = 'SELECT
+                    elem_id as id,
+                    gold,
+                    wood,
+                    ore
+                  FROM
+                    resources
+                  WHERE
+                    (' . $str . ') AND elem_type="gamer"';
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
     public function getHeroes($gameId) {
         $query = 'SELECT 
                     p.move_points AS movePoints,
+                    p.attack AS attack,
+                    p.defence AS defence,
+                    p.knowledge AS knowledge,
+                    p.spell_power AS spellPower,
+                    p.mana_points AS manaPoints,
                     h.id AS id,
                     h.x AS x,
                     h.y AS y,
@@ -157,6 +186,7 @@ class DB {
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
     }
 
+
     /***************/
     /* UPDATE DATA */
     /***************/
@@ -165,7 +195,12 @@ class DB {
         foreach ($gamers as $gamer) {
             $query .= 'UPDATE users_games 
                        SET is_active=' . $gamer->isActive . ' 
-                       WHERE user_id=' . $gamer->id . ' AND game_id=' . $gameId . ';';
+                       WHERE user_id=' . $gamer->id . ' AND game_id=' . $gameId . ';
+                       UPDATE resources
+                       SET wood=' . $gamer->resources->wood . ',
+                           gold=' . $gamer->resources->gold . ',
+                           ore=' . $gamer->resources->ore . '
+                       WHERE elem_id=' . $gamer->id .' AND elem_type="gamer";';
         }
         return $this->connection->query($query)->execute();
     }
@@ -179,12 +214,9 @@ class DB {
                        UPDATE properties
                        SET move_points=' . $hero->properties->movePoints . ',
                            attack=' . $hero->properties->attack . ',
-                           defence=' . $hero->properties->defence . '
+                           defence=' . $hero->properties->defence . ',
                            spell_power=' . $hero->properties->spellPower . ',
                            knowledge=' . $hero->properties->knowledge . ',
-                           min_damage=' . $hero->properties->minDamage . ',
-                           max_damage=' . $hero->properties->maxDamage . ',
-                           speed=' . $hero->properties->speed . ',                           
                            mana_points=' . $hero->properties->manaPoints . '    
                        WHERE elem_id=' . $hero->id . ' AND elem_type="hero";';
         }
@@ -195,7 +227,7 @@ class DB {
         $query = '';
         foreach ($artifacts as $artifact) {
             $query .= 'UPDATE artifact 
-                       SET x=' . $artifact->x . ', y=' . $artifact->y . ' 
+                       SET x=' . $artifact->x . ', y=' . $artifact->y . ', owner=' . $artifact->owner . '
                        WHERE id=' . $artifact->id . ';';
         }
         return ($query) ? $this->connection->query($query)->execute() : false;

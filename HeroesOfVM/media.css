@@ -1,0 +1,8 @@
+@media screen and (max-width: 1900px) {
+    #left_sidebar {
+        margin-top: 60%;
+    }
+    #resources_bar {
+        margin-top: 40%;
+    }
+}

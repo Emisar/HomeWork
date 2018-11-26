@@ -11,6 +11,7 @@
     <script src="public/js/game/Game.js"></script>
     <script src="public/js/main.js"></script>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="media.css">
     <link rel="stylesheet" href="public/bootstrap/css/bootstrap-grid.min.css">
     <link rel="icon" href="public/img/indexImages/favicon.png" type="images/png">
     
@@ -70,6 +71,10 @@
         <div class="container-fluid">
             <div class="row">
                 <div class=" col-md-3">
+                    <div class="info_bar">  
+                        <span id="name"></span><br>
+                        <span id="move_points"></span>
+                    </div>
                     <div class="left_sidebar">
                         <input class="btn btn_left_top" id="moveHeroTopLeft" type="button"/>
                         <input class="btn btn_top" id="moveHeroUp" type="button"/>
@@ -82,6 +87,11 @@
                         <input class=" btn btn_bott" id="moveHeroDown" type="button" />
                         <input class=" btn btn_right_bott" id="moveHeroDownRight" type="button"/>
                     </div>
+                    <div class="resources_bar">
+                        <span id="wood"></span><br>
+                        <span id="gold"></span><br>
+                        <span id="ore"></span>
+                    </div>
                 </div>
                 <div class="col-md-8">                       
                         <canvas id="game-field"></canvas>
@@ -93,6 +103,7 @@
                         <input class="btn btn_Inventory" id="inventory" type="button"/><br>
                     </div>
                 </div>
+                <canvas id="gameUI"></canvas>
                 <canvas class="inventory" id="inv-screen"></canvas>
             </div>
         </div>

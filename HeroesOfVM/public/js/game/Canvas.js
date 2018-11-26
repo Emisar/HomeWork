@@ -10,6 +10,10 @@ function Canvas(width, height, idCanvas) {
         context.fillRect(0, 0, canvas.width, canvas.height);
     };
 
+    this.clearRect = function() {
+        context.clearRect(0, 0, canvas.width, canvas.height)
+    };
+
     this.line = function (x1, y1, x2, y2, color) {
         context.beginPath();
         context.strokeStyle = color || "black";

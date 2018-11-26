@@ -21,7 +21,7 @@ input {
 }
 
 .left_sidebar {
-	margin-top: 180px;
+	margin-top: 40%;
 	margin-left: 50px;
 }
 
@@ -107,6 +107,21 @@ input {
 	background-image: url(public/img/indexImages/backgroundAuth.png);
 	border: 4px brown outset;
 	box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.7);
+}
+
+.info_bar {
+	border: 20px solid transparent;
+	border-image: url(public/img/indexImages/borderAuth.png) 20;
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);
+	color: yellow;
+}
+
+.resources_bar {
+	border: 20px solid transparent;
+	border-image: url(public/img/indexImages/borderAuth.png) 20;
+	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);
+	color: yellow;
+	margin-top: 26%;
 }
 
 .btn_row_mid {
@@ -197,9 +212,6 @@ header {
 }
 
 #game_field {
-	display: block;
-	align-content: center;
-	display: none;
 }
 
 
@@ -219,4 +231,11 @@ header {
 	border-image: url(public/img/indexImages/borderAuth.png) 20;
 	box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.7);
 	background-color: yellow;
+}
+
+#gameUI {
+	margin-left: 25%;
+	display: block;
+	position: absolute;
+	align-content: center;
 }
