@@ -3,11 +3,16 @@
 require_once 'struct\Struct.php';
 require_once 'logic\Logic.php';
 require_once 'input\Input.php';
+require_once 'MapGenerator.php';
 
 class Game {
     private $struct;
     private $logic;
     private $input;
+
+    //test
+    private $gen;
+    private $map;
 
     private $db;
 
@@ -19,6 +24,10 @@ class Game {
         $this->struct = new Struct();
         $this->logic  = new Logic($this->struct);
         $this->input  = new Input($this->logic);
+
+        //test
+        $this->gen = new MapGenerator();
+        $this->map = $this->gen->createMap(25, 20, 2);
     }
 
     public function init($gameId) {
@@ -31,8 +40,9 @@ class Game {
                 $resources = $this->db->getGamersResources($gamers);
                 $this->struct->fillGamers($gamers, $resources);
                 // заполнить карту
-                $map = $this->db->getMap($game->map_id);
-                $this->struct->fillMap($map);
+                //test
+                //$map = $this->db->getMap($game->map_id);
+                $this->struct->fillMap($this->map);
                 // заполнить героев
                 $heroes = $this->db->getHeroes($gameId);
                 $defaultProperties = $this->db->getHeroesDefaultProperties($heroes);

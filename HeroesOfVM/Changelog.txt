@@ -1,36 +1,18 @@
-===== (01.01.2001) =====
+===== (25.11.2018) =====
 Изменения:
-	- Файл "HeroesOfVM\application\game\logic\Logic.php"
-		- Изменения в функции moveHero
-			(Добавлено передвижение по диагонали...)
-			
-	- Файл "HeroesOfVM\public\js\main.js"
-		- Изменена функция loginSuccess
-			(Теперь при вызове функции лого уезжает наверх)
-			
-	- Файл "HeroesOfVM\application\user\User.php"
-		(Скачал этот файл с ветки Паши)
-		
-	- ...
-	
-Добавлено:
-	- Новый файл "HeroesOfVM\Changelog.txt"
-		(Здесь будут отображаться все изменения внесенные мной)
-		
-	- Файл "HeroesOfVM\application\db\DB.php"
-		- Добавлена функция updateArtifacts
-			(Обновляет в БД таблицу с артефактами)
-	
-	- ...
-	
-Удалено:
-	- Удален файл "HeroesOfVM\ToDoList.txt"
-		(За ненадобностью)
-	
-	- ...
-	
-===== (02.01.2001) =====
-Изменения:
-	- ...
+	- Файл "HeroesOfVM\public\game\Game.php"
+		- Изменены ссылки на картинки для спрайтов для воды и травы
 
-...
+Добавлено:
+	- Файл "HeroesOfVM\public\game\Game.php"
+		- Добавлены новые картинки, спрайты
+
+	- "HeroesOfVM\public\img\sprites"
+		- Добавлены новые картинки для спрайтов размером 160*64 
+		  (Отличаются нормальным названием)
+	
+	- Новый файл "HeroesOfVM\public\game\mapGenerator\generator.php"
+
+Удалено:
+	- "HeroesOfVM\public\img\sprites"
+		- Удалены старые картикни травы и воды

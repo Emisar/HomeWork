@@ -63,16 +63,17 @@ class Struct {
             }
         }
     }
-
+    //test
     public function fillMap($map) {
         // карта
-        $this->map = [];
+        /*$this->map = [];
         foreach ($map as $line) {
             $this->map[] = [];
             foreach ($line as $tile) {
                 $this->map[count($this->map) - 1][] = new Tile($tile);
             }
-        }
+        }*/
+        $this->map = $map;
     }
 
     public function fillHeroes($heroes, $defaultProperties) {
