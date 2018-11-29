@@ -11,8 +11,8 @@ class Game {
     private $input;
 
     //test
-    /*private $gen;
-    private $map;*/
+    private $gen;
+    private $map;
 
     private $db;
 
@@ -26,8 +26,8 @@ class Game {
         $this->input  = new Input($this->logic);
 
         //test
-        /*$this->gen = new MapGenerator();
-        $this->map = $this->gen->createMap(25, 20, 2);*/
+        $this->gen = new MapGenerator();
+        $this->map = $this->gen->createMap(25, 20, 2);
     }
 
     public function init($gameId) {
@@ -41,8 +41,8 @@ class Game {
                 $this->struct->fillGamers($gamers, $resources);
                 // заполнить карту
                 //test(((())))
-                $map = $this->db->getMap($game->map_id);
-                $this->struct->fillMap($map);
+                //$map = $this->db->getMap($game->map_id);
+                $this->struct->fillMap($this->map);
                 // заполнить героев
                 $heroes = $this->db->getHeroes($gameId);
                 $defaultProperties = $this->db->getHeroesDefaultProperties($heroes);
