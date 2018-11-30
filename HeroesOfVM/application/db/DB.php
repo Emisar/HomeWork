@@ -148,14 +148,10 @@ class DB {
         }
         $str = join(' OR ', $temp);
         $query = 'SELECT
-                    spell_power AS spellPower, 
-                    min_damage AS minDamage,
-                    max_damage AS maxDamage,
+                    spell_power AS spellPower,
                     mana_points AS manaPoints,
                     move_points AS movePoints,
                     knowledge,
-                    health,
-                    speed,
                     elem_id AS id,
                     attack,
                     defence
@@ -168,6 +164,45 @@ class DB {
 	
     public function getArtifacts($gameId) {
         $query = 'SELECT * FROM artifact WHERE game_id=' . $gameId;
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public function getArtifactsProperties($artifacts) {
+        $temp = [];
+        foreach ($artifacts as $artifact) {
+            $temp[] = 'elem_id='.$artifact->id;
+        }
+        $str = join(' OR ', $temp);
+        $query = 'SELECT
+                    spell_power AS spellPower,
+                    mana_points AS manaPoints,
+                    move_points AS movePoints,
+                    knowledge,
+                    elem_id AS id,
+                    attack,
+                    defence
+                  FROM
+                    properties
+                  WHERE
+                    (' . $str . ') AND elem_type="artifact"';
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public function getItemsResources($items) {
+        $temp = [];
+        foreach ($items as $item) {
+            $temp[] = 'elem_id='.$item->id;
+        }
+        $str = join(' OR ', $temp);
+        $query = 'SELECT
+                    elem_id as id,
+                    gold,
+                    wood,
+                    ore
+                  FROM
+                    resources
+                  WHERE
+                    (' . $str . ') AND elem_type="item"';
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
     }
 
@@ -233,6 +268,16 @@ class DB {
         return ($query) ? $this->connection->query($query)->execute() : false;
     }
 
+    public function updateItems($items) {
+        $query = '';
+        foreach ($items as $item) {
+            $query .= 'UPDATE item
+                       SET x=' . $item->x . ', y=' . $item->y . '
+                       WHERE id=' . $item->id . ';';
+        }
+        return ($query) ? $this->connection->query($query)->execute() : false;
+    }
+
     public function updateMapBuildings($mapBuildings) {
         $query = '';
         foreach ($mapBuildings as $mapBuilding) {
@@ -253,12 +298,20 @@ class DB {
         return ($query) ? $this->connection->query($query)->execute() : false;
     }
 
-    public function updateItems($items) {
+    public function deleteArtifacts($artifacts) {
+        $query = '';
+        foreach ($artifacts as $artifact) {
+            $query .= 'DELETE FROM artifact, properties
+                        WHERE artifact.x="-1" AND artifact.y="-1" AND artifact.id=' . $artifact->id . ' AND properties.elem_id=' . $artifact->id . ' AND properties.elem_type="artifact";';
+        }
+        return ($query) ? $this->connection->query($query)->execute() : false;
+    }
+
+    public function deleteItems($items) {
         $query = '';
         foreach ($items as $item) {
-            $query .= 'UPDATE item
-                       SET x=' . $item->x . ', y=' . $item->y . '
-                       WHERE id=' . $item->id . ';';
+            $query .= 'DELETE FROM item, resources
+                        WHERE item.x="-1" AND item.y="-1" AND item.id=' . $item->id . ' AND resources.elem_id=' . $item->id . ' AND resources.elem_type="item";';
         }
         return ($query) ? $this->connection->query($query)->execute() : false;
     }

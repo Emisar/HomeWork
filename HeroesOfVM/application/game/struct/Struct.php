@@ -57,7 +57,23 @@ class Struct {
         foreach ($gamers as $value) {
             foreach ($resources as $resource) {
                 if ($resource->id == $value->id) {
+
                     $this->gamers[] = new Gamer($value, $resource);
+
+                    break;
+                }
+            }
+        }
+    }
+
+    public function fillItems($items, $resources) {
+        $this->items = [];
+        foreach ($items as $value) {
+            foreach ($resources as $resource) {
+                if ($resource->id == $value->id) {
+
+                    $this->items[] = new Item($value, $resource);
+
                     break;
                 }
             }
@@ -88,11 +104,16 @@ class Struct {
         }
     }
 
-    public function fillArtifacts($artifacts) {
+    public function fillArtifacts($artifacts, $properties) {
         // список артефактов
         $this->artifacts = [];
         foreach ($artifacts as $value) {
-            $this->artifacts[] = new Artifact($value);
+            foreach ($properties as $properie) {
+                if ($properie->id == $value->id) {
+                    $this->artifacts[] = new Artifact($value, $properie);
+                    break;
+                }
+            }
         }
     }
 
@@ -112,11 +133,5 @@ class Struct {
         }
     }
 
-    public function fillItems($items) {
-        // список городов
-        $this->items = [];
-        foreach ($items as $value) {
-            $this->items[] = new Item($value);
-        }
-    }
+
 }

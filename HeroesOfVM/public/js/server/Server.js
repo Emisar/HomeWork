@@ -11,7 +11,6 @@ function Server() {
         if (result && result.result) {
             token = result.data.token;
             idUser = result.data.id;
-            console.log(idUser);
             return result.data.name;
         }
         return null;
@@ -36,4 +35,5 @@ function Server() {
     this.getStruct = () => { return $.get('api/', { method: 'getStruct', token, gameId }); };
     this.endTurn   = () => { return $.get('api/', { method: 'endTurn'  , token, gameId }); };
     this.moveHero = (heroId, direction) => { return $.get('api/', { method: 'moveHero', heroId, direction, token, gameId }); };
+    this.pickupArtifact = (idHero, idArtifact) => { return $.get('api/', { method: 'pickupArtifact', idHero, idArtifact, token, gameId }); };
 }

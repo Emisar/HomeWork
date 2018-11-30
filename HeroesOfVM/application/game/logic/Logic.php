@@ -243,7 +243,6 @@ class Logic {
                                 if ($this->isPassable($hero->x+1, $hero->y)){
                                     $hero->x++;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
-                                    return true;
                                 }
                             }
                         }
@@ -254,7 +253,6 @@ class Logic {
                                 if ($this->isPassable($hero->x - 1, $hero->y)) {
                                     $hero->x--;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
-                                    return true;
                                 }
                             }
                         }
@@ -265,7 +263,6 @@ class Logic {
                                 if ($this->isPassable($hero->x, $hero->y-1)){
                                     $hero->y--;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
-                                    return true;
                                 }
                             }
                         }
@@ -276,7 +273,6 @@ class Logic {
                                 if ($this->isPassable($hero->x, $hero->y + 1)) {
                                     $hero->y++;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
-                                    return true;
                                 }
                             }
                         }
@@ -288,7 +284,6 @@ class Logic {
                                     $hero->x++;
                                     $hero->y--;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
-                                    return true;
                                 }
                             }
                         }
@@ -300,7 +295,6 @@ class Logic {
                                     $hero->x--;
                                     $hero->y--;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
-                                    return true;
                                 }
                             }
                         }
@@ -312,7 +306,6 @@ class Logic {
                                     $hero->y++;
                                     $hero->x++;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
-                                    return true;
                                 }
                             }
                         }
@@ -324,12 +317,25 @@ class Logic {
                                     $hero->y++;
                                     $hero->x--;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_DIAG;
-                                    return true;
                                 }
                             }
                         }
                         break;
                 }
+
+                for ($i = 0; $i < count($this->struct->artifacts); $i++) {
+                    if (($hero->x == $this->struct->artifacts[$i]->x) && ($hero->y == $this->struct->artifacts[$i]->y)) {
+                        $this->pickupArtifact((object)['idHero' => $id, 'idArtifact' => $this->struct->artifacts[$i]->id]);
+                        break;
+                    }
+                }
+                for ($i = 0; $i < count($this->struct->items); $i++) {
+                    if (($hero->x == $this->struct->items[$i]->x) && ($hero->y == $this->struct->items[$i]->y)) {
+                        $this->pickupItem((object)['idHero' => $id, 'idItem' => $this->struct->items[$i]->id]);
+                        break;
+                    }
+                }
+                return true;
             }
         }
         return false;
@@ -425,7 +431,8 @@ class Logic {
             $gamer->resources->gold += $item->resources->gold;
             $gamer->resources->wood += $item->resources->wood;
             $gamer->resources->ore += $item->resources->ore;
-            //removeItemFromMap();
+            $item->x = -1;
+            $item->y = -1;
             return true;
         }
         return false;
@@ -440,12 +447,17 @@ class Logic {
         if ($hero && $artifact) {
             for ($i = 0; $i < count($hero->backpack); $i++) {
                 if (is_null($hero->backpack[$i])) {
+                    $artifact->owner = $hero->id;
+                    $artifact->x = -1;
+                    $artifact->y = -1;
                     $hero->backpack[$i] = $artifact;
                     return true;
                 }
             }
+            $artifact->owner = $hero->id;
+            $artifact->x = -1;
+            $artifact->y = -1;
             $hero->backack[] = $artifact;
-            //removeArtifactMap();
             return true;
         }
         return false;
