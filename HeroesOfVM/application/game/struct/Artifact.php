@@ -4,9 +4,8 @@ require_once 'BaseElement.php';
 
 class Artifact extends BaseElement {
 
-    public function __construct($options) {
+    public function __construct($options, $properties) {
         parent::__construct($options);
-        // удалить лишние свойства
-        unset($this->owner);
+        $this->properties = new Properties($properties);
     }
 }

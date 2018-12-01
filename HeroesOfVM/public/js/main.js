@@ -1,11 +1,12 @@
 $(document).ready(async () => {
     const server = new Server();
-    const user  = new User({ id: '#user', server, callbacks: { loginSuccess, logoutSuccess: startPoint } });
+    const user  = new User ({ id: '#user' , server, callbacks: { loginSuccess, logoutSuccess: startPoint } });
     const offer = new Offer({ id: '#offer', server, callbacks: { findGameSuccess } });
-    const game  = new Game({ id: '#game', server, callbacks: {} });
+    const game  = new Game ({ id: '#game' , server, callbacks: {} });
 
     function findGameSuccess() {
         user.hide();
+        $("header").hide();//убрать после проверок
         game.show();
         offer.hide();
         game.init();
@@ -28,5 +29,5 @@ $(document).ready(async () => {
     }
 
     // start point
-    startPoint();
+    startPoint(); 
 });

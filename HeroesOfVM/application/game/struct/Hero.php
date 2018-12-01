@@ -2,6 +2,7 @@
 
 require_once 'BaseElement.php';
 require_once 'Properties.php';
+require_once 'Inventory.php';
 
 class Hero extends BaseElement {
 
@@ -9,10 +10,11 @@ class Hero extends BaseElement {
     public $inventory;         // инвентарь (что надето)
     public $backpack;          // мешок (карманы)
 
-    public function __construct($options) {
+    public function __construct($options, $defaultProperties, $inventory, $backpack) {
         parent::__construct($options);
-        $this->backpack = $options->backpack;
+        $this->backpack = $backpack;
         $this->army = $options->army;
-        $this->inventory = $options->inventory;
+        $this->inventory = new Inventory($inventory);
+        $this->defaultProperties = new Properties($defaultProperties);
     }
 }

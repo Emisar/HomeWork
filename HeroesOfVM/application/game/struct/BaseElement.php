@@ -22,6 +22,6 @@ class BaseElement {
         $this->name = $options->name;
         $this->cost = $options->cost;
         $this->description = $options->description;
-        $this->properties = new Properties($options->properties);
+        $this->properties = new Properties($options);
     }
 }

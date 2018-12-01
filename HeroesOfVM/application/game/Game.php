@@ -13,19 +13,6 @@ class Game {
 
     public function __construct($db) {
         $this->db = $db;
-        /*
-              $params->heroes = [
-                    (object) array ('id'=> 1, 'backpack' => [new Artifact((object)array('id' => 1))], 'army' => [new Unit((object)array('id' => 2))]),
-                    (object) array ('id' => 2, 'backpack' => [])
-                ];
-                $params->gamers = [
-                    (object) array ('id' => 1, 'order' => 1),
-                    (object) array ('id' => 2, 'order' => 0)
-                ];
-                $params->towns = [
-                    (object) array ('id' => 3, 'army' => [])
-                ];*/
-
         $params = new stdClass();
         //$params->map = $this->db->getMap();
 
@@ -40,16 +27,33 @@ class Game {
             if ($game) {
                 // заполнить игроков
                 $gamers = $this->db->getGamers($gameId);
-                $this->struct->fillGamers($gamers);
+                $resourcesGamers = $this->db->getGamersResources($gamers);
+                $this->struct->fillGamers($gamers, $resourcesGamers);
                 // заполнить карту
                 $map = $this->db->getMap($game->map_id);
                 $this->struct->fillMap($map);
+                // заполнить все артефакты
+                $artifacts = $this->db->getArtifacts($gameId);
+                // заполнить свойства артефактов
+                $artifactsProperties = $this->db->getArtifactsProperties($artifacts);
+                $this->struct->fillArtifacts($artifacts, $artifactsProperties);
+                // заполнить инвентари
+                $inventory = $this->db->getInventory($gameId);
                 // заполнить героев
                 $heroes = $this->db->getHeroes($gameId);
-                $this->struct->fillHeroes($heroes);
-                // заполнить артефакты
-                $artifacts = $this->db->getArtifacts($gameId);
-                $this->struct->fillArtifacts($artifacts);
+                $defaultProperties = $this->db->getHeroesDefaultProperties($heroes);
+                $this->struct->fillHeroes($heroes, $defaultProperties, $inventory, $artifacts);
+                // заполнить артефакты в сумках героев
+                /*for ($j = 0; $j < count($this->struct->heroes); $j++) {
+                    $this->struct->heroes[$j]->backpack = array();
+                    for ($i = 0; $i < count($this->struct->artifacts); $i++) {
+                        if ($this->struct->heroes[$j]->id == $this->struct->artifacts[$i]->owner) {
+                            $this->struct->artifacts[$i]->x = -1;
+                            $this->struct->artifacts[$i]->y = -1;
+                            $this->struct->heroes[$j]->backpack[] = $this->struct->artifacts[$i];
+                        }
+                    }
+                }*/
                 // заполнить строения
                 $mapBuildings = $this->db->getMapBuildings($gameId);
                 $this->struct->fillMapBuildings($mapBuildings);
@@ -58,7 +62,8 @@ class Game {
                 $this->struct->fillTowns($towns);
                 // заполнить предметы
                 $items = $this->db->getItems($gameId);
-                $this->struct->fillItems($items);
+                $resourcesItems = $this->db->getItemsResources($items);
+                $this->struct->fillItems($items, $resourcesItems);
                 return true;
             }
         }
@@ -81,7 +86,11 @@ class Game {
                 // записать города
                 $this->db->updateTowns($gameId, $this->struct->towns);
                 // записать предметы
-                $this->db->updateItems($gameId, $this->struct->items);
+                $this->db->updateItems($this->struct->items);
+                // удалить артефакты из карты
+                //$this->db->deleteArtifacts($this->struct->artifacts);
+                //удалить предметы из карты
+                //$this->db->deleteItems($this->struct->items);
                 return true;
             }
         }

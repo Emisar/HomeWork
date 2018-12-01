@@ -5,9 +5,12 @@ class Resources {
     public $wood;   // дерево
     public $ore;    // руда
 
-    public function __construct($options) {
-        $this->gold = $options->gold;
-        $this->wood = $options->wood;
-        $this->ore  = $options->ore;
+    public function __construct($options)
+    {
+        if (isset($options)) {
+            $this->gold = $options->gold;
+            $this->wood = $options->wood;
+            $this->ore = $options->ore;
+        }
     }
 }

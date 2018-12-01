@@ -3,9 +3,27 @@ function Game(options) {
     const DOM_ID = options.id;
     const server = options.server;
     const callbacks = options.callbacks;
+    width = document.documentElement.clientWidth * 0.62;
+    height = document.documentElement.clientHeight * 0.85;
+    var TurnColor;
+    var name = document.getElementById("name");
+    var movePoints = document.getElementById("move_points");
+    var gold = document.getElementById("gold");
+    var wood = document.getElementById("wood");
+    var ore = document.getElementById("ore");
+    var idGamer; 
+    var invActive = false;
+    const canvas = new Canvas(width, height, 'game-field');
+    const canvasInv = new Canvas(600, 600, 'inv-screen');
+    const canvasUI = new Canvas(width,height, 'gameUI');
+    var dataStruct;
+    var activeHero;
+    var heroUpdate;
 
-    const canvas = new Canvas(400, 300);
 
+    const imgBand = new Image();
+    imgBand.src = "public/img/headUI.png";
+    canvasInv.fillRect('brown');
     // картинка с травой
     const imgGrass = new Image();
     imgGrass.src = "public/img/sprites/grass_32x32.png";
@@ -14,7 +32,7 @@ function Game(options) {
     imgWater.src = "public/img/sprites/water_32x32.png";
     // картинка с героями
     const imgHero = new Image();
-    imgHero.src = "public/img/sprites/hero_45x60.png"
+    imgHero.src = "public/img/sprites/hero_45x60.png";
     // картинки с артефактами
     const imgArtifact = new Image();
     imgArtifact.src = "public/img/sprites/artifacts_32x32.png";
@@ -79,6 +97,12 @@ function Game(options) {
             sprite: [
                 { x: 0, y: 0 },
             ]
+        },
+        band: {
+            img: imgBand,
+            sprite: [
+                {x: 0, y: 0}
+            ]
         }
     };
 
@@ -138,8 +162,83 @@ function Game(options) {
         }
     }
 
+    function printArtifactBackpack(artifact, i, j) {
+        if (artifact && artifact.type) {
+            const sprite = SPRITES.artifact;
+            canvasInv.sprite(sprite.img,
+                sprite.sprite[artifact.type - 0].x, sprite.sprite[artifact.type - 0].y, SIZE, SIZE,
+                25 + 100 * i, 25 + 100 * j, 50, 50);
+        }
+    }
+
+    function printHeadBand(x,y, color) {
+            canvasUI.rect(x, y , 32, 32 , color);
+        }
+
+
+    function drawInventoryGrid() {
+        canvasInv.line(301, 0, 301, 600, 'yellow');
+        for (var i = 1; i <= 2; i++) {
+            canvasInv.line(i * 100, 0, i * 100, 600, 'yellow');
+        }
+        for (var i = 1; i <= 5; i++) {
+            canvasInv.line(0, i * 100, 301, i * 100, 'yellow');
+        }
+    }
+
+    function setUserResources() {
+        if (dataStruct){
+            idGamer = server.getUserId();
+            for (var i = 0; i < dataStruct.gamers.length; i++) {
+                if(dataStruct.gamers[i].isActive == 1) {
+                    $('#activePlayer').text(function(color) {
+                        return "You in " + dataStruct.gamers[idGamer - 1].color + " team"; 
+                    });
+                    TurnColor = dataStruct.gamers[i].color;
+                }
+                if(dataStruct.gamers[i].id == idGamer) {
+                    ore.textContent  = 'Рудишко : '   + dataStruct.gamers[i].resources.ore;
+                    wood.textContent = 'Древесина : ' + dataStruct.gamers[i].resources.wood;
+                    gold.textContent = 'Золотишко : ' + dataStruct.gamers[i].resources.gold;
+                }
+            }
+        } else {
+            console.log('Йа туд!!!', dataStruct);
+        }
+    }
+
+    function setHeroInfo(activeHero) {
+        if(activeHero) {
+            name.textContent       = 'Имя : ' + activeHero.name;
+            movePoints.textContent = 'Очки хода : ' + activeHero.properties.movePoints;
+        } else {
+            name.textContent="Имя : ";
+            movePoints.textContent = 'Очки хода : ';
+        }
+    }
+
+    function setInventory() {
+        var x = 0;
+        var y = 0;
+        for (var i = 0; i < dataStruct.heroes.length; i++) {
+            if (activeHero && dataStruct.heroes[i].id == activeHero.id && idGamer && activeHero.id == idGamer) {
+                dataStruct.heroes[i].backpack.forEach(function(artifact) {
+                    if (x == 3) {
+                        x = 0;
+                        y++;
+                    }
+                    printArtifactBackpack(artifact, x, y);
+                    x++;
+                });
+            }
+        }
+    }
+
     function render(struct) {
-        canvas.fillRect('yellow');
+        canvas.clearRect();
+
+        setHeroInfo(activeHero);
+        setUserResources();
         // нарисовать карту
         const map = struct.map;
         for (let i = 0; i < map.length; i++) {
@@ -166,6 +265,12 @@ function Game(options) {
         // послать запрос на сервер и отрисовать полученные данные
         const result = await server.getStruct();
         if (result.result) {
+            canvasUI.clearRect();
+            dataStruct = result.data;
+            activeHero = dataStruct.heroes[heroUpdate];
+            if (typeof activeHero != "undefined"){
+                printHeadBand(-5+32*activeHero.x,0+32*activeHero.y, TurnColor);
+            }
             render(result.data);
         }
     }
@@ -174,14 +279,14 @@ function Game(options) {
         refreshData();
         this.deinit();
         interval = setInterval(refreshData, 1000);
-    }
+    };
 
     this.deinit = () => {
         if (interval) {
             clearInterval(interval);
         }
-    }
-    
+    };
+
     function init() {
         $('#endTurn').on('click', async () => {
             const result = await server.endTurn();
@@ -189,31 +294,113 @@ function Game(options) {
                 render(result.data);
             }
         });
-                $('#moveHeroLeft').on('click', async () => {
-            const result = await server.moveHero(1, 'LEFT');
+        $('#moveHeroLeft').on('click', async () => {
+            if(typeof activeHero != "undefined") {
+            const result = await server.moveHero(activeHero.id, 'LEFT');
             if (result.result) {
                 render(result.data);
             }
+        } else {alert("Выбери героя!!!");}
+    });
+        $('#moveHeroRight').on('click', async () => {
+            if(typeof activeHero != "undefined") {
+                const result = await server.moveHero(activeHero.id, 'RIGHT');
+                if (result.result) {
+                    render(result.data);
+                }
+            } else {alert("Выбери героя!!!");}
         });
-                $('#moveHeroRight').on('click', async () => {
-            const result = await server.moveHero(1, 'RIGHT');
+         $('#moveHeroUp').on('click', async () => {
+            if(typeof activeHero != "undefined") {
+            const result = await server.moveHero(activeHero.id, 'UP');
             if (result.result) {
                 render(result.data);
+            }
+        } else {alert("Выбери героя!!!");}
+    });
+
+         $('#moveHeroDown').on('click', async () => {
+            if(typeof activeHero != "undefined") {
+            const result = await server.moveHero(activeHero.id, 'DOWN');
+            if (result.result) {
+                render(result.data);
+            }
+        } else {alert("Выбери героя!!!");}
+    });
+        $('#moveHeroTopLeft').on('click', async () => {
+            if(typeof activeHero != "undefined") {
+            const result = await server.moveHero(activeHero.id, 'UP-LEFT');
+            if (result.result) {
+                render(result.data);
+            }
+        } else {alert("Выбери героя!!!");}
+    });
+
+        $('#moveHeroTopRight').on('click', async () => {
+            if(typeof activeHero != "undefined") {
+            const result = await server.moveHero(activeHero.id, 'UP-RIGHT');
+            if (result.result) {
+                render(result.data);
+            }
+        } else {alert("Выбери героя!!!");}
+    });
+
+        $('#moveHeroDownLeft').on('click', async () => {
+            if(typeof activeHero != "undefined") {
+            const result = await server.moveHero(activeHero.id, 'DOWN-LEFT');
+            if (result.result) {
+                render(result.data);
+            }
+        } else {alert("Выбери героя!!!");}
+    });
+        $('#moveHeroDownRight').on('click', async () => {
+            if(typeof activeHero != "undefined") {
+            const result = await server.moveHero(activeHero.id, 'DOWN-RIGHT');
+            if (result.result) {
+                render(result.data);
+            }
+        } else {alert("Выбери героя!!!");}
+    });
+
+        $('#inventory').on('click', async() => {
+            if (invActive == false) {
+                canvasInv.fillRect('brown');
+                drawInventoryGrid();
+                setInventory();
+                document.getElementById('inv-screen').style.display = 'block';
+                invActive = true;
+            } else {
+                document.getElementById('inv-screen').style.display = 'none';
+                invActive = false;
+            }
+        });
+        //Береженого бог бережет(Выпилить после добавления адаптивности)
+        $('#game-field').on('click', async(canvas) => {
+            var x = Math.floor(canvas.offsetX / 32);
+            var y = Math.floor(canvas.offsetY / 32);
+            console.log(x, y);
+            for (var i = 0; i < dataStruct.heroes.length; i++) {
+                if (x == dataStruct.heroes[i].x && y == dataStruct.heroes[i].y) {
+                    heroUpdate = i;
+                    activeHero = dataStruct.heroes[i];
+                }
+            console.log(activeHero);
             }
         });
 
-                 $('#moveHeroUp').on('click', async () => {
-            const result = await server.moveHero(1, 'UP');
-            if (result.result) {
-                render(result.data);
+        $('#gameUI').on('click', async(canvas) => {
+            var x = Math.floor(canvas.offsetX / 32);
+            var y = Math.floor(canvas.offsetY / 32);
+            console.log(x, y);
+            for (var i = 0; i < dataStruct.heroes.length; i++) {
+                if (x == dataStruct.heroes[i].x && y == dataStruct.heroes[i].y) {
+                    heroUpdate = i;
+                    activeHero = dataStruct.heroes[i];
+                }
             }
         });
-                 $('#moveHeroDown').on('click', async () => {
-            const result = await server.moveHero(1, 'DOWN');
-            if (result.result) {
-                render(result.data);
-            }
-        });
+
     }
     init();
+
 }
