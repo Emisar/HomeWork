@@ -221,6 +221,11 @@ class DB {
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
     }
 
+    public function getInventory($gameId) {
+        $query = 'SELECT * FROM inventory WHERE  game_id=' . $gameId;
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
 
     /***************/
     /* UPDATE DATA */

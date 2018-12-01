@@ -32,16 +32,19 @@ class Game {
                 // заполнить карту
                 $map = $this->db->getMap($game->map_id);
                 $this->struct->fillMap($map);
+                // заполнить все артефакты
+                $artifacts = $this->db->getArtifacts($gameId);
+                // заполнить свойства артефактов
+                $artifactsProperties = $this->db->getArtifactsProperties($artifacts);
+                $this->struct->fillArtifacts($artifacts, $artifactsProperties);
+                // заполнить инвентари
+                $inventory = $this->db->getInventory($gameId);
                 // заполнить героев
                 $heroes = $this->db->getHeroes($gameId);
                 $defaultProperties = $this->db->getHeroesDefaultProperties($heroes);
-                $this->struct->fillHeroes($heroes, $defaultProperties);
-                // заполнить все артефакты
-                $artifacts = $this->db->getArtifacts($gameId);
-                $artifactsProperties = $this->db->getArtifactsProperties($artifacts);
-                $this->struct->fillArtifacts($artifacts, $artifactsProperties);
+                $this->struct->fillHeroes($heroes, $defaultProperties, $inventory, $artifacts);
                 // заполнить артефакты в сумках героев
-                for ($j = 0; $j < count($this->struct->heroes); $j++) {
+                /*for ($j = 0; $j < count($this->struct->heroes); $j++) {
                     $this->struct->heroes[$j]->backpack = array();
                     for ($i = 0; $i < count($this->struct->artifacts); $i++) {
                         if ($this->struct->heroes[$j]->id == $this->struct->artifacts[$i]->owner) {
@@ -50,7 +53,7 @@ class Game {
                             $this->struct->heroes[$j]->backpack[] = $this->struct->artifacts[$i];
                         }
                     }
-                }
+                }*/
                 // заполнить строения
                 $mapBuildings = $this->db->getMapBuildings($gameId);
                 $this->struct->fillMapBuildings($mapBuildings);
