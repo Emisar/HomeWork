@@ -63,6 +63,17 @@ class Router {
         return $this->bad('user not found');
     }
 
+    private function createGame($params) {
+        $user = $this->user->checkToken($params);
+        if ($user) {
+            $success = $this->offer->createGame($user->id);
+            return ($success) ?
+                $this->good('Game created') :
+                $this->bad('game is not created');
+        }
+        return $this->bad('user not found');
+    }
+
     public function answer($params) {
         if ($params && isset($params->method)) {
             $method = $params->method;
@@ -72,6 +83,7 @@ class Router {
                 case 'login'  : return $this->login  ($params); break;
                 case 'logout' : return $this->logout ($params); break;
                 case 'findGame': return $this->findGame($params); break;
+                case 'createGame': return $this->createGame($params); break;
                 //...
             }
             // вызвать команду игры
