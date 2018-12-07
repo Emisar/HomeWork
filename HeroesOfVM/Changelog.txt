@@ -1,18 +1,41 @@
-===== (25.11.2018) =====
-Изменения:
-	- Файл "HeroesOfVM\public\game\Game.php"
-		- Изменены ссылки на картинки для спрайтов для воды и травы
-
+===== (07.12.2018) =====
 Добавлено:
 	- Файл "HeroesOfVM\public\game\Game.php"
+		- Изменены ссылки на картинки для спрайтов для воды и травы
+		- Новый файл "HeroesOfVM\application\game\MapGenerator.php"
+
+Изменения:
+	Сервер
+	- "HeroesOfVM\application\db\DB.php"
+		- (3 строка) Подключён генератор карт
+		- (27 строка) Добавлен метод CreateMap
+		- (112 строка) Старый CreateGame закомменчен
+
+	- "HeroesOfVM\application\offer\Offer.php"
+		- (17 строка) Добавлен метод CreateGame
+
+	- "HeroesOfVM\application\router\Router.php"
+		- (66 строка) Добавлен метод CreateGame
+
+	База данных
+	- map
+		-Исправлено название столбца
+	- tile
+		-Новые тайлы(сгенерировал карту)
+	Клиент
+	- "HeroesOfVM\public\game\Game.js"
 		- Добавлены новые картинки, спрайты
+
+	- "HeroesOfVM\public\offer\Offer.js"
+		- 21 строка CreateGame
+
+	- "HeroesOfVM\public\offer\Server.js"
+		- 33 строка CreateGame
 
 	- "HeroesOfVM\public\img\sprites"
 		- Добавлены новые картинки для спрайтов размером 160*64 
-		  (Отличаются нормальным названием)
+		(Отличаются нормальным названием)
 	
-	- Новый файл "HeroesOfVM\public\game\mapGenerator\generator.php"
-
 Удалено:
 	- "HeroesOfVM\public\img\sprites"
 		- Удалены старые картикни травы и воды
