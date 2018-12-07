@@ -11,7 +11,6 @@ function Server() {
         if (result && result.result) {
             token = result.data.token;
             idUser = result.data.id;
-            console.log(idUser);
             return result.data.name;
         }
         return null;
@@ -29,7 +28,15 @@ function Server() {
             return true;
         }
         return null;
+    };
 
+    this.createGame = async () => {
+        const result = await $.get('api/', { method: 'createGame', token });
+        if (result && result.result) {
+            gameId = result.data.id - 0;
+            return true;
+        }
+        return null;
     };
 
     // Game API

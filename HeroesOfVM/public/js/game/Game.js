@@ -24,10 +24,34 @@ function Game(options) {
     canvasInv.fillRect('brown');
     // картинка с травой
     const imgGrass = new Image();
-    imgGrass.src = "public/img/sprites/grass_32x32.png";
+    imgGrass.src = "public/img/sprites/Grass.png";
+    // картинка с грязью
+    const imgDirt = new Image();
+    imgDirt.src = "public/img/sprites/Dirt.png";
+    // картинка с горной местностью
+    const imgLands = new Image();
+    imgLands.src = "public/img/sprites/Highlands.png";
+    // картинка с лавой
+    const imgLava = new Image();
+    imgLava.src = "public/img/sprites/Lava.png";
+    // картинка с грубостью
+    const imgRough = new Image();
+    imgRough.src = "public/img/sprites/Rough.png";
+    // картинка с песком
+    const imgSand = new Image();
+    imgSand.src = "public/img/sprites/Sand.png";
+    // картинка с тёмным песком
+    const imgDarkSand = new Image();
+    imgDarkSand.src = "public/img/sprites/Subterranean.png";
+    // картинка со снегом
+    const imgSnow = new Image();
+    imgSnow.src = "public/img/sprites/Snow.png";
+    // картинка с болотом
+    const imgSwamp = new Image();
+    imgSwamp.src = "public/img/sprites/Swamp.png";
     // картинка с водой
     const imgWater = new Image();
-    imgWater.src = "public/img/sprites/water_32x32.png";
+    imgWater.src = "public/img/sprites/Water.png";
     // картинка с героями
     const imgHero = new Image();
     imgHero.src = "public/img/sprites/hero_45x60.png";
@@ -45,21 +69,65 @@ function Game(options) {
     imgItem.src = "public/img/sprites/items_32x32.png";
 
     const SIZE = 32;
+    const stdSprite = [ //Стандартная картинка со спрайтом 160*64
+        { x: 0, y: 0 },
+        { x: SIZE, y: 0 },
+        { x: SIZE*2, y: 0 },
+        { x: SIZE*3, y: 0 },
+        { x: SIZE*4, y: 0 },
+        { x: 0, y: SIZE },
+        { x: SIZE, y: SIZE },
+        { x: SIZE*2, y: SIZE },
+        { x: SIZE*3, y: SIZE },
+        { x: SIZE*4, y: SIZE }
+    ];
     const SPRITES = {
         grass: {
             img: imgGrass,
-            sprite: [
-                { x: 0, y: 0 },
-                { x: SIZE, y: 0 }
-            ]
+            sprite: stdSprite
         },
-        water: {
-            img: imgWater,
+        dirt: {
+            img: imgDirt,
+            sprite: stdSprite
+        },
+        lands: {
+            img: imgLands,
+            sprite: stdSprite
+        },
+        lava: {
+            img: imgLava,
+            sprite: stdSprite
+        },
+        rough: {
+            img: imgRough,
+            sprite: stdSprite
+        },
+        sand: {
+            img: imgSand,
+            sprite: stdSprite
+        },
+        darkSand: {
+            img: imgDarkSand,
             sprite: [
                 { x: 0, y: 0 },
                 { x: SIZE, y: 0 },
-                { x: SIZE, y: SIZE }
+                { x: SIZE*2, y: 0 },
+                { x: 0, y: SIZE },
+                { x: SIZE, y: SIZE },
+                { x: SIZE*2, y: SIZE },
             ]
+        },
+        snow: {
+            img: imgSnow,
+            sprite: stdSprite
+        },
+        swamp: {
+            img: imgSwamp,
+            sprite: stdSprite
+        },
+        water: {
+            img: imgWater,
+            sprite: stdSprite
         },
         hero: {
             img: imgHero,
@@ -101,7 +169,7 @@ function Game(options) {
     let interval = null;
 
     function printSprite(tile, x, y) {
-        if (tile && tile.type && tile.sprite) {
+        if (tile && tile.type && (tile.sprite || tile.sprite == 0)) {
             const sprite = SPRITES[tile.type];
             canvas.sprite(sprite.img,
                 sprite.sprite[tile.sprite - 0].x, sprite.sprite[tile.sprite - 0].y, SIZE, SIZE,
