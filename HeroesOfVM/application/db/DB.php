@@ -1,5 +1,7 @@
 <?php
 
+require_once '..\application\game\MapGenerator.php';
+
 class DB {
 
     const USERNAME = "root";
@@ -20,6 +22,30 @@ class DB {
     private function getMapSize($mapId) {
         $query = 'SELECT * FROM map WHERE id=' . $mapId;
         return $this->connection->query($query)->fetchObject('stdClass');
+    }
+
+    public function createGame($gameId, $width, $height, $biomes){
+        $gen = new MapGenerator();
+        $map = $gen->createMap($width, $height, $biomes);
+        //Добавить игру в БД
+        $this->connection->query('DELETE FROM games WHERE id=' . $gameId);
+        $this->connection->query('INSERT INTO games (id, map_id, status) VALUES (' . $gameId . ','. $gameId . ',"active")');
+        //Добавить мапу в БД
+        $this->connection->query('DELETE FROM map WHERE id=' . $gameId);
+        $this->connection->query('INSERT INTO map (id, size_x, size_y) VALUES (' . $gameId . ','. $width . ',' . $height . ')');
+        //Удаляем старые тайлы этой мапы
+        $this->connection->query('DELETE FROM tile WHERE map_id=' . $gameId);
+        //Закидываем новые тайлы
+        for ($i = 0; $i < $width; $i++){
+            for ($j = 0; $j < $height; $j++){
+                $query = 'INSERT INTO tile (id, map_id, x, y, name, type, sprite, passability)
+                          VALUES (' . $map[$i][$j]->id . ',' . $gameId . ',' . $i . ',
+                                  ' . $j . ' , "' . $map[$i][$j]->name . '" , "' . $map[$i][$j]->type . '",
+                                  ' . $map[$i][$j]->sprite . ' , ' . $map[$i][$j]->passability . ')';
+                $this->connection->query($query);
+            }
+        }
+        return true;
     }
 
     public function getMap($mapId) {
@@ -82,6 +108,12 @@ class DB {
                     ug.game_id=g.id;';
         return $this->connection->query($query)->fetchObject('stdClass');
     }
+
+    /*public function createGame($mapId) {
+        $query = 'INSERT INTO games (map_id, status) 
+                  VALUES (' .$mapId. ', "inactive")';
+        return $this->connection->query($query)->fetchObject('stdClass');
+    }*/
 
     public function getGamers($gameId) {
         $query = 'SELECT u.id, 
