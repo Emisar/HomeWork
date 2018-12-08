@@ -74,6 +74,8 @@ function Game(options) {
             img: imgArtifact,
             sprite: [
                 { x: 0, y: 0 },
+                { x: 32, y: 0 },
+                { x: 64, y: 0 },
                 //...
             ]
         },
@@ -184,12 +186,59 @@ function Game(options) {
         for (var i = 1; i <= 5; i++) {
             canvasInv.line(0, i * 100, 301, i * 100, 'yellow');
         }
+        canvasInv.line(400, 140, 500, 140, 'yellow');
+        canvasInv.line(500, 140, 540, 230, 'yellow');
+        canvasInv.line(400, 140, 360, 230, 'yellow');
+        canvasInv.line(450, 125, 450, 320, 'yellow');
+        canvasInv.line(450, 320, 390, 470, 'yellow');
+        canvasInv.line(450, 320, 510, 470, 'yellow');
+        canvasInv.circle(450, 90, 35, 'yellow');
+        canvasInv.fillSmallRect(420, 60, 60, 60, 'brown');
+        drawCellInventory(450, 90); // голова
+        canvasInv.fillSmallRect(330, 200, 60, 60, 'brown');
+        drawCellInventory(360, 230); // левая рука
+        canvasInv.fillSmallRect(510, 200, 60, 60, 'brown');
+        drawCellInventory(540, 230); // правая рука
+        canvasInv.fillSmallRect(420, 190, 60, 60, 'brown');
+        drawCellInventory(450, 220); // грудь
+        canvasInv.fillSmallRect(360, 440, 60, 60, 'brown');
+        drawCellInventory(390, 470); // левая нога
+        canvasInv.fillSmallRect(480, 440, 60, 60, 'brown');
+        drawCellInventory(510, 470); // правая нога
+        drawCellInventory(540, 70);  // плащ
+        drawCellInventory(450, 550); // ожерелье
+        drawCellInventory(375, 550); // кольцо 1
+        drawCellInventory(525, 550); // кольцо 2
+
     }
+
+    function drawCellInventory(x, y) {
+        canvasInv.line(x - 30, y - 30, x + 30, y - 30, 'yellow');
+        canvasInv.line(x - 30, y - 30, x - 30, y + 30, 'yellow');
+        canvasInv.line(x - 30, y + 30, x + 30, y + 30, 'yellow');
+        canvasInv.line(x + 30, y - 30, x + 30, y + 30, 'yellow');
+    }
+
+    function printDescription(x, y) {
+        canvasInv.fillSmallRect(x * 100, y * 100, 300, 200, 'black');
+        canvasInv.rect(x * 100, y * 100, 300, 200, 'white');
+        canvasInv.text(activeHero.backpack[x + y * 3].name, x * 100 + 10, y * 100 + 20, 'yellow', 20);
+        canvasInv.text('Урон: ' + activeHero.backpack[x + y * 3].properties.attack, x * 100 + 20, y * 100 + 35 + 5, "white", 14);
+        canvasInv.text('Защита ' + activeHero.backpack[x + y * 3].properties.defence, x * 100 + 20, y * 100 +  50 + 5, "white", 14);
+        canvasInv.text('Магический урон: ' + activeHero.backpack[x + y * 3].properties.spellPower, x * 100 + 20, y * 100 + 65 + 5, "white", 14);
+        canvasInv.text('Интеллект: ' + activeHero.backpack[x + y * 3].properties.knowledge, x * 100 + 20, y * 100 + 80 + 5, "white", 14);
+        canvasInv.text('Очки хода: ' + activeHero.backpack[x + y * 3].properties.movePoints, x * 100 + 20, y * 100 + 95 + 5, "white", 14);
+        canvasInv.text('Мана: ' + activeHero.backpack[x + y * 3].properties.manaPoints, x * 100 + 20, y * 100 + 110 + 5, "white", 14);
+        canvasInv.text(activeHero.backpack[x + y * 3].description, x * 100 + 10, y * 100 + 150, 'violet', 14);
+    }
+    function fillInv(color) {
+        canvasInv.fillRect(color);
+    }
+
 
     function setUserResources() {
         if (dataStruct){
             idGamer = server.getUserId();
-            console.log(dataStruct.gamers);
             for (var i = 0; i < dataStruct.gamers.length; i++) {
                 if(dataStruct.gamers[i].isActive == 1) {
                     $('#activePlayer').text(function(color) {
@@ -222,8 +271,8 @@ function Game(options) {
         var x = 0;
         var y = 0;
         for (var i = 0; i < dataStruct.heroes.length; i++) {
-            if (activeHero && dataStruct.heroes[i].id == activeHero.id) {
-                dataStruct.heroes[i].backpack.  forEach(function(artifact) {
+            if (activeHero && dataStruct.heroes[i].id == activeHero.id && idGamer && activeHero.id == idGamer) {
+                dataStruct.heroes[i].backpack.forEach(function(artifact) {
                     if (x == 3) {
                         x = 0;
                         y++;
@@ -231,21 +280,16 @@ function Game(options) {
                     printArtifactBackpack(artifact, x, y);
                     x++;
                 });
-                /*
-                for (var j = 0; j < dataStruct.heroes.backpack.length; j++) {
-                    if (x == 3) {
-                        x = 0;
-                        y++;
-                    }
-                    printArtifactBackpack(dataStruct.heroes[i].backpack[j], x, y);
-                    x++;
-                } */
             }
         }
     }
 
+    function setArtifactToHero($artifact) {
+
+    }
+
     function render(struct) {
-        canvas.fillRect('black');
+        canvas.clearRect();
         setHeroInfo(activeHero);
         setUserResources();
         // нарисовать карту
@@ -274,9 +318,10 @@ function Game(options) {
         // послать запрос на сервер и отрисовать полученные данные
         const result = await server.getStruct();
         if (result.result) {
-            dataStruct = result.data;
             canvasUI.clearRect();
+            dataStruct = result.data;
             activeHero = dataStruct.heroes[heroUpdate];
+            console.log(dataStruct);
             if (typeof activeHero != "undefined"){
                 printHeadBand(-5+32*activeHero.x,0+32*activeHero.y, TurnColor);
             }
@@ -287,7 +332,7 @@ function Game(options) {
     this.init = () => {
         refreshData();
         this.deinit();
-        interval = setInterval(refreshData, 200);
+        interval = setInterval(refreshData, 1000);
     };
 
     this.deinit = () => {
@@ -313,12 +358,12 @@ function Game(options) {
     });
         $('#moveHeroRight').on('click', async () => {
             if(typeof activeHero != "undefined") {
-            const result = await server.moveHero(activeHero.id, 'RIGHT');
-            if (result.result) {
-                render(result.data);
-            }
-        } else {alert("Выбери героя!!!");}
-    });
+                const result = await server.moveHero(activeHero.id, 'RIGHT');
+                if (result.result) {
+                    render(result.data);
+                }
+            } else {alert("Выбери героя!!!");}
+        });
          $('#moveHeroUp').on('click', async () => {
             if(typeof activeHero != "undefined") {
             const result = await server.moveHero(activeHero.id, 'UP');
@@ -373,6 +418,8 @@ function Game(options) {
 
         $('#inventory').on('click', async() => {
             if (invActive == false) {
+                canvasInv.fillRect('brown');
+                drawInventoryGrid();
                 setInventory();
                 document.getElementById('inv-screen').style.display = 'block';
                 invActive = true;
@@ -391,10 +438,40 @@ function Game(options) {
                     heroUpdate = i;
                     activeHero = dataStruct.heroes[i];
                 }
+            console.log(activeHero);
             }
         });
 
+        $('#inv-screen').on('click', async(canvasInv) => {
+            var x = Math.floor(canvasInv.offsetX / 100);
+            var y = Math.floor(canvasInv.offsetY / 100);
+            if (activeHero.backpack[x + y * 3]) {
+                if (x <= 2 && y <= 6 && x >= 0 && y >= 0) {
+                    const result = await server.equipArtifact(activeHero.id, activeHero.backpack[x + y * 3].id);
+                    if (result.result) {
+                        render(result.data);
+                    }
+                }
+            }
+        });
 
+        $('#inv-screen').on('mousemove', async(canvasInv) => {
+            var x = Math.floor(canvasInv.offsetX / 100);
+        var y = Math.floor(canvasInv.offsetY / 100);\
+        console.log(activeHero);
+        fillInv('brown');
+        setInventory();
+        drawInventoryGrid();
+        if (activeHero.backpack[x + y * 3]) {
+            if (x <= 2 && y <= 6 && x >= 0 && y >= 0) {
+                if (y == 5) {
+                    printDescription(x, 4);
+                } else {
+                    printDescription(x, y);
+                }
+            }
+        }
+    });
 
         $('#gameUI').on('click', async(canvas) => {
             var x = Math.floor(canvas.offsetX / 32);
@@ -407,8 +484,6 @@ function Game(options) {
                 }
             }
         });
-
     }
     init();
-    drawInventoryGrid();
 }

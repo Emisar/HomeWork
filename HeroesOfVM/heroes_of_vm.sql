@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.7
+-- version 4.7.0
 -- https://www.phpmyadmin.net/
 --
--- Хост: 127.0.0.1:3306
--- Время создания: Ноя 24 2018 г., 13:01
--- Версия сервера: 5.6.38
--- Версия PHP: 7.2.0
+-- Хост: 127.0.0.1
+-- Время создания: Дек 08 2018 г., 01:31
+-- Версия сервера: 5.7.17
+-- Версия PHP: 7.1.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -32,6 +32,8 @@ CREATE TABLE `artifact` (
   `id` int(11) NOT NULL,
   `game_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  `clothes_type` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `in_backpack` int(1) NOT NULL,
   `x` int(11) DEFAULT NULL,
   `y` int(11) DEFAULT NULL,
   `type` int(11) NOT NULL,
@@ -44,10 +46,10 @@ CREATE TABLE `artifact` (
 -- Дамп данных таблицы `artifact`
 --
 
-INSERT INTO `artifact` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
-(1, 1, 1, -1, -1, 0, 1, 'щит', 'щит 2'),
-(2, 1, 1, -1, -1, 0, 1, 'щит', 'щит 3'),
-(3, 1, 1, -1, -1, 0, 1, 'щит', '2323');
+INSERT INTO `artifact` (`id`, `game_id`, `user_id`, `clothes_type`, `in_backpack`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
+(1, 1, 0, 'rightHand', 1, -1, -1, 0, 1, 'Sword Of Bastard', 'Kill me, I won`t do anything to you...'),
+(2, 1, 0, 'leftHand', 1, -1, -1, 1, 1, 'Shield Of Homeless', 'Kill me, I am anyway homeless...'),
+(3, 1, 0, 'body', 1, -1, -1, 2, 1, 'Cuirass Of Aristocrat', 'I`ll make you pay for everything!!!');
 
 -- --------------------------------------------------------
 
@@ -91,8 +93,37 @@ CREATE TABLE `hero` (
 --
 
 INSERT INTO `hero` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
-(1, 1, 1, 4, 6, 0, 1, 'супер герой', 'Это супер герой'),
-(2, 1, 2, 4, 2, 0, 2, 'Петькин герой', 'Петя, твой герой, ты и расскажи');
+(1, 1, 1, 3, 3, 0, 1, 'супер герой', 'Это супер герой'),
+(2, 1, 2, 5, 2, 0, 2, 'Петькин герой', 'Петя, твой герой, ты и расскажи');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `inventory`
+--
+
+CREATE TABLE `inventory` (
+  `id` int(11) NOT NULL,
+  `game_id` int(11) NOT NULL,
+  `hero_id` int(11) NOT NULL,
+  `head` int(11) DEFAULT NULL,
+  `body` int(11) DEFAULT NULL,
+  `feet` int(11) DEFAULT NULL,
+  `gloves` int(11) DEFAULT NULL,
+  `rightHand` int(11) DEFAULT NULL,
+  `leftHand` int(11) DEFAULT NULL,
+  `cloak` int(11) DEFAULT NULL,
+  `neck` int(11) DEFAULT NULL,
+  `ringOne` int(11) DEFAULT NULL,
+  `ringTwo` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `inventory`
+--
+
+INSERT INTO `inventory` (`id`, `game_id`, `hero_id`, `head`, `body`, `feet`, `gloves`, `rightHand`, `leftHand`, `cloak`, `neck`, `ringOne`, `ringTwo`) VALUES
+(1, 1, 1, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -108,16 +139,15 @@ CREATE TABLE `item` (
   `y` int(11) DEFAULT NULL,
   `type` int(11) NOT NULL,
   `name` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
-  `description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `resources` int(11) DEFAULT NULL
+  `description` varchar(255) CHARACTER SET utf8 DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Дамп данных таблицы `item`
 --
 
-INSERT INTO `item` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `name`, `description`, `resources`) VALUES
-(1, 1, 1, 11, 0, 0, 'Сундук', 'Бабушкин сундук, ну там, какое то барахло лежит', NULL);
+INSERT INTO `item` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `name`, `description`) VALUES
+(1, 1, 0, -1, -1, 0, 'wqe', 'wqewqe');
 
 -- --------------------------------------------------------
 
@@ -191,11 +221,13 @@ CREATE TABLE `properties` (
 --
 
 INSERT INTO `properties` (`id`, `elem_id`, `elem_type`, `attack`, `defence`, `spell_power`, `knowledge`, `min_damage`, `max_damage`, `health`, `speed`, `move_points`, `mana_points`) VALUES
-(1, 1, 'hero', 1, 1, 12, 5, 0, 8, NULL, 1, 950, 0),
+(1, 1, 'hero', 2, 2, 12, 10, 0, 8, NULL, 1, 550, 0),
 (2, 1, 'hero_default', 1, 1, 12, 5, 0, 8, NULL, 1, 950, 0),
-(3, 2, 'hero', 2, 2, 5, 1, 1, 3, NULL, 2, 409, 0),
+(3, 2, 'hero', 2, 2, 5, 1, 1, 3, NULL, 2, 950, 0),
 (4, 2, 'hero_default', 2, 2, 5, 1, 1, 3, NULL, 2, 950, 0),
-(5, 1, 'artifact', 2, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+(5, 1, 'artifact', 5, 1, 0, 0, 0, 0, 0, 0, 0, 1),
+(6, 2, 'artifact', 0, 5, 0, 0, 0, 0, 0, 0, 0, 0),
+(7, 3, 'artifact', 0, 50, 20, 100, 0, 0, 0, 0, 55, 120);
 
 -- --------------------------------------------------------
 
@@ -217,8 +249,9 @@ CREATE TABLE `resources` (
 --
 
 INSERT INTO `resources` (`id`, `elem_id`, `elem_type`, `ore`, `gold`, `wood`) VALUES
-(1, 1, 'gamer', 1000, 1000, 1000),
-(2, 2, 'gamer', 300, 300, 300);
+(1, 1, 'gamer', 2800, 2800, 2800),
+(2, 2, 'gamer', 300, 300, 300),
+(3, 1, 'item', 300, 300, 300);
 
 -- --------------------------------------------------------
 
@@ -368,8 +401,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `login`, `password`, `token`) VALUES
-(1, 'Вася', 'vasya', '123', 'f7a66c7e2ebcb3f3bd6523dcb3f83217'),
-(2, 'Петя', 'petya', '321', 'af65ae9a9a11a4d85a6deb75c7a9f1f3');
+(1, 'Вася', 'vasya', '123', 'b8030855c3b86251e300ba326f428c1a'),
+(2, 'Петя', 'petya', '321', '5cae9695d46eb360a10b948189f11982');
 
 -- --------------------------------------------------------
 
@@ -391,8 +424,8 @@ CREATE TABLE `users_games` (
 --
 
 INSERT INTO `users_games` (`id`, `user_id`, `game_id`, `color`, `order`, `is_active`) VALUES
-(1, 1, 1, 'red', 0, 0),
-(2, 2, 1, 'blue', 1, 1);
+(1, 1, 1, 'red', 0, 1),
+(2, 2, 1, 'blue', 1, 0);
 
 --
 -- Индексы сохранённых таблиц
@@ -418,6 +451,12 @@ ALTER TABLE `games`
 ALTER TABLE `hero`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id_UNIQUE` (`id`);
+
+--
+-- Индексы таблицы `inventory`
+--
+ALTER TABLE `inventory`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `item`
@@ -487,73 +526,66 @@ ALTER TABLE `users_games`
 --
 ALTER TABLE `artifact`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
 --
 -- AUTO_INCREMENT для таблицы `games`
 --
 ALTER TABLE `games`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT для таблицы `hero`
 --
 ALTER TABLE `hero`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
+--
+-- AUTO_INCREMENT для таблицы `inventory`
+--
+ALTER TABLE `inventory`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT для таблицы `item`
 --
 ALTER TABLE `item`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
 --
 -- AUTO_INCREMENT для таблицы `map`
 --
 ALTER TABLE `map`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT для таблицы `map_building`
 --
 ALTER TABLE `map_building`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT для таблицы `properties`
 --
 ALTER TABLE `properties`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT для таблицы `resources`
 --
 ALTER TABLE `resources`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT для таблицы `tile`
 --
 ALTER TABLE `tile`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
-
 --
 -- AUTO_INCREMENT для таблицы `town`
 --
 ALTER TABLE `town`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
 --
 -- AUTO_INCREMENT для таблицы `users_games`
 --
 ALTER TABLE `users_games`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-COMMIT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
