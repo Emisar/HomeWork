@@ -13,4 +13,11 @@ class Offer {
         }
         return false;
     }
+
+    public function createGame($userId) {
+        if ($userId) {
+            return $this->db->createGame($userId, 25, 18, 3);
+        }
+        return false;
+    }
 }

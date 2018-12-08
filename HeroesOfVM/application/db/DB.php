@@ -1,5 +1,7 @@
 <?php
 
+require_once '..\application\game\MapGenerator.php';
+
 class DB {
 
     const USERNAME = "root";
@@ -20,6 +22,30 @@ class DB {
     private function getMapSize($mapId) {
         $query = 'SELECT * FROM map WHERE id=' . $mapId;
         return $this->connection->query($query)->fetchObject('stdClass');
+    }
+
+    public function createGame($gameId, $width, $height, $biomes){
+        $gen = new MapGenerator();
+        $map = $gen->createMap($width, $height, $biomes);
+        //Добавить игру в БД
+        $this->connection->query('DELETE FROM games WHERE id=' . $gameId);
+        $this->connection->query('INSERT INTO games (id, map_id, status) VALUES (' . $gameId . ','. $gameId . ',"active")');
+        //Добавить мапу в БД
+        $this->connection->query('DELETE FROM map WHERE id=' . $gameId);
+        $this->connection->query('INSERT INTO map (id, size_x, size_y) VALUES (' . $gameId . ','. $width . ',' . $height . ')');
+        //Удаляем старые тайлы этой мапы
+        $this->connection->query('DELETE FROM tile WHERE map_id=' . $gameId);
+        //Закидываем новые тайлы
+        for ($i = 0; $i < $width; $i++){
+            for ($j = 0; $j < $height; $j++){
+                $query = 'INSERT INTO tile (id, map_id, x, y, name, type, sprite, passability)
+                          VALUES (' . $map[$i][$j]->id . ',' . $gameId . ',' . $i . ',
+                                  ' . $j . ' , "' . $map[$i][$j]->name . '" , "' . $map[$i][$j]->type . '",
+                                  ' . $map[$i][$j]->sprite . ' , ' . $map[$i][$j]->passability . ')';
+                $this->connection->query($query);
+            }
+        }
+        return true;
     }
 
     public function getMap($mapId) {
@@ -222,7 +248,7 @@ class DB {
     }
 
     public function getInventory($gameId) {
-        $query = 'SELECT * FROM inventory WHERE  game_id=' . $gameId;
+        $query = 'SELECT * FROM inventory WHERE game_id=' . $gameId;
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
     }
 
@@ -259,6 +285,17 @@ class DB {
                            knowledge=' . $hero->properties->knowledge . ',
                            mana_points=' . $hero->properties->manaPoints . '    
                        WHERE elem_id=' . $hero->id . ' AND elem_type="hero";';
+            $str = '';
+            foreach ($hero->inventory as $artifact) {
+                if ($artifact->clothesType && $artifact->id) {
+                    $str .= $artifact->clothesType . '=' . $artifact->id . ',';
+                }
+            }
+            if ($str) {
+                $str = substr($str, 0, -1);
+                $str = 'UPDATE inventory SET ' . $str . ' WHERE hero_id=' . $hero->id .';';
+                $query .= $str;
+            }
         }
         return $this->connection->query($query)->execute();
     }
@@ -267,7 +304,7 @@ class DB {
         $query = '';
         foreach ($artifacts as $artifact) {
             $query .= 'UPDATE artifact 
-                       SET x=' . $artifact->x . ', y=' . $artifact->y . ', owner=' . $artifact->owner . '
+                       SET x=' . $artifact->x . ', y=' . $artifact->y . ', owner=' . $artifact->owner . ', in_backpack=' . $artifact->inBackpack . ' 
                        WHERE id=' . $artifact->id . ';';
         }
         return ($query) ? $this->connection->query($query)->execute() : false;

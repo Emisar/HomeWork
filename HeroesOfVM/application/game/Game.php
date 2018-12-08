@@ -42,18 +42,8 @@ class Game {
                 // заполнить героев
                 $heroes = $this->db->getHeroes($gameId);
                 $defaultProperties = $this->db->getHeroesDefaultProperties($heroes);
-                $this->struct->fillHeroes($heroes, $defaultProperties, $inventory, $artifacts);
+                $this->struct->fillHeroes($heroes, $defaultProperties, $inventory, $this->struct->artifacts);
                 // заполнить артефакты в сумках героев
-                /*for ($j = 0; $j < count($this->struct->heroes); $j++) {
-                    $this->struct->heroes[$j]->backpack = array();
-                    for ($i = 0; $i < count($this->struct->artifacts); $i++) {
-                        if ($this->struct->heroes[$j]->id == $this->struct->artifacts[$i]->owner) {
-                            $this->struct->artifacts[$i]->x = -1;
-                            $this->struct->artifacts[$i]->y = -1;
-                            $this->struct->heroes[$j]->backpack[] = $this->struct->artifacts[$i];
-                        }
-                    }
-                }*/
                 // заполнить строения
                 $mapBuildings = $this->db->getMapBuildings($gameId);
                 $this->struct->fillMapBuildings($mapBuildings);

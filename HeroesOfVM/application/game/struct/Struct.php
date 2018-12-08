@@ -111,7 +111,7 @@ class Struct {
                 }
             }
             foreach ($this->artifacts as $artifact) {
-                if ($artifact->owner == $value->id) {
+                if ($artifact->owner == $value->id && $artifact->inBackpack == 1) {
                     $backpack[] = $artifact;
                     $artifact->x = -1;
                     $artifact->y = -1;
@@ -119,46 +119,9 @@ class Struct {
             }
             foreach ($inventoryes as $inv) {
                 if ($inv->hero_id == $value->id) {
-                    foreach ($backpack as $artifact) {
-                        if ($artifact->id == $inv->head) {
-                            $inventory->head = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->body) {
-                            $inventory->body = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->feet) {
-                            $inventory->feet = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->gloves) {
-                            $inventory->gloves = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->rightHand) {
-                            $inventory->rightHand = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->leftHand) {
-                            $inventory->leftHand = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->cloak) {
-                            $inventory->cloak = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->neck) {
-                            $inventory->neck = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->ringOne) {
-                            $inventory->ringOne = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->ringTwo) {
-                            $inventory->ringTwo = $artifact;
-                            break;
+                    foreach ($this->artifacts as $artifact) {
+                        if ($inv->{$artifact->clothesType} == $artifact->id) {
+                            $inventory->{$artifact->clothesType} = $artifact;
                         }
                     }
                 }
