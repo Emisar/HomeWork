@@ -31,9 +31,18 @@ function Server() {
 
     };
 
+    this.createGame = async () => {
+        const result = await $.get('api/', { method: 'createGame', token });
+        if (result && result.result) {
+            gameId = result.data.id - 0;
+            return true;
+        }
+        return null;
+    };
+
     // Game API
     this.getStruct = () => { return $.get('api/', { method: 'getStruct', token, gameId }); };
     this.endTurn   = () => { return $.get('api/', { method: 'endTurn'  , token, gameId }); };
     this.moveHero = (heroId, direction) => { return $.get('api/', { method: 'moveHero', heroId, direction, token, gameId }); };
-    this.pickupArtifact = (idHero, idArtifact) => { return $.get('api/', { method: 'pickupArtifact', idHero, idArtifact, token, gameId }); };
+    this.equipArtifact = (idHero, idArtifact) => { return $.get('api/', { method: 'equipArtifact', idArtifact, idHero, token, gameId }); };
 }

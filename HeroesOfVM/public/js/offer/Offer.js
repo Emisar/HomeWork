@@ -18,6 +18,12 @@ function Offer(options) {
                 alert(result.error);
             }
         });
+        $('#createGame').on('click', async () => {
+            const result = await server.createGame();
+            if (!result) {
+                alert(result.error);
+            }
+        });
     }
     init();
 }

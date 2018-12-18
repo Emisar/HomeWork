@@ -141,9 +141,16 @@ function Game(options) {
         artifact: {
             img: imgArtifact,
             sprite: [
-                { x: 0, y: 0 },
-                { x: 32, y: 0 },
-                { x: 64, y: 0 }
+                { x: 0, y: 0   },
+                { x: 0, y: 32  },
+                { x: 0, y: 64  },
+                { x: 0, y: 96  },
+                { x: 0, y: 127 },
+                { x: 0, y: 160 },
+                { x: 0, y: 192 },
+                { x: 0, y: 224 },
+                { x: 0, y: 256 },
+                { x: 0, y: 289 }
                 //...
             ]
         },
@@ -248,6 +255,9 @@ function Game(options) {
         for (var i = 1; i <= 5; i++) {
             canvasInv.line(0, i * 100, 301, i * 100, 'yellow');
         }
+    }
+
+    function drawRightInventoryGrid() {
         canvasInv.line(400, 140, 500, 140, 'yellow');
         canvasInv.line(500, 140, 540, 230, 'yellow');
         canvasInv.line(400, 140, 360, 230, 'yellow');
@@ -255,6 +265,9 @@ function Game(options) {
         canvasInv.line(450, 320, 390, 470, 'yellow');
         canvasInv.line(450, 320, 510, 470, 'yellow');
         canvasInv.circle(450, 90, 35, 'yellow');
+        //gloveses
+        canvasInv.fillSmallRect(320, 90, 60, 60, 'brown');
+        drawCellInventory(350, 120);
         canvasInv.fillSmallRect(420, 60, 60, 60, 'brown');
         drawCellInventory(450, 90); // голова
         canvasInv.fillSmallRect(330, 200, 60, 60, 'brown');
@@ -263,15 +276,12 @@ function Game(options) {
         drawCellInventory(540, 230); // правая рука
         canvasInv.fillSmallRect(420, 190, 60, 60, 'brown');
         drawCellInventory(450, 220); // грудь
-        canvasInv.fillSmallRect(360, 440, 60, 60, 'brown');
-        drawCellInventory(390, 470); // левая нога
-        canvasInv.fillSmallRect(480, 440, 60, 60, 'brown');
-        drawCellInventory(510, 470); // правая нога
+        canvasInv.fillSmallRect(420, 440, 60, 60, 'brown');
+        drawCellInventory(450, 470); // левая нога
         drawCellInventory(540, 70);  // плащ
         drawCellInventory(450, 550); // ожерелье
         drawCellInventory(375, 550); // кольцо 1
         drawCellInventory(525, 550); // кольцо 2
-
     }
 
     function drawCellInventory(x, y) {
@@ -281,23 +291,23 @@ function Game(options) {
         canvasInv.line(x + 30, y - 30, x + 30, y + 30, 'yellow');
     }
 
-    function printDescription(x, y) {
+    function printDescription(x, y, xPos, yPos) {
         console.log(activeHero);
-        canvasInv.fillSmallRect(x * 100, y * 100, 300, 200, 'black');
-        canvasInv.rect(x * 100, y * 100, 300, 200, 'white');
-        canvasInv.text(activeHero.backpack[x + y * 3].name, x * 100 + 10, y * 100 + 20, 'yellow', 20);
-        canvasInv.text('Урон: ' + activeHero.backpack[x + y * 3].properties.attack, x * 100 + 20, y * 100 + 35 + 5, "white", 14);
-        canvasInv.text('Защита ' + activeHero.backpack[x + y * 3].properties.defence, x * 100 + 20, y * 100 +  50 + 5, "white", 14);
-        canvasInv.text('Магический урон: ' + activeHero.backpack[x + y * 3].properties.spellPower, x * 100 + 20, y * 100 + 65 + 5, "white", 14);
-        canvasInv.text('Интеллект: ' + activeHero.backpack[x + y * 3].properties.knowledge, x * 100 + 20, y * 100 + 80 + 5, "white", 14);
-        canvasInv.text('Очки хода: ' + activeHero.backpack[x + y * 3].properties.movePoints, x * 100 + 20, y * 100 + 95 + 5, "white", 14);
-        canvasInv.text('Мана: ' + activeHero.backpack[x + y * 3].properties.manaPoints, x * 100 + 20, y * 100 + 110 + 5, "white", 14);
-        canvasInv.text(activeHero.backpack[x + y * 3].description, x * 100 + 10, y * 100 + 150, 'violet', 14);
-    }
-    function fillInv(color) {
-        canvasInv.fillRect(color);
+        canvasInv.fillSmallRect(xPos * 100, yPos * 100, 300, 200, 'rgba(0, 0, 0, 0.7)');
+        canvasInv.rect(xPos * 100, yPos * 100, 300, 200, 'white');
+        canvasInv.text(activeHero.backpack[x + y * 3].name, xPos * 100 + 10, yPos * 100 + 20, 'yellow', 20);
+        canvasInv.text('Урон: ' + activeHero.backpack[x + y * 3].properties.attack, xPos * 100 + 20, yPos * 100 + 35 + 5, "white", 14);
+        canvasInv.text('Защита ' + activeHero.backpack[x + y* 3].properties.defence, xPos * 100 + 20, yPos * 100 +  50 + 5, "white", 14);
+        canvasInv.text('Магический урон: ' + activeHero.backpack[x + y * 3].properties.spellPower, xPos * 100 + 20, yPos * 100 + 65 + 5, "white", 14);
+        canvasInv.text('Интеллект: ' + activeHero.backpack[x + y * 3].properties.knowledge, xPos * 100 + 20, yPos * 100 + 80 + 5, "white", 14);
+        canvasInv.text('Очки хода: ' + activeHero.backpack[x + y * 3].properties.movePoints, xPos * 100 + 20, yPos * 100 + 95 + 5, "white", 14);
+        canvasInv.text('Мана: ' + activeHero.backpack[x + y * 3].properties.manaPoints, xPos * 100 + 20, yPos * 100 + 110 + 5, "white", 14);
+        canvasInv.text(activeHero.backpack[x + y * 3].description, xPos * 100 + 10, yPos * 100 + 150, 'violet', 14);
     }
 
+    function fillInv(color) {
+        canvasInv.fillSmallRect(0, 0, 300, 600, "brown");
+    }
 
     function setUserResources() {
         if (dataStruct){
@@ -347,20 +357,112 @@ function Game(options) {
         }
     }
 
-    function setArtifactToHero($artifact) {
 
+    
+
+
+ 
+    // drawCellInventory(375, 550); // кольцо 1
+    // drawCellInventory(525, 550); // кольцо 2
+
+    function drawInvBody() {
+        if(typeof activeHero !== 'undefined') {
+            if(activeHero.inventory.body != null) {
+                const sprite = SPRITES.artifact;
+                canvasInv.sprite(sprite.img,
+                    sprite.sprite[activeHero.inventory.body.type - 0].x, sprite.sprite
+                    [activeHero.inventory.body.type - 0].y, SIZE, SIZE, 430, 200, 40, 40);
+            }
+        }
     }
 
-    function showArtifactDescription(x, y) {
-        if (activeDescription == true) {
-            console.log(activeHero);
-            fillInv('brown');
-            setInventory();
-            drawInventoryGrid();
-            if (y == 5) {
-                printDescription(x, 4);
-            } else {
-                printDescription(x, y);
+    function drawInvCloak() {
+        if(typeof activeHero !== 'undefined') {
+            if(activeHero.inventory.cloak != null) {
+                const sprite = SPRITES.artifact;
+                canvasInv.sprite(sprite.img,
+                    sprite.sprite[activeHero.inventory.cloak.type - 0].x, sprite.sprite
+                    [activeHero.inventory.cloak.type - 0].y, SIZE, SIZE, 520, 50, 40, 40);
+            }
+        }
+    }
+    function drawInvFeet() {
+        if(typeof activeHero !== 'undefined') {
+            if(activeHero.inventory.feet != null) {
+                const sprite = SPRITES.artifact;
+                canvasInv.sprite(sprite.img,
+                    sprite.sprite[activeHero.inventory.feet.type - 0].x, sprite.sprite
+                    [activeHero.inventory.feet.type - 0].y, SIZE, SIZE, 430, 450, 40, 40);
+            }
+        }
+    }
+    function drawInvGloves() {
+        if(typeof activeHero !== 'undefined') {
+            if(activeHero.inventory.gloves != null) {
+                const sprite = SPRITES.artifact;
+                canvasInv.sprite(sprite.img,
+                    sprite.sprite[activeHero.inventory.gloves.type - 0].x, sprite.sprite
+                    [activeHero.inventory.gloves.type - 0].y, SIZE, SIZE, 330, 100, 40, 40);
+            }
+        }
+    }
+    function drawInvHead() {
+        if(typeof activeHero !== 'undefined') {
+            if(activeHero.inventory.head != null) {
+                const sprite = SPRITES.artifact;
+                canvasInv.sprite(sprite.img,
+                    sprite.sprite[activeHero.inventory.head.type - 0].x, sprite.sprite
+                    [activeHero.inventory.head.type - 0].y, SIZE, SIZE, 430, 70, 40, 40);
+            }
+        }
+    }
+    function drawInvRightHand() {
+        if(typeof activeHero !== 'undefined') {
+            if(activeHero.inventory.rightHand != null) {
+                const sprite = SPRITES.artifact;
+                canvasInv.sprite(sprite.img,
+                    sprite.sprite[activeHero.inventory.rightHand.type - 0].x, sprite.sprite
+                    [activeHero.inventory.rightHand.type - 0].y, SIZE, SIZE, 340, 210, 40, 40);
+            }
+        }
+    }
+    function drawInvNeck() {
+        if(typeof activeHero !== 'undefined') {
+            if(activeHero.inventory.neck != null) {
+                const sprite = SPRITES.artifact;
+                canvasInv.sprite(sprite.img,
+                    sprite.sprite[activeHero.inventory.neck.type - 0].x, sprite.sprite
+                    [activeHero.inventory.neck.type - 0].y, SIZE, SIZE, 430, 530, 40, 40);
+            }
+        }
+    }
+    function drawInvLeftHand() {
+        if(typeof activeHero !== 'undefined') {
+            if(activeHero.inventory.leftHand != null) {
+                const sprite = SPRITES.artifact;
+                canvasInv.sprite(sprite.img,
+                    sprite.sprite[activeHero.inventory.leftHand.type - 0].x, sprite.sprite
+                    [activeHero.inventory.leftHand.type - 0].y, SIZE, SIZE, 520, 210, 40, 40);
+            }
+        }
+    }
+    function drawInvRingOne() {
+        if(typeof activeHero !== 'undefined') {
+            if(activeHero.inventory.ringOne != null) {
+                const sprite = SPRITES.artifact;
+                canvasInv.sprite(sprite.img,
+                    sprite.sprite[activeHero.inventory.ringOne.type - 0].x, sprite.sprite
+                    [activeHero.inventory.ringOne.type - 0].y, SIZE, SIZE, 355, 530, 40, 40);
+            }
+        }
+    }
+    function drawInvRingTwo() {
+        if(typeof activeHero !== 'undefined') {
+            if(activeHero.inventory.ringTwo != null) {
+                const sprite = SPRITES.artifact;
+                canvasInv.sprite(sprite.img,
+                    sprite.sprite[activeHero.inventory.ringTwo.type - 0].x, sprite.sprite
+                    [activeHero.inventory.ringTwo.type - 0].y, SIZE, SIZE, 505, 530, 40, 40);
             }
         }
     }
@@ -381,11 +483,23 @@ function Game(options) {
         // нарисовать предметы
         struct.items.forEach(item => printItemSprite(item));
         // нарисовать здания на карте
-        struct.mapBuildings.forEach(mapBuilding => printMapBuildingSprite(mapBuilding));
+        struct.buildings.forEach(building => printMapBuildingSprite(building));
         // нарисовать города на карте
         struct.towns.forEach(town => printTownSprite(town));
         // нарисовать героев
         struct.heroes.forEach(hero => printHeroSprite(hero));
+        // отрисовка экипировки
+        drawRightInventoryGrid();
+        drawInvGloves();
+        drawInvHead();
+        drawInvRightHand();
+        drawInvNeck();
+        drawInvLeftHand();
+        drawInvRingOne();
+        drawInvRingTwo();
+        drawInvBody();
+        drawInvCloak();
+        drawInvFeet();
     }
 
     this.show = () => $(DOM_ID).show();
@@ -497,6 +611,7 @@ function Game(options) {
             if (invActive == false) {
                 canvasInv.fillRect('brown');
                 drawInventoryGrid();
+                drawRightInventoryGrid();
                 setInventory();
                 document.getElementById('inv-screen').style.display = 'block';
                 invActive = true;
@@ -519,7 +634,7 @@ function Game(options) {
             }
         });
 
-        $('#inv-screen').on('click', async(canvasInv) => {
+        $('#inv-screen').on('dblclick', async(canvasInv) => {
             var x = Math.floor(canvasInv.offsetX / 100);
             var y = Math.floor(canvasInv.offsetY / 100);
             if (activeHero.backpack[x + y * 3]) {
@@ -530,43 +645,25 @@ function Game(options) {
                     }
                 }
             }
+            setInventory();
         });
 
-        var xInv;
-        var yInv;
-
         $('#inv-screen').on('mousemove', async(canvasInv) => {
-        var x = Math.floor(canvasInv.offsetX / 100);
-        var y = Math.floor(canvasInv.offsetY / 100);
-        if (x != xInv && y != yInv) {
-            fillInv('brown');
-            setInventory();
-            drawInventoryGrid();
-            activeDescription = false;
-        }
+        var x = xPos= Math.floor(canvasInv.offsetX / 100);
+        var y = yPos= Math.floor(canvasInv.offsetY / 100);
+        fillInv('brown');
+        setInventory();
+        drawInventoryGrid();
         if (activeHero.backpack[x + y * 3]) {
             if (x <= 2 && y <= 6 && x >= 0 && y >= 0) {
-                if ((activeDescription == false && x != xInv) || (activeDescription == false && y != yInv)) {
-                    xInv = x;
-                    yInv = y;
-                    activeDescription = true;
-                    setTimeout(function () {
-                        if (activeDescription == true) {
-                            console.log(x, y);
-                            fillInv('brown');
-                            setInventory();
-                            drawInventoryGrid();
-                            if (y == 5) {
-                                printDescription(x, 4);
-                            } else {
-                                printDescription(x, y);
-                            }
-                        }
-                    }, 1000, [x, y]);
+                if (y == 5 && x == 1) {
+                    printDescription(x, y, 0, 4);
+                } else {
+                    printDescription(x, y, 0, y);
                 }
             }
         }
-        });
+    });
 
         $('#gameUI').on('click', async(canvas) => {
             var x = Math.floor(canvas.offsetX / 32);
