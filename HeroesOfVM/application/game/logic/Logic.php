@@ -85,8 +85,8 @@ class Logic {
         if ($hero && $idArtifact) {
             $backpack = $hero->backpack;
             for ($i = 0; $i < count($backpack); $i++) {
-                if ($backpack[$i]->id === $idArtifact) {
-                    return clone($backpack[$i]);
+                if ($backpack[$i]->id == $idArtifact) {
+                    return $backpack[$i];
                 }
             }
         }
@@ -97,8 +97,8 @@ class Logic {
         if ($hero && $idArtifact) {
             $backpack = $hero->backpack;
             for ($i = 0; $i < count($backpack); $i++) {
-                if ($backpack[$i]->id === $idArtifact) {
-                    $backpack[$i] = null;
+                if ($backpack[$i]->id == $idArtifact) {
+                    unset($backpack[$i]);
                     $hero->backpack = $backpack;
                     return true;
                 }
@@ -157,8 +157,17 @@ class Logic {
         $id = intval($options->id);
         // получить текущего игрока
         $curGamer = $this->getGamer($id);
-        if ($curGamer) {
+        if ($curGamer && $curGamer->isActive == 1) {
             // Обновить данные
+                //здания на карте
+            foreach ($this->struct->buildings as $building) {
+                if ($curGamer->id == $building->id) {
+                    $curGamer->resources->gold += $building->resources->gold;
+                    $curGamer->resources->ore += $building->resources->ore;
+                    $curGamer->resources->wood += $building->resources->wood;
+                }
+            }
+
             // Обновить героев
             foreach ($this->struct->heroes as $hero) {
                 if ($hero->owner == $curGamer->id) {
@@ -322,7 +331,6 @@ class Logic {
                         }
                         break;
                 }
-
                 for ($i = 0; $i < count($this->struct->artifacts); $i++) {
                     if (($hero->x == $this->struct->artifacts[$i]->x) && ($hero->y == $this->struct->artifacts[$i]->y)) {
                         $this->pickupArtifact((object)['idHero' => $id, 'idArtifact' => $this->struct->artifacts[$i]->id]);
@@ -332,6 +340,14 @@ class Logic {
                 for ($i = 0; $i < count($this->struct->items); $i++) {
                     if (($hero->x == $this->struct->items[$i]->x) && ($hero->y == $this->struct->items[$i]->y)) {
                         $this->pickupItem((object)['idHero' => $id, 'idItem' => $this->struct->items[$i]->id]);
+                        break;
+                    }
+                }
+                for ($i = 0; $i < count($this->struct->buildings); $i++) {
+                    if (($hero->x == $this->struct->buildings[$i]->x) && ($hero->y == $this->struct->buildings[$i]->y)) {
+                        if ($this->struct->buildings[$i]->owner != $hero->owmer) {
+                            $this->captureBuilding((object)['idHero' => $id, 'idBuilding' => $this->struct->buildings[$i]->id]);
+                        }
                         break;
                     }
                 }
@@ -448,6 +464,7 @@ class Logic {
             for ($i = 0; $i < count($hero->backpack); $i++) {
                 if (is_null($hero->backpack[$i])) {
                     $artifact->owner = $hero->id;
+                    $artifact->inBackpack = 1;
                     $artifact->x = -1;
                     $artifact->y = -1;
                     $hero->backpack[$i] = $artifact;
@@ -455,6 +472,7 @@ class Logic {
                 }
             }
             $artifact->owner = $hero->id;
+            $artifact->inBackpack = 1;
             $artifact->x = -1;
             $artifact->y = -1;
             $hero->backack[] = $artifact;
@@ -487,18 +505,20 @@ class Logic {
             // инициализируем объекты
             $hero = $this->getHero($idHero);
             $artifact = $this->getArtifact($hero, $idArtifact);
-            $equipedArtifact = clone($hero->inventory->{$artifact->type});
+            $equipedArtifact = $hero->inventory->{$artifact->clothesType};
             // надеваем артефакт
-            if (is_null($hero->inventory->{$artifact->type})) {     // если слот свободен
-                $hero->inventory->{$artifact->type} = $artifact;
+            if (is_null($hero->inventory->{$artifact->clothesType})) {     // если слот свободен
+                $artifact->inBackpack = 0;
+                $hero->inventory->{$artifact->clothesType} = $artifact;
                 $this->remArtifact($hero, $idArtifact);
             } else {        // если слот занят, то меняем предметы местами
                 $key = $this->getKeyElemInObj($hero, 'backpack', 'id', $idArtifact);
-                $hero->inventory->{$artifact->type} = $artifact;
+                $artifact->inBackpack = 0;
+                $hero->inventory->{$artifact->clothesType} = $artifact;
                 $this->remArtifact($hero, $idArtifact);
                 $hero->backpack[$key] = $equipedArtifact;
+                $hero->backpack[$key]->inBackpack = 1;
             }
-
             $this->changeProperties($hero, $equipedArtifact, -1);
             $this->changeProperties($hero, $artifact, 1);
             return true;

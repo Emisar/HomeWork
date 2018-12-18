@@ -19,6 +19,7 @@ class Struct {
     public $towns;
     public $buildings;
     public $heroes;
+    public $battleMaps;
 
     public $propertiesHero;
     public $backpackHero;
@@ -85,6 +86,19 @@ class Struct {
         }
     }
 
+    public function fillBattleMaps($maps) {
+        $this->battleMaps = [];
+        for ($k = 0; $k < count($maps); $k++) {
+            $this->battleMaps[$k] = [];
+            for ($i = 0; $i < count($maps[$k]); $i++) {
+                $this->battleMaps[$k][$i] = [];
+                for ($j = 0; $j < count($maps[$k][$i]); $j++) {
+                    $this->battleMaps[$k][$i][$j] = new Tile($maps[$k][$i][$j]);
+                }
+            }
+        }
+    }
+
     public function fillMap($map) {
         // карта
         $this->map = [];
@@ -111,7 +125,7 @@ class Struct {
                 }
             }
             foreach ($this->artifacts as $artifact) {
-                if ($artifact->owner == $value->id) {
+                if ($artifact->owner == $value->id && $artifact->inBackpack == 1) {
                     $backpack[] = $artifact;
                     $artifact->x = -1;
                     $artifact->y = -1;
@@ -119,52 +133,14 @@ class Struct {
             }
             foreach ($inventoryes as $inv) {
                 if ($inv->hero_id == $value->id) {
-                    foreach ($backpack as $artifact) {
-                        if ($artifact->id == $inv->head) {
-
-                            $inventory->head = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->body) {
-                            $inventory->body = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->feet) {
-                            $inventory->feet = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->gloves) {
-                            $inventory->gloves = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->rightHand) {
-                            $inventory->rightHand = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->leftHand) {
-                            $inventory->leftHand = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->cloak) {
-                            $inventory->cloak = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->neck) {
-                            $inventory->neck = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->ringOne) {
-                            $inventory->ringOne = $artifact;
-                            break;
-                        }
-                        if ($artifact->id == $inv->ringTwo) {
-                            $inventory->ringTwo = $artifact;
-                            break;
+                    foreach ($this->artifacts as $artifact) {
+                        if ($inv->{$artifact->clothesType} == $artifact->id) {
+                            $inventory->{$artifact->clothesType} = $artifact;
                         }
                     }
                 }
             }
-            $this->hero[] = new Hero($value, $properties, $inventory, $backpack);
+            $this->heroes[] = new Hero($value, $properties, $inventory, $backpack);
         }
     }
 
@@ -181,11 +157,17 @@ class Struct {
         }
     }
 
-    public function fillMapBuildings($mapBuildings) {
+    public function fillMapBuildings($mapBuildings, $mapBuildingsResources) {
         // список зданий
-        $this->mapBuildings = [];
+        $this->buildings = [];
         foreach ($mapBuildings as $value) {
-            $this->mapBuildings[] = new MapBuilding($value);
+            foreach ($mapBuildingsResources as $resources) {
+                if ($value->id == $resources->id) {
+                    $this->buildings[] = new MapBuilding($value, $resources);
+                    // изменить проходимость на ноль
+                    break;
+                }
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+require_once '..\application\game\MapGenerator.php';
+
 class DB {
 
     const USERNAME = "root";
@@ -20,6 +22,54 @@ class DB {
     private function getMapSize($mapId) {
         $query = 'SELECT * FROM map WHERE id=' . $mapId;
         return $this->connection->query($query)->fetchObject('stdClass');
+    }
+
+    private function getBattleMapsInf($gameId) {
+        $query = 'SELECT * FROM battle_map WHERE game_id=' . $gameId;
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public function createGame($gameId, $width, $height, $biomes){
+        $gen = new MapGenerator();
+        $map = $gen->createMap($width, $height, $biomes);
+        //Добавить игру в БД
+        $this->connection->query('DELETE FROM games WHERE id=' . $gameId);
+        $this->connection->query('INSERT INTO games (id, map_id, status) VALUES (' . $gameId . ','. $gameId . ',"active")');
+        //Добавить мапу в БД
+        $this->connection->query('DELETE FROM map WHERE id=' . $gameId);
+        $this->connection->query('INSERT INTO map (id, size_x, size_y) VALUES (' . $gameId . ','. $width . ',' . $height . ')');
+        //Удаляем старые тайлы этой мапы
+        $this->connection->query('DELETE FROM tile WHERE map_id=' . $gameId);
+        //Закидываем новые тайлы
+        for ($i = 0; $i < $width; $i++){
+            for ($j = 0; $j < $height; $j++){
+                $query = 'INSERT INTO tile (id, map_id, x, y, name, type, sprite, passability)
+                          VALUES (' . $map[$i][$j]->id . ',' . $gameId . ',' . $i . ',
+                                  ' . $j . ' , "' . $map[$i][$j]->name . '" , "' . $map[$i][$j]->type . '",
+                                  ' . $map[$i][$j]->sprite . ' , ' . $map[$i][$j]->passability . ')';
+                $this->connection->query($query);
+            }
+        }
+        return true;
+    }
+
+    public function getBattleMaps($gameId) {
+        $mapInf = $this->getBattleMapsInf($gameId);
+        $maps = [];
+        for ($k = 0; $k < count($mapInf); $k++) {
+            for ($i = 0; $i < $mapInf[$k]->size_x; $i++) {
+                $maps[$k][] = [];
+                for ($j = 0; $j < $mapInf[$k]->size_y; $j++) {
+                    $maps[$k][$i][$j] = null;
+                }
+            }
+            $query = 'SELECT * FROM battle_tile WHERE map_id=' . $mapInf[$k]->id;
+            $result = $this->connection->query($query);
+            while($row = $result->fetchObject('stdClass')) {
+                $maps[$k][$row->x][$row->y] = $row;
+            }
+        }
+        return $maps;
     }
 
     public function getMap($mapId) {
@@ -88,6 +138,7 @@ class DB {
                          u.name, 
                          ug.color, 
                          ug.order, 
+                         ug.mode,
                          ug.is_active AS isActive,
                          r.gold,
                          r.wood,
@@ -206,6 +257,24 @@ class DB {
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
     }
 
+    public function getMapBuildingsResources($buildings) {
+        $temp = [];
+        foreach ($buildings as $building) {
+            $temp[] = 'elem_id='.$building->id;
+        }
+        $str = join(' OR ', $temp);
+        $query = 'SELECT
+                    elem_id as id,
+                    gold,
+                    wood,
+                    ore
+                  FROM
+                    resources
+                  WHERE
+                    (' . $str . ') AND elem_type="map_building"';
+        return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
+    }
+
     public function getMapBuildings($gameId) {
         $query = 'SELECT * FROM map_building WHERE game_id=' . $gameId;
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
@@ -222,7 +291,7 @@ class DB {
     }
 
     public function getInventory($gameId) {
-        $query = 'SELECT * FROM inventory WHERE  game_id=' . $gameId;
+        $query = 'SELECT * FROM inventory WHERE game_id=' . $gameId;
         return $this->connection->query($query)->fetchAll(PDO::FETCH_CLASS);
     }
 
@@ -259,6 +328,17 @@ class DB {
                            knowledge=' . $hero->properties->knowledge . ',
                            mana_points=' . $hero->properties->manaPoints . '    
                        WHERE elem_id=' . $hero->id . ' AND elem_type="hero";';
+            $str = '';
+            foreach ($hero->inventory as $artifact) {
+                if ($artifact->clothesType && $artifact->id) {
+                    $str .= $artifact->clothesType . '=' . $artifact->id . ',';
+                }
+            }
+            if ($str) {
+                $str = substr($str, 0, -1);
+                $str = 'UPDATE inventory SET ' . $str . ' WHERE hero_id=' . $hero->id .';';
+                $query .= $str;
+            }
         }
         return $this->connection->query($query)->execute();
     }
@@ -267,7 +347,7 @@ class DB {
         $query = '';
         foreach ($artifacts as $artifact) {
             $query .= 'UPDATE artifact 
-                       SET x=' . $artifact->x . ', y=' . $artifact->y . ', owner=' . $artifact->owner . '
+                       SET x=' . $artifact->x . ', y=' . $artifact->y . ', owner=' . $artifact->owner . ', in_backpack=' . $artifact->inBackpack . ' 
                        WHERE id=' . $artifact->id . ';';
         }
         return ($query) ? $this->connection->query($query)->execute() : false;
@@ -286,8 +366,8 @@ class DB {
     public function updateMapBuildings($mapBuildings) {
         $query = '';
         foreach ($mapBuildings as $mapBuilding) {
-            $query .= 'UPDATE mapBuilding 
-                       SET x=' . $mapBuilding->x . ', y=' . $mapBuilding->y . '  
+            $query .= 'UPDATE map_building
+                       SET owner=' . $mapBuilding->owner . '
                        WHERE id=' . $mapBuilding->id . ';';
         }
         return ($query) ? $this->connection->query($query)->execute() : false;
@@ -299,24 +379,6 @@ class DB {
             $query .= 'UPDATE town
                        SET x=' . $town->x . ', y=' . $town->y . '
                        WHERE id=' . $town->id . ';';
-        }
-        return ($query) ? $this->connection->query($query)->execute() : false;
-    }
-
-    public function deleteArtifacts($artifacts) {
-        $query = '';
-        foreach ($artifacts as $artifact) {
-            $query .= 'DELETE FROM artifact, properties
-                        WHERE artifact.x="-1" AND artifact.y="-1" AND artifact.id=' . $artifact->id . ' AND properties.elem_id=' . $artifact->id . ' AND properties.elem_type="artifact";';
-        }
-        return ($query) ? $this->connection->query($query)->execute() : false;
-    }
-
-    public function deleteItems($items) {
-        $query = '';
-        foreach ($items as $item) {
-            $query .= 'DELETE FROM item, resources
-                        WHERE item.x="-1" AND item.y="-1" AND item.id=' . $item->id . ' AND resources.elem_id=' . $item->id . ' AND resources.elem_type="item";';
         }
         return ($query) ? $this->connection->query($query)->execute() : false;
     }
