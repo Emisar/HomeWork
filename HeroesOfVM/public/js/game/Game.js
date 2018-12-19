@@ -242,6 +242,15 @@ function Game(options) {
         }
     }
 
+    function ColorChange() {
+        if (typeof activeHero != "undefined"){
+            if (dataStruct.gamers[idGamer - 1].id == activeHero.owner){
+                TurnColor = 'lime';
+            } else {TurnColor = 'crimson'}
+        }
+        requestAnimationFrame(ColorChange);
+    }
+
     function printHeadBand(x,y, color) {
             canvasUI.rect(x, y , 32, 32 , color);
         }
@@ -315,9 +324,8 @@ function Game(options) {
             for (var i = 0; i < dataStruct.gamers.length; i++) {
                 if(dataStruct.gamers[i].isActive == 1) {
                     $('#activePlayer').text(function(color) {
-                        return "You in " + dataStruct.gamers[idGamer - 1].color + " team"; 
+                        return "Now , " + dataStruct.gamers[idGamer - 1].name;
                     });
-                    TurnColor = dataStruct.gamers[i].color;
                 }
                 if(dataStruct.gamers[i].id == idGamer) {
                     ore.textContent  = 'Рудишко : '   + dataStruct.gamers[i].resources.ore;
@@ -325,8 +333,6 @@ function Game(options) {
                     gold.textContent = 'Золотишко : ' + dataStruct.gamers[i].resources.gold;
                 }
             }
-        } else {
-            console.log('Йа туд!!!', dataStruct);
         }
     }
 
@@ -467,15 +473,28 @@ function Game(options) {
         }
     }
 
+
+    function refreshUI() {
+        canvasUI.clearRect();
+        ColorChange();
+        if (typeof activeHero != "undefined") {
+            printHeadBand(-5+32*activeHero.x,0+32*activeHero.y, TurnColor);
+        }
+        requestAnimationFrame(refreshUI);
+    }
+
+
     function render(struct) {
         canvas.clearRect();
         setHeroInfo(activeHero);
         setUserResources();
+        refreshUI();
         // нарисовать карту
         const map = struct.map;
         for (let i = 0; i < map.length; i++) {
             for (let j = 0; j < map[i].length; j++) {
                 printSprite(map[i][j], i, j);
+                canvasUI.rect(i,j,1,1,'black');
             }
         }
         // нарисовать артефакты
@@ -505,14 +524,15 @@ function Game(options) {
     this.show = () => $(DOM_ID).show();
     this.hide = () => $(DOM_ID).hide();
 
+
+
+
     async function refreshData() {
         // послать запрос на сервер и отрисовать полученные данные
         const result = await server.getStruct();
         if (result.result) {
-            canvasUI.clearRect();
             dataStruct = result.data;
             activeHero = dataStruct.heroes[heroUpdate];
-            console.log(dataStruct);
             if (typeof activeHero != "undefined"){
                 printHeadBand(-5+32*activeHero.x,0+32*activeHero.y, TurnColor);
             }
@@ -630,7 +650,6 @@ function Game(options) {
                     heroUpdate = i;
                     activeHero = dataStruct.heroes[i];
                 }
-            console.log(activeHero);
             }
         });
 
