@@ -2,6 +2,8 @@
 
 require_once 'struct\Tile.php';
 const GENERATE_SAME_BIOMES = false;
+const GENERATE_SAME_TOWNS = false;
+const TOWNS_TYPES_COUNT = 4;
 
 /*const*/ $BIOME_TYPES =  [
     0 => new BiomeType('Plains', 'grass', 10),
@@ -21,7 +23,9 @@ class BiomeType {
     public $groundType;
     public $variants;
     public $passability;
-
+	public $segmentWidth;
+	public $segmentHeight;
+	
     public function __construct($name, $ground, $variants, $pass = 1){
         $this->name = $name;
         $this->groundType = $ground;
@@ -43,42 +47,91 @@ class Biome {
 
 class MapGenerator {
 
-    public function createMap($width, $height, $biomesCount){
-        
-        global $BIOME_TYPES;
-        
-        //Мапа
-        $map = [];
+    public $map; //Мапа
+    public $biomes; //Массив биомов
+    public $segments; //Разделение на сегменты
+
+    public function __construct(){
+		$this->map = []; //Мапа
+		$this->biomes = []; //Массив биомов
+		$this->segments = []; //Разделение на сегменты
+        //Init map
         for ($i = 0; $i < $width-1; $i++){
-            $map[$i] = [];
+            $this->map[$i] = [];
         }
-        //Массив биомов
-        $biomes = [];
+    }
+
+    public function generateTowns(){
+        if (!$this->map){
+            return null;
+        }
+        $count = TOWNS_TYPES_COUNT;
+        $townTypes = [];
+        $towns = [];
+        for ($i = 0; $i < $count; $i++){
+            $townTypes[$i] = $i;
+        }
+        // Спавним по городу на сегмент
+        for ($i = 0; $i < count($this->segments); $i++){
+            for ($j = 0; $j < $this->segments[$i]; $j++){
+                $townId = rand(0, count($townTypes)-1);
+                $x = rand($this->segmentWidth*$j, $this->segmentWidth*($j+1));
+                $y = rand($this->segmentHeight*$i, $this->segmentHeight*($i+1));
+				print_r($x);
+				print_r($y);
+                if ($this->map[$x][$y]->passability == 0){
+                    $spawn = false;
+                } else {
+                    $spawn = true;
+                }
+                if ($spawn){
+                    //Првоеряем тайлы вокруг входа в город на пересечение с другими городами
+                    for ($k = $x-2; $k <= $x+2; $k++){
+                        for ($p = $y-3; $p <= $y; $p++){
+                            for ($t = 0; $t < count($towns)-1; $t++){
+                                if (($towns[$t]->x-2 >= $k && $towns[$t]->x+2 <= $k) && ($towns[$t]->y-3 >= $p && $towns[$t]->y <= $p)){
+                                    $spawn = false;
+                                    break 3;
+                                }
+                            }
+                        }
+                    }
+                    if ($spawn){
+                        $towns[] = new Biome($x, $y, $townTypes[$townId]);
+                    }
+                    if (!GENERATE_SAME_TOWNS) {
+                        unset($townTypes[$townId]);
+                        $townTypes = array_values($townTypes);
+                    }
+                }
+            }
+        }
+        return $towns;
+    }
+
+    public function createMap($width, $height, $biomesCount){
+        global $BIOME_TYPES;
         //Виды биомов
         $biomeTypes = $BIOME_TYPES;
-        //Разделение на сегменты
-        $segments = [];
         $count = $biomesCount;
         $i = 0;
         while (true){
             if ($count==2 || $count==3 || $count ==1){
-                $segments[$i] = $count;
+                $this->segments[$i] = $count;
                 break;
             }
             $k = round(sqrt($count));
-            $segments[$i] = $k;
+            $this->segments[$i] = $k;
             $count -= $k;
             $i++;
         }
-        unset($i);     //Удаляем счётчики
-        unset($count);
-        $segmentHeight = (int)($height / count($segments));
-        for ($i = 0; $i < count($segments); $i++){
-            $segmentWidth = (int)($width / $segments[$i]);
-            for ($j = 0; $j < $segments[$i]; $j++){
+        $this->segmentHeight = (int)($height / count($this->segments));
+        for ($i = 0; $i < count($this->segments); $i++){
+            $this->segmentWidth = (int)($width / $this->segments[$i]);
+            for ($j = 0; $j < $this->segments[$i]; $j++){
                 $biomeId = rand(0, count($biomeTypes)-1);
-                $biomes[] = new Biome(rand($segmentWidth*$j, $segmentWidth*($j+1)),
-                    rand($segmentHeight*$i, $segmentHeight*($i+1)),
+                $this->biomes[] = new Biome(rand($this->segmentWidth*$j, $this->segmentWidth*($j+1)),
+                    rand($this->segmentHeight*$i, $this->segmentHeight*($i+1)),
                     $biomeTypes[$biomeId]->name
                 );
                 if (!GENERATE_SAME_BIOMES) {
@@ -94,17 +147,17 @@ class MapGenerator {
                 $nearest = '__';
                 $dist = PHP_INT_MAX; // Большое число
                 // Проходимся по каждому биому
-                for ($z = 0; $z < count($biomes); $z++) {
+                for ($z = 0; $z < count($this->biomes); $z++) {
                     // Вычисляем разность в аправлении x и y
-                    $xdiff = $biomes[$z]->x - $i;
-                    $ydiff = $biomes[$z]->y - $j;
+                    $xdiff = $this->biomes[$z]->x - $i;
+                    $ydiff = $this->biomes[$z]->y - $j;
                     // Вычисляем евклидово расстояние(корень не нужен),
                     // потому что мы проводим сравнение и реальное значение не требуется
                     $cdist = $xdiff*$xdiff + $ydiff*$ydiff;
                     // Новая дистанция меньше старой?
                     // Если да, берём этот биом
                     if ($cdist <= $dist) {
-                        $nearest = $biomes[$z];
+                        $nearest = $this->biomes[$z];
                         $dist = $cdist;
                     }
                 }
@@ -117,11 +170,10 @@ class MapGenerator {
                         $tileArgs->passability = $value->passability;
                     }
                 }
-                $map[$i][$j] = new Tile($tileArgs);
+                $this->map[$i][$j] = new Tile($tileArgs);
                 $tileArgs->id +=1;
             }
         }
-        return $map;
+		return $this->map;
     }
-    
 }
