@@ -9,6 +9,7 @@ require_once 'MapBuilding.php';
 require_once 'Town.php';
 require_once 'Hero.php';
 require_once 'Properties.php';
+require_once 'Battle.php';
 
 class Struct {
     public $gamers; // список игроков в игре
@@ -20,6 +21,7 @@ class Struct {
     public $buildings;
     public $heroes;
     public $battleMaps;
+    public $battles;
 
     public $propertiesHero;
     public $backpackHero;
