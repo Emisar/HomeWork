@@ -1,53 +1,33 @@
 $(document).ready(async () => {
     const server = new Server();
-    const user = new User({ authCallback });
-    const canvas = new Canvas(400, 300);
+    const user  = new User ({ id: '#user' , server, callbacks: { loginSuccess, logoutSuccess: startPoint } });
+    const offer = new Offer({ id: '#offer', server, callbacks: { findGameSuccess } });
+    const game  = new Game ({ id: '#game' , server, callbacks: {} });
 
-
-    async function authCallback(login, password) {
-        const result = await server.login(login, password);
-        console.log(result);
+    function findGameSuccess() {
+        user.hide();
+        $("header").hide();//убрать после проверок
+        game.show();
+        offer.hide();
+        game.init();
     }
 
-
-    user.auth();
-
-
-    const img = new Image();
-        img.src = "public/img/heroes.png";
-
-    const SIZE = 40;
-    const SPRITE = {
-        grass: { x: 0, y: 0 },
-        water: { x: SIZE, y: 0 }
-    };
-    function printSprite(type, x, y) {
-        if (type && SPRITE[type]) {
-            canvas.sprite(img,
-                SPRITE[type].x, SPRITE[type].y, SIZE, SIZE,
-                x * SIZE, y * SIZE, SIZE, SIZE);
-        }
+    function loginSuccess() {
+        user.hide();
+        game.hide();
+        $("header").slideToggle(400);
+        offer.show();
     }
 
-    function render(struct) {
-        // очистить экран
-        canvas.fillRect('yellow');
-        // нарисовать карту
-        const map = struct.map;
-        for (let i = 0; i < map.length; i++) {
-            for (let j = 0; j < map[i].length; j++) {
-                printSprite(map[i][j].type, i, j);
-            }
-        }
-        // нарисовать строения
-        // нарисовать предметы
-        // нарисовать юниты
-        // нарисовать героев
+    // logout тоже
+    function startPoint() {
+        $("header").show();
+        user.show();
+        game.hide();
+        offer.hide();
+        game.deinit();
     }
 
-    // послать запрос на сервер и отрисовать полученные данные
-    const result = await server.getStruct();
-    if (result.result) {
-        render(result.data);
-    }
+    // start point
+    startPoint(); 
 });
