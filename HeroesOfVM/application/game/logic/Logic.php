@@ -232,20 +232,6 @@ class Logic {
         }
         return false;
     }
-
-    public function isHero($gamerHero, $x, $y) {
-        foreach ($this->struct->heroes as $hero) {
-            if ($hero->x == $gamerHero->x + $x && $hero->y == $gamerHero->y + $y) {
-                if ($hero->owner == $gamerHero->owner) {
-                    return true;
-                } else {
-                    $this->startBattle();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 	
     // Передвинуть героя
     public function moveHero($options) {
@@ -263,7 +249,20 @@ class Logic {
                     case 'RIGHT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->x+1 <= $mapWidth){
-                                $this->isHero($hero, 1, 0);
+
+                                foreach ($this->struct->heroes as $isHero) {
+
+                                    if ($hero->x + 0 == $isHero->x + 1 && $hero->y + 0 == $isHero->y + 0) {
+                                        print_r('111');
+                                        if ($hero->owner != $isHero->owner) {
+                                            $this->startBattle($hero->owner, $isHero->owner);
+                                            print_r('111');
+                                            return true;
+                                        }
+                                        print_r('222');
+                                        return true;
+                                    }
+                                }
                                 if ($this->isPassable($hero->x + 1, $hero->y)) {
                                     $hero->x++;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
@@ -274,7 +273,15 @@ class Logic {
                     case 'LEFT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->x - 1 >= 0) {
-                                $this->isHero($hero, -1, 0);
+                                foreach ($this->struct->heroes as $isHero) {
+                                    if ($hero->x == $isHero->x - 1 && $hero->y == $isHero->y + 0) {
+                                        if ($hero->owner != $isHero->owner) {
+                                            $this->startBattle($hero->owner, $isHero->owner);
+                                            return true;
+                                        }
+                                        return true;
+                                    }
+                                }
                                 if ($this->isPassable($hero->x - 1, $hero->y)) {
                                     $hero->x--;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
@@ -285,7 +292,15 @@ class Logic {
                     case 'UP':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->y-1 >= 0){
-                                $this->isHero($hero, 0, -1);
+                                foreach ($this->struct->heroes as $isHero) {
+                                    if ($hero->x == $isHero->x && $hero->y == $isHero->y - 1) {
+                                        if ($hero->owner != $isHero->owner) {
+                                            $this->startBattle($hero->owner, $isHero->owner);
+                                            return true;
+                                        }
+                                        return true;
+                                    }
+                                }
                                 if ($this->isPassable($hero->x, $hero->y-1)){
                                     $hero->y--;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
@@ -296,7 +311,15 @@ class Logic {
                     case 'DOWN':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->y + 1 <= $mapHeight) {
-                                $this->isHero($hero, 0, 1);
+                                foreach ($this->struct->heroes as $isHero) {
+                                    if ($hero->x == $isHero->x && $hero->y == $isHero->y + 1) {
+                                        if ($hero->owner != $isHero->owner) {
+                                            $this->startBattle($hero->owner, $isHero->owner);
+                                            return true;
+                                        }
+                                        return true;
+                                    }
+                                }
                                 if ($this->isPassable($hero->x, $hero->y + 1)) {
                                     $hero->y++;
                                     $hero->properties->movePoints -= self::MOVE_POINTS_LINE;
@@ -307,7 +330,15 @@ class Logic {
 					case 'UP-RIGHT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y - 1 >= 0 && $hero->x + 1 <= $mapWidth) {
-                                $this->isHero($hero, 1, -1);
+                                foreach ($this->struct->heroes as $isHero) {
+                                    if ($hero->x == $isHero->x + 1 && $hero->y == $isHero->y - 1) {
+                                        if ($hero->owner != $isHero->owner) {
+                                            $this->startBattle($hero->owner, $isHero->owner);
+                                            return true;
+                                        }
+                                        return true;
+                                    }
+                                }
                                 if ($this->isPassable($hero->x + 1, $hero->y - 1)) {
                                     $hero->x++;
                                     $hero->y--;
@@ -319,7 +350,15 @@ class Logic {
                     case 'UP-LEFT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y - 1 >= 0 && $hero->x - 1 >= 0) {
-                                $this->isHero($hero, -1, -1);
+                                foreach ($this->struct->heroes as $isHero) {
+                                    if ($hero->x == $isHero->x - 1 && $hero->y == $isHero->y - 1) {
+                                        if ($hero->owner != $isHero->owner) {
+                                            $this->startBattle($hero->owner, $isHero->owner);
+                                            return true;
+                                        }
+                                        return true;
+                                    }
+                                }
                                 if ($this->isPassable($hero->x - 1, $hero->y - 1)) {
                                     $hero->x--;
                                     $hero->y--;
@@ -331,7 +370,15 @@ class Logic {
                     case 'DOWN-RIGHT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y + 1 <= $mapHeight && $hero->x + 1 <= $mapWidth) {
-                                $this->isHero($hero, 1, 1);
+                                foreach ($this->struct->heroes as $isHero) {
+                                    if ($hero->x == $isHero->x + 1 && $hero->y == $isHero->y + 1) {
+                                        if ($hero->owner != $isHero->owner) {
+                                            $this->startBattle($hero->owner, $isHero->owner);
+                                            return true;
+                                        }
+                                        return true;
+                                    }
+                                }
                                 if ($this->isPassable($hero->x + 1, $hero->y + 1)) {
                                     $hero->y++;
                                     $hero->x++;
@@ -343,7 +390,15 @@ class Logic {
                     case 'DOWN-LEFT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y + 1 <= $mapHeight && $hero->x - 1 >= 0) {
-                                $this->isHero($hero, -1, 1);
+                                foreach ($this->struct->heroes as $isHero) {
+                                    if ($hero->x == $isHero->x - 1 && $hero->y == $isHero->y + 1) {
+                                        if ($hero->owner != $isHero->owner) {
+                                            $this->startBattle($hero->owner, $isHero->owner);
+                                            return true;
+                                        }
+                                        return true;
+                                    }
+                                }
                                 if ($this->isPassable($hero->x - 1, $hero->y + 1)) {
                                     $hero->y++;
                                     $hero->x--;
@@ -608,13 +663,13 @@ class Logic {
 
     }
 
-    public function startBattle() {
+    public function startBattle($heroAttackId, $heroDefenceId) {
+
         //$idAttackHero, $idDefenceHero, $idAttackPlayer, $idDefencePlayer, $map
         /*$idAttackHero = intval($options->idAttackHero);
         $idDefenceHero = intval($options->idDefenceHero);
         $idAttackPlayer = intval($options->idAttackPlayer);
         $idDefencePlayer = intval($options->idDefencePlayer);*/
-        print_r('111');
     }
     // Про сражения
     // вступить в сражение (герой с нейтралом)
