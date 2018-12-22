@@ -14,16 +14,17 @@ function Game(options) {
     var idGamer; 
     var invActive = false;
     const canvas = new Canvas(width, height, 'game-field');
-    const canvasInv = new Canvas(600, 600, 'inv-screen');
     const canvasUI = new Canvas(width,height, 'gameUI');
     var dataStruct;
     var activeHero;
     var heroUpdate;
     var activeDescription = false;
+    var canvasInv = new CanvasInv();
+    var canvasI = canvasInv.getCanvas();
 
 
     const imgBand = new Image();
-    canvasInv.fillRect('brown');
+    canvasInv.setFillRect();
     // картинка с травой
     const imgGrass = new Image();
     imgGrass.src = "public/img/sprites/Grass.png";
@@ -233,90 +234,18 @@ function Game(options) {
         }
     }
 
-    function printArtifactBackpack(artifact, i, j) {
-        if (artifact && artifact.type) {
-            const sprite = SPRITES.artifact;
-            canvasInv.sprite(sprite.img,
-                sprite.sprite[artifact.type - 0].x, sprite.sprite[artifact.type - 0].y, SIZE, SIZE,
-                25 + 100 * i, 25 + 100 * j, 50, 50);
-        }
-    }
-
     function ColorChange() {
         if (typeof activeHero != "undefined"){
             if (dataStruct.gamers[idGamer - 1].id == activeHero.owner){
                 TurnColor = 'lime';
             } else {TurnColor = 'crimson'}
         }
-        requestAnimationFrame(ColorChange);
     }
 
-    function printHeadBand(x,y, color) {
-            canvasUI.rect(x, y , 32, 32 , color);
-        }
-
-
-    function drawInventoryGrid() {
-        canvasInv.line(301, 0, 301, 600, 'yellow');
-        for (var i = 1; i <= 2; i++) {
-            canvasInv.line(i * 100, 0, i * 100, 600, 'yellow');
-        }
-        for (var i = 1; i <= 5; i++) {
-            canvasInv.line(0, i * 100, 301, i * 100, 'yellow');
-        }
+    function printHeadBand(x, y, color) {
+        canvasUI.rect(x, y , 32, 32 , color);
     }
 
-    function drawRightInventoryGrid() {
-        canvasInv.line(400, 140, 500, 140, 'yellow');
-        canvasInv.line(500, 140, 540, 230, 'yellow');
-        canvasInv.line(400, 140, 360, 230, 'yellow');
-        canvasInv.line(450, 125, 450, 320, 'yellow');
-        canvasInv.line(450, 320, 390, 470, 'yellow');
-        canvasInv.line(450, 320, 510, 470, 'yellow');
-        canvasInv.circle(450, 90, 35, 'yellow');
-        //gloveses
-        canvasInv.fillSmallRect(320, 90, 60, 60, 'brown');
-        drawCellInventory(350, 120);
-        canvasInv.fillSmallRect(420, 60, 60, 60, 'brown');
-        drawCellInventory(450, 90); // голова
-        canvasInv.fillSmallRect(330, 200, 60, 60, 'brown');
-        drawCellInventory(360, 230); // левая рука
-        canvasInv.fillSmallRect(510, 200, 60, 60, 'brown');
-        drawCellInventory(540, 230); // правая рука
-        canvasInv.fillSmallRect(420, 190, 60, 60, 'brown');
-        drawCellInventory(450, 220); // грудь
-        canvasInv.fillSmallRect(420, 440, 60, 60, 'brown');
-        drawCellInventory(450, 470); // левая нога
-        drawCellInventory(540, 70);  // плащ
-        drawCellInventory(450, 550); // ожерелье
-        drawCellInventory(375, 550); // кольцо 1
-        drawCellInventory(525, 550); // кольцо 2
-    }
-
-    function drawCellInventory(x, y) {
-        canvasInv.line(x - 30, y - 30, x + 30, y - 30, 'yellow');
-        canvasInv.line(x - 30, y - 30, x - 30, y + 30, 'yellow');
-        canvasInv.line(x - 30, y + 30, x + 30, y + 30, 'yellow');
-        canvasInv.line(x + 30, y - 30, x + 30, y + 30, 'yellow');
-    }
-
-    function printDescription(x, y, xPos, yPos) {
-        console.log(activeHero);
-        canvasInv.fillSmallRect(xPos * 100, yPos * 100, 300, 200, 'rgba(0, 0, 0, 0.7)');
-        canvasInv.rect(xPos * 100, yPos * 100, 300, 200, 'white');
-        canvasInv.text(activeHero.backpack[x + y * 3].name, xPos * 100 + 10, yPos * 100 + 20, 'yellow', 20);
-        canvasInv.text('Урон: ' + activeHero.backpack[x + y * 3].properties.attack, xPos * 100 + 20, yPos * 100 + 35 + 5, "white", 14);
-        canvasInv.text('Защита ' + activeHero.backpack[x + y* 3].properties.defence, xPos * 100 + 20, yPos * 100 +  50 + 5, "white", 14);
-        canvasInv.text('Магический урон: ' + activeHero.backpack[x + y * 3].properties.spellPower, xPos * 100 + 20, yPos * 100 + 65 + 5, "white", 14);
-        canvasInv.text('Интеллект: ' + activeHero.backpack[x + y * 3].properties.knowledge, xPos * 100 + 20, yPos * 100 + 80 + 5, "white", 14);
-        canvasInv.text('Очки хода: ' + activeHero.backpack[x + y * 3].properties.movePoints, xPos * 100 + 20, yPos * 100 + 95 + 5, "white", 14);
-        canvasInv.text('Мана: ' + activeHero.backpack[x + y * 3].properties.manaPoints, xPos * 100 + 20, yPos * 100 + 110 + 5, "white", 14);
-        canvasInv.text(activeHero.backpack[x + y * 3].description, xPos * 100 + 10, yPos * 100 + 150, 'violet', 14);
-    }
-
-    function fillInv(color) {
-        canvasInv.fillSmallRect(0, 0, 300, 600, "brown");
-    }
 
     function setUserResources() {
         if (dataStruct){
@@ -346,134 +275,6 @@ function Game(options) {
         }
     }
 
-    function setInventory() {
-        var x = 0;
-        var y = 0;
-        for (var i = 0; i < dataStruct.heroes.length; i++) {
-            if (activeHero && dataStruct.heroes[i].id == activeHero.id && idGamer && activeHero.id == idGamer) {
-                dataStruct.heroes[i].backpack.forEach(function(artifact) {
-                    if (x == 3) {
-                        x = 0;
-                        y++;
-                    }
-                    printArtifactBackpack(artifact, x, y);
-                    x++;
-                });
-            }
-        }
-    }
-
-
-    
-
-
- 
-    // drawCellInventory(375, 550); // кольцо 1
-    // drawCellInventory(525, 550); // кольцо 2
-
-    function drawInvBody() {
-        if(typeof activeHero !== 'undefined') {
-            if(activeHero.inventory.body != null) {
-                const sprite = SPRITES.artifact;
-                canvasInv.sprite(sprite.img,
-                    sprite.sprite[activeHero.inventory.body.type - 0].x, sprite.sprite
-                    [activeHero.inventory.body.type - 0].y, SIZE, SIZE, 430, 200, 40, 40);
-            }
-        }
-    }
-
-    function drawInvCloak() {
-        if(typeof activeHero !== 'undefined') {
-            if(activeHero.inventory.cloak != null) {
-                const sprite = SPRITES.artifact;
-                canvasInv.sprite(sprite.img,
-                    sprite.sprite[activeHero.inventory.cloak.type - 0].x, sprite.sprite
-                    [activeHero.inventory.cloak.type - 0].y, SIZE, SIZE, 520, 50, 40, 40);
-            }
-        }
-    }
-    function drawInvFeet() {
-        if(typeof activeHero !== 'undefined') {
-            if(activeHero.inventory.feet != null) {
-                const sprite = SPRITES.artifact;
-                canvasInv.sprite(sprite.img,
-                    sprite.sprite[activeHero.inventory.feet.type - 0].x, sprite.sprite
-                    [activeHero.inventory.feet.type - 0].y, SIZE, SIZE, 430, 450, 40, 40);
-            }
-        }
-    }
-    function drawInvGloves() {
-        if(typeof activeHero !== 'undefined') {
-            if(activeHero.inventory.gloves != null) {
-                const sprite = SPRITES.artifact;
-                canvasInv.sprite(sprite.img,
-                    sprite.sprite[activeHero.inventory.gloves.type - 0].x, sprite.sprite
-                    [activeHero.inventory.gloves.type - 0].y, SIZE, SIZE, 330, 100, 40, 40);
-            }
-        }
-    }
-    function drawInvHead() {
-        if(typeof activeHero !== 'undefined') {
-            if(activeHero.inventory.head != null) {
-                const sprite = SPRITES.artifact;
-                canvasInv.sprite(sprite.img,
-                    sprite.sprite[activeHero.inventory.head.type - 0].x, sprite.sprite
-                    [activeHero.inventory.head.type - 0].y, SIZE, SIZE, 430, 70, 40, 40);
-            }
-        }
-    }
-    function drawInvRightHand() {
-        if(typeof activeHero !== 'undefined') {
-            if(activeHero.inventory.rightHand != null) {
-                const sprite = SPRITES.artifact;
-                canvasInv.sprite(sprite.img,
-                    sprite.sprite[activeHero.inventory.rightHand.type - 0].x, sprite.sprite
-                    [activeHero.inventory.rightHand.type - 0].y, SIZE, SIZE, 340, 210, 40, 40);
-            }
-        }
-    }
-    function drawInvNeck() {
-        if(typeof activeHero !== 'undefined') {
-            if(activeHero.inventory.neck != null) {
-                const sprite = SPRITES.artifact;
-                canvasInv.sprite(sprite.img,
-                    sprite.sprite[activeHero.inventory.neck.type - 0].x, sprite.sprite
-                    [activeHero.inventory.neck.type - 0].y, SIZE, SIZE, 430, 530, 40, 40);
-            }
-        }
-    }
-    function drawInvLeftHand() {
-        if(typeof activeHero !== 'undefined') {
-            if(activeHero.inventory.leftHand != null) {
-                const sprite = SPRITES.artifact;
-                canvasInv.sprite(sprite.img,
-                    sprite.sprite[activeHero.inventory.leftHand.type - 0].x, sprite.sprite
-                    [activeHero.inventory.leftHand.type - 0].y, SIZE, SIZE, 520, 210, 40, 40);
-            }
-        }
-    }
-    function drawInvRingOne() {
-        if(typeof activeHero !== 'undefined') {
-            if(activeHero.inventory.ringOne != null) {
-                const sprite = SPRITES.artifact;
-                canvasInv.sprite(sprite.img,
-                    sprite.sprite[activeHero.inventory.ringOne.type - 0].x, sprite.sprite
-                    [activeHero.inventory.ringOne.type - 0].y, SIZE, SIZE, 355, 530, 40, 40);
-            }
-        }
-    }
-    function drawInvRingTwo() {
-        if(typeof activeHero !== 'undefined') {
-            if(activeHero.inventory.ringTwo != null) {
-                const sprite = SPRITES.artifact;
-                canvasInv.sprite(sprite.img,
-                    sprite.sprite[activeHero.inventory.ringTwo.type - 0].x, sprite.sprite
-                    [activeHero.inventory.ringTwo.type - 0].y, SIZE, SIZE, 505, 530, 40, 40);
-            }
-        }
-    }
-
-
     function refreshUI() {
         canvasUI.clearRect();
         ColorChange();
@@ -489,6 +290,7 @@ function Game(options) {
         setHeroInfo(activeHero);
         setUserResources();
         refreshUI();
+        console.log(activeHero);
         // нарисовать карту
         const map = struct.map;
         for (let i = 0; i < map.length; i++) {
@@ -508,17 +310,17 @@ function Game(options) {
         // нарисовать героев
         struct.heroes.forEach(hero => printHeroSprite(hero));
         // отрисовка экипировки
-        drawRightInventoryGrid();
-        drawInvGloves();
-        drawInvHead();
-        drawInvRightHand();
-        drawInvNeck();
-        drawInvLeftHand();
-        drawInvRingOne();
-        drawInvRingTwo();
-        drawInvBody();
-        drawInvCloak();
-        drawInvFeet();
+        canvasInv.drawRightInventoryGrid(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvGloves(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvHead(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvRightHand(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvNeck(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvLeftHand(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvRingOne(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvRingTwo(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvBody(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvCloak(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvFeet(activeHero, SIZE, SPRITES);
     }
 
     this.show = () => $(DOM_ID).show();
@@ -533,9 +335,6 @@ function Game(options) {
         if (result.result) {
             dataStruct = result.data;
             activeHero = dataStruct.heroes[heroUpdate];
-            if (typeof activeHero != "undefined"){
-                printHeadBand(-5+32*activeHero.x,0+32*activeHero.y, TurnColor);
-            }
             render(result.data);
         }
     }
@@ -629,10 +428,10 @@ function Game(options) {
 
         $('#inventory').on('click', async() => {
             if (invActive == false) {
-                canvasInv.fillRect('brown');
-                drawInventoryGrid();
-                drawRightInventoryGrid();
-                setInventory();
+                canvasInv.setFillRect();
+                canvasInv.drawInventoryGrid();
+                canvasInv.drawRightInventoryGrid();
+                canvasInv.setInventory(dataStruct, activeHero, SPRITES, idGamer, SIZE);
                 document.getElementById('inv-screen').style.display = 'block';
                 invActive = true;
             } else {
@@ -653,9 +452,9 @@ function Game(options) {
             }
         });
 
-        $('#inv-screen').on('dblclick', async(canvasInv) => {
-            var x = Math.floor(canvasInv.offsetX / 100);
-            var y = Math.floor(canvasInv.offsetY / 100);
+        $('#inv-screen').on('dblclick', async(canvasI) => {
+            var x = Math.floor(canvasI.offsetX / 100);
+            var y = Math.floor(canvasI.offsetY / 100);
             if (activeHero.backpack[x + y * 3]) {
                 if (x <= 2 && y <= 6 && x >= 0 && y >= 0) {
                     const result = await server.equipArtifact(activeHero.id, activeHero.backpack[x + y * 3].id);
@@ -664,21 +463,21 @@ function Game(options) {
                     }
                 }
             }
-            setInventory();
+            canvasInv.setInventory(dataStruct, activeHero, SPRITES, idGamer, SIZE);
         });
 
-        $('#inv-screen').on('mousemove', async(canvasInv) => {
-        var x = xPos= Math.floor(canvasInv.offsetX / 100);
-        var y = yPos= Math.floor(canvasInv.offsetY / 100);
-        fillInv('brown');
-        setInventory();
-        drawInventoryGrid();
+        $('#inv-screen').on('mousemove', async(canvasI) => {
+        var x = Math.floor(canvasI.offsetX / 100);
+        var y = Math.floor(canvasI.offsetY / 100);
+        canvasInv.fillInv();
+        canvasInv.setInventory(dataStruct, activeHero, SPRITES, idGamer, SIZE);
+        canvasInv.drawInventoryGrid();
         if (activeHero.backpack[x + y * 3]) {
             if (x <= 2 && y <= 6 && x >= 0 && y >= 0) {
                 if (y == 5 && x == 1) {
-                    printDescription(x, y, 0, 4);
+                    canvasInv.printDescription(x, y, 0, 4, activeHer0);
                 } else {
-                    printDescription(x, y, 0, y);
+                    canvasInv.printDescription(x, y, 0, y, activeHero);
                 }
             }
         }

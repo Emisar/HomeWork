@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Дек 18 2018 г., 23:48
+-- Время создания: Дек 21 2018 г., 23:46
 -- Версия сервера: 5.7.17
 -- Версия PHP: 5.6.30
 
@@ -48,8 +48,8 @@ CREATE TABLE `artifact` (
 
 INSERT INTO `artifact` (`id`, `game_id`, `user_id`, `clothes_type`, `in_backpack`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
 (1, 1, 0, 'rightHand', 0, -1, -1, 0, 1, 'Sword Of Bastard', 'Kill me, I won`t do anything to you...'),
-(2, 1, 0, 'leftHand', 1, -1, -1, 1, 1, 'Shield Of Homeless', 'Kill me, I am anyway homeless...'),
-(3, 1, 0, 'body', 1, -1, -1, 2, 1, 'Cuirass Of Aristocrat', 'I`ll make you pay for everything!!!'),
+(2, 1, 0, 'leftHand', 0, -1, -1, 1, 1, 'Shield Of Homeless', 'Kill me, I am anyway homeless...'),
+(3, 1, 0, 'body', 0, -1, -1, 2, 1, 'Cuirass Of Aristocrat', 'I`ll make you pay for everything!!!'),
 (4, 1, 0, 'cloak', 1, -1, -1, 3, 1, 'Cloak of Warior', 'I\'ll hide you from mom'),
 (5, 1, 0, 'ringOne', 1, -1, -1, 4, 1, 'Wedding ring', 'Well all bro, this is the end....'),
 (6, 1, 0, 'neck', 0, 3, 6, 5, 0, 'Necklace of Nigggggga', 'SWAAAAAG!!!!'),
@@ -57,6 +57,21 @@ INSERT INTO `artifact` (`id`, `game_id`, `user_id`, `clothes_type`, `in_backpack
 (8, 1, 0, 'head', 1, -1, -1, 7, 1, 'Helmet of Builder', 'I will build a house of your bones'),
 (9, 1, 0, 'feet', 1, -1, -1, 8, 2, 'Shoes of Runner', 'Run Forrest, Run!!!!!'),
 (10, 1, 0, 'ringTwo', 1, -1, -1, 9, 2, 'Bandit Ring', 'It was popular in the 90s');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `battle`
+--
+
+CREATE TABLE `battle` (
+  `id` int(11) NOT NULL,
+  `id_attack_hero` int(11) NOT NULL,
+  `id_defence_hero` int(11) NOT NULL,
+  `current_move` int(11) NOT NULL,
+  `turn` int(11) NOT NULL,
+  `status` varchar(45) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -153,7 +168,7 @@ CREATE TABLE `hero` (
 --
 
 INSERT INTO `hero` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
-(1, 1, 1, 4, 6, 0, 1, 'Glad Valakas', 'Это супер герой'),
+(1, 1, 1, 1, 9, 0, 1, 'Glad Valakas', 'Это супер герой'),
 (2, 1, 2, 3, 9, 0, 2, 'VJlLink_Hero', 'Петя, твой герой, ты и расскажи');
 
 -- --------------------------------------------------------
@@ -183,7 +198,7 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`id`, `game_id`, `hero_id`, `head`, `body`, `feet`, `gloves`, `rightHand`, `leftHand`, `cloak`, `neck`, `ringOne`, `ringTwo`) VALUES
-(1, 1, 1, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
+(1, 1, 1, NULL, 3, NULL, NULL, 1, 2, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -280,7 +295,7 @@ CREATE TABLE `properties` (
 --
 
 INSERT INTO `properties` (`id`, `elem_id`, `elem_type`, `attack`, `defence`, `spell_power`, `knowledge`, `min_damage`, `max_damage`, `health`, `speed`, `move_points`, `mana_points`) VALUES
-(1, 1, 'hero', 4, 4, 12, 80, 0, 8, NULL, 1, 950, 0),
+(1, 1, 'hero', 4, 4, 12, 80, 0, 8, NULL, 1, 650, 0),
 (2, 1, 'hero_default', 1, 1, 12, 5, 0, 8, NULL, 1, 950, 0),
 (3, 2, 'hero', 2, 2, 5, 1, 1, 3, NULL, 2, 950, 0),
 (4, 2, 'hero_default', 2, 2, 5, 1, 1, 3, NULL, 2, 950, 0),
@@ -315,7 +330,7 @@ CREATE TABLE `resources` (
 --
 
 INSERT INTO `resources` (`id`, `elem_id`, `elem_type`, `ore`, `gold`, `wood`) VALUES
-(1, 1, 'gamer', 2820, 3000, 2800),
+(1, 1, 'gamer', 2830, 3100, 2800),
 (2, 2, 'gamer', 300, 300, 300),
 (3, 1, 'item', 300, 300, 300),
 (4, 1, 'map_building', 10, 100, 0);
@@ -837,8 +852,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `login`, `password`, `token`) VALUES
-(1, 'Вася', 'vasya', '123', '1c5a874eee46249bc6cb2b28da902265'),
-(2, 'Петя', 'petya', '321', '4e0a74602a04df95dfde5b30f6fa7d5d');
+(1, 'Вася', 'vasya', '123', '0de3f7a26f5609536781d4a8f35c7171'),
+(2, 'Петя', 'petya', '321', 'eae85549de4d55c3fc00737a63c9ce93');
 
 -- --------------------------------------------------------
 
@@ -872,6 +887,12 @@ INSERT INTO `users_games` (`id`, `user_id`, `game_id`, `color`, `order`, `is_act
 -- Индексы таблицы `artifact`
 --
 ALTER TABLE `artifact`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `battle`
+--
+ALTER TABLE `battle`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -975,6 +996,11 @@ ALTER TABLE `users_games`
 --
 ALTER TABLE `artifact`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+--
+-- AUTO_INCREMENT для таблицы `battle`
+--
+ALTER TABLE `battle`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT для таблицы `battle_map`
 --
