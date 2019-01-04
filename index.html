@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Герои Вычислительной Техники и Механики</title>
+    <script src="public/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="public/js/server/Server.js"></script>
+    <script src="public/js/user/User.js"></script>
+    <script src="public/js/offer/Offer.js"></script>
+    <script src="public/js/game/Canvas.js"></script>
+    <script src="public/js/game/InventoryDraw.js"></script>
+    <script src="public/js/game/Game.js"></script>
+    <script src="public/js/main.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="media.css">
+    <link rel="stylesheet" href="public/bootstrap/css/bootstrap-grid.min.css">
+    <link rel="icon" href="public/img/indexImages/favicon.png" type="images/png">
+    
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                        <div class="logo"></div> 
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="log-in">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    
+                </div>
+                <div class="col-md-4">
+                    <div id="user" align="center">
+                        <span class="text">Авторизация</span><br>
+                        <input id="login" type="text" placeholder="login" /><br>
+                        <input id="password" type="password" placeholder="password" /><br>
+                        <input id="auth" type="button" value="Войти"/>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="game-menu">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    
+                </div>
+                <div class="col-md-4">
+                    <div id="offer" align="center">
+                        <span>Выбор игры</span><br>
+                        <input id="continueGame" type="button" value="Продолжить игру" /><br>
+                        <input id="createGame" type="button" value="Создать игру" /><br>
+                        <input class="logout" type="button" value="Выйти" /><br>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="game" class="game-btn">
+        <div class="container-fluid">
+            <div class="row">
+                <div class=" col-md-3">
+                    <div class="info_bar">
+                        <span id="activePlayer"></span><br>
+                        <span id="name"></span><br>
+                        <span id="move_points"></span>
+                    </div>
+                    <div class="left_sidebar">
+                        <input class="btn btn_left_top" id="moveHeroTopLeft" type="button"/>
+                        <input class="btn btn_top" id="moveHeroUp" type="button"/>
+                        <input class="btn btn_right_top" id="moveHeroTopRight" type="button" /><br>
+                        <div id="btn_row">
+                            <input class="btn btn_row_mid" id="moveHeroLeft" type="button" />
+                            <input class="btn btn_row_mid" id="moveHeroRight" type="button"/>  
+                        </div>
+                        <input class=" btn btn_left_bott" id="moveHeroDownLeft" type="button"/>
+                        <input class=" btn btn_bott" id="moveHeroDown" type="button" />
+                        <input class=" btn btn_right_bott" id="moveHeroDownRight" type="button"/>
+                    </div>
+                    <div class="resources_bar">
+                        <span id="wood"></span><br>
+                        <span id="gold"></span><br>
+                        <span id="ore"></span>
+                    </div>
+                </div>
+                <div class="col-md-8">                       
+                        <canvas id="game-field"></canvas>
+                </div>
+                <div class="col-md-1">
+                    <div class="right_sidebar">
+                        <input class="btn btn_log_out logout"  type="button" value="Выйти"/><br>
+                        <input class="btn btn_end_turn" id="endTurn" type="button"/><br>
+                        <input class="btn btn_Inventory" id="inventory" type="button"/><br>
+                    </div>
+                </div>
+                <canvas id="gameUI"></canvas>
+                <canvas class="inventory" id="inv-screen"></canvas>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
