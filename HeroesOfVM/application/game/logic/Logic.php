@@ -236,8 +236,8 @@ class Logic {
     // Передвинуть героя
     public function moveHero($options) {
 		//$map = $this->struct->map;
-        $mapWidth = count($this->struct->map[0])-1;
-        $mapHeight  = count($this->struct->map)-1;
+        $mapHeight = count($this->struct->map[0])-1;
+        $mapWidth  = count($this->struct->map)-1;
         $userId = intval($options->id);
         $id = intval($options->heroId);
         $direction = $options->direction;
