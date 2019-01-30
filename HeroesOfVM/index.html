@@ -8,6 +8,7 @@
     <script src="public/js/user/User.js"></script>
     <script src="public/js/offer/Offer.js"></script>
     <script src="public/js/game/Canvas.js"></script>
+    <script src="public/js/game/InventoryDraw.js"></script>
     <script src="public/js/game/Game.js"></script>
     <script src="public/js/main.js"></script>
     <link rel="stylesheet" href="index.css">
@@ -71,7 +72,8 @@
         <div class="container-fluid">
             <div class="row">
                 <div class=" col-md-3">
-                    <div class="info_bar">  
+                    <div class="info_bar">
+                        <span id="activePlayer"></span><br>
                         <span id="name"></span><br>
                         <span id="move_points"></span>
                     </div>
@@ -103,6 +105,7 @@
                         <input class="btn btn_Inventory" id="inventory" type="button"/><br>
                     </div>
                 </div>
+                <canvas id="gameUI"></canvas>
                 <canvas class="inventory" id="inv-screen"></canvas>
             </div>
         </div>
