@@ -249,17 +249,12 @@ class Logic {
                     case 'RIGHT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->x+1 <= $mapWidth){
-
                                 foreach ($this->struct->heroes as $isHero) {
-
                                     if ($hero->x + 0 == $isHero->x + 1 && $hero->y + 0 == $isHero->y + 0) {
-                                        print_r('111');
                                         if ($hero->owner != $isHero->owner) {
                                             $this->startBattle($hero->owner, $isHero->owner);
-                                            print_r('111');
                                             return true;
                                         }
-                                        print_r('222');
                                         return true;
                                     }
                                 }
