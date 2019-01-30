@@ -7,8 +7,8 @@ require_once 'Resources.php';
 class Item extends BaseElement {
     public $resources;
 
-    public function __construct($options) {
+    public function __construct($options, $resources) {
         parent::__construct($options);
-        $this->resources = new Resources($options->resources);
+        $this->resources = new Resources($resources);
     }
 }

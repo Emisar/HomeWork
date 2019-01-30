@@ -9,6 +9,7 @@ require_once 'MapBuilding.php';
 require_once 'Town.php';
 require_once 'Hero.php';
 require_once 'Properties.php';
+require_once 'Battle.php';
 
 class Struct {
     public $gamers; // список игроков в игре
@@ -19,6 +20,13 @@ class Struct {
     public $towns;
     public $buildings;
     public $heroes;
+    public $battleMaps;
+    public $battles;
+
+    public $propertiesHero;
+    public $backpackHero;
+
+
 
     public function __construct() {
     /*  // список городов
@@ -57,51 +65,111 @@ class Struct {
         foreach ($gamers as $value) {
             foreach ($resources as $resource) {
                 if ($resource->id == $value->id) {
+
                     $this->gamers[] = new Gamer($value, $resource);
+
                     break;
                 }
             }
         }
     }
-    //test
+
+    public function fillItems($items, $resources) {
+        $this->items = [];
+        foreach ($items as $value) {
+            foreach ($resources as $resource) {
+                if ($resource->id == $value->id) {
+
+                    $this->items[] = new Item($value, $resource);
+
+                    break;
+                }
+            }
+        }
+    }
+
+    public function fillBattleMaps($maps) {
+        $this->battleMaps = [];
+        for ($k = 0; $k < count($maps); $k++) {
+            $this->battleMaps[$k] = [];
+            for ($i = 0; $i < count($maps[$k]); $i++) {
+                $this->battleMaps[$k][$i] = [];
+                for ($j = 0; $j < count($maps[$k][$i]); $j++) {
+                    $this->battleMaps[$k][$i][$j] = new Tile($maps[$k][$i][$j]);
+                }
+            }
+        }
+    }
+
     public function fillMap($map) {
         // карта
-        /*$this->map = [];
+        $this->map = [];
         foreach ($map as $line) {
             $this->map[] = [];
             foreach ($line as $tile) {
                 $this->map[count($this->map) - 1][] = new Tile($tile);
             }
-        }*/
-        $this->map = $map;
+        }
     }
 
-    public function fillHeroes($heroes, $defaultProperties) {
+    public function fillHeroes($heroes, $defaultProperties, $inventoryes, $artifacts) {
         // список героев
         $this->heroes = [];
+        $this->artifacts = $artifacts;
         foreach ($heroes as $value) {
+            $inventory = (object)(['head' => null, 'body' => null, 'feet' => null, 'gloves' => null, 'rightHand' => null, 'leftHand' => null, 'cloak' => null, 'neck' => null, 'ringOne' => null, 'ringTwo' => null]);
+            $properties = (object)array();
+            $backpack = array();
             foreach ($defaultProperties as $default) {
                 if ($default->id == $value->id) {
-                    $this->heroes[] = new Hero($value, $default);
+                    $properties = $default;
+                    break;
+                }
+            }
+            foreach ($this->artifacts as $artifact) {
+                if ($artifact->owner == $value->id && $artifact->inBackpack == 1) {
+                    $backpack[] = $artifact;
+                    $artifact->x = -1;
+                    $artifact->y = -1;
+                }
+            }
+            foreach ($inventoryes as $inv) {
+                if ($inv->hero_id == $value->id) {
+                    foreach ($this->artifacts as $artifact) {
+                        if ($inv->{$artifact->clothesType} == $artifact->id) {
+                            $inventory->{$artifact->clothesType} = $artifact;
+                        }
+                    }
+                }
+            }
+            $this->heroes[] = new Hero($value, $properties, $inventory, $backpack);
+        }
+    }
+
+    public function fillArtifacts($artifacts, $properties) {
+        // список артефактов
+        $this->artifacts = [];
+        foreach ($artifacts as $value) {
+            foreach ($properties as $properie) {
+                if ($properie->id == $value->id) {
+                    $this->artifacts[] = new Artifact($value, $properie);
                     break;
                 }
             }
         }
     }
 
-    public function fillArtifacts($artifacts) {
-        // список артефактов
-        $this->artifacts = [];
-        foreach ($artifacts as $value) {
-            $this->artifacts[] = new Artifact($value);
-        }
-    }
-
-    public function fillMapBuildings($mapBuildings) {
+    public function fillMapBuildings($mapBuildings, $mapBuildingsResources) {
         // список зданий
-        $this->mapBuildings = [];
+        $this->buildings = [];
         foreach ($mapBuildings as $value) {
-            $this->mapBuildings[] = new MapBuilding($value);
+            foreach ($mapBuildingsResources as $resources) {
+                if ($value->id == $resources->id) {
+                    $this->buildings[] = new MapBuilding($value, $resources);
+                    // изменить проходимость на ноль
+                    break;
+                }
+            }
         }
     }
 
@@ -113,11 +181,5 @@ class Struct {
         }
     }
 
-    public function fillItems($items) {
-        // список городов
-        $this->items = [];
-        foreach ($items as $value) {
-            $this->items[] = new Item($value);
-        }
-    }
+
 }

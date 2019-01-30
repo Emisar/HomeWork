@@ -1,10 +1,8 @@
 <?php
-
 require_once 'struct\Tile.php';
 const GENERATE_SAME_BIOMES = false;
 const GENERATE_SAME_TOWNS = false;
 const TOWNS_TYPES_COUNT = 4;
-
 /*const*/ $BIOME_TYPES =  [
     0 => new BiomeType('Plains', 'grass', 10),
     1 => new BiomeType('Dirt', 'dirt', 10),
@@ -17,7 +15,6 @@ const TOWNS_TYPES_COUNT = 4;
     8 => new BiomeType('Swamp', 'swamp', 10),
     9 => new BiomeType('Sea', 'water', 10, 0)
 ];
-
 class BiomeType {
     public $name;
     public $groundType;
@@ -33,7 +30,6 @@ class BiomeType {
         $this->passability = $pass;
     }
 }
-
 class Biome {
     public $type;
     public $x;
@@ -44,13 +40,10 @@ class Biome {
         $this->y = $y;
     }
 }
-
 class MapGenerator {
-
     public $map; //Мапа
     public $biomes; //Массив биомов
     public $segments; //Разделение на сегменты
-
     public function __construct(){
 		$this->map = []; //Мапа
 		$this->biomes = []; //Массив биомов
@@ -60,7 +53,6 @@ class MapGenerator {
             $this->map[$i] = [];
         }
     }
-
     public function generateTowns(){
         if (!$this->map){
             return null;
@@ -108,7 +100,6 @@ class MapGenerator {
         }
         return $towns;
     }
-
     public function createMap($width, $height, $biomesCount){
         global $BIOME_TYPES;
         //Виды биомов
@@ -161,7 +152,6 @@ class MapGenerator {
                         $dist = $cdist;
                     }
                 }
-
                 $tileArgs->name = $nearest->type;
                 foreach($BIOME_TYPES as $value){
                     if ($value->name == $nearest->type){

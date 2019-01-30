@@ -8,9 +8,9 @@ class MapBuilding extends BaseElement {
     public $width; // ширина строения
     public $height; // высота строения
 
-    public function __construct($options) {
+    public function __construct($options, $resources) {
         parent::__construct($options);
-        $this->resources = new Resources($options->resources);
+        $this->resources = new Resources($resources);
         $this->width  = $options->width;
         $this->height = $options->height;
     }
