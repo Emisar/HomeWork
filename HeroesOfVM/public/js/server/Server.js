@@ -28,6 +28,7 @@ function Server() {
             return true;
         }
         return null;
+
     };
 
     this.createGame = async () => {
@@ -43,4 +44,5 @@ function Server() {
     this.getStruct = () => { return $.get('api/', { method: 'getStruct', token, gameId }); };
     this.endTurn   = () => { return $.get('api/', { method: 'endTurn'  , token, gameId }); };
     this.moveHero = (heroId, direction) => { return $.get('api/', { method: 'moveHero', heroId, direction, token, gameId }); };
+    this.equipArtifact = (idHero, idArtifact) => { return $.get('api/', { method: 'equipArtifact', idArtifact, idHero, token, gameId }); };
 }

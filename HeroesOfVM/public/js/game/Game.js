@@ -5,23 +5,27 @@ function Game(options) {
     const callbacks = options.callbacks;
     width = document.documentElement.clientWidth * 0.62;
     height = document.documentElement.clientHeight * 0.85;
+    var TurnColor;
     var name = document.getElementById("name");
     var movePoints = document.getElementById("move_points");
     var gold = document.getElementById("gold");
     var wood = document.getElementById("wood");
     var ore = document.getElementById("ore");
-    var idGamer;
-
+    var idGamer; 
     var invActive = false;
-
     const canvas = new Canvas(width, height, 'game-field');
-
-    const canvasInv = new Canvas(600, 600, 'inv-screen');
+    const canvasUI = new Canvas(width,height, 'gameUI');
     var dataStruct;
     var activeHero;
+    var heroUpdate;
+    var activeDescription = false;
+    var canvasInv = new CanvasInv();
+    //var battleMode = new BattleCanvas();
+    var canvasI = canvasInv.getCanvas();
 
 
-    canvasInv.fillRect('brown');
+    const imgBand = new Image();
+    canvasInv.setFillRect();
     // картинка с травой
     const imgGrass = new Image();
     imgGrass.src = "public/img/sprites/Grass.png";
@@ -139,7 +143,16 @@ function Game(options) {
         artifact: {
             img: imgArtifact,
             sprite: [
-                { x: 0, y: 0 },
+                { x: 0, y: 0   },
+                { x: 0, y: 32  },
+                { x: 0, y: 64  },
+                { x: 0, y: 96  },
+                { x: 0, y: 127 },
+                { x: 0, y: 160 },
+                { x: 0, y: 192 },
+                { x: 0, y: 224 },
+                { x: 0, y: 256 },
+                { x: 0, y: 289 }
                 //...
             ]
         },
@@ -169,7 +182,7 @@ function Game(options) {
     let interval = null;
 
     function printSprite(tile, x, y) {
-        if (tile && tile.type && (tile.sprite || tile.sprite == 0)) {
+        if (tile && tile.type && tile.sprite) {
             const sprite = SPRITES[tile.type];
             canvas.sprite(sprite.img,
                 sprite.sprite[tile.sprite - 0].x, sprite.sprite[tile.sprite - 0].y, SIZE, SIZE,
@@ -222,38 +235,49 @@ function Game(options) {
         }
     }
 
-    function printArtifactBackpack(artifact, i, j) {
-        if (artifact && artifact.type) {
-            const sprite = SPRITES.artifact;
-            canvasInv.sprite(sprite.img,
-                sprite.sprite[artifact.type - 0].x, sprite.sprite[artifact.type - 0].y, SIZE, SIZE,
-                25 + 100 * i, 25 + 100 * j, 50, 50);
+    function ColorChange() {
+        if (typeof activeHero != "undefined"){
+            if (dataStruct.gamers[idGamer - 1].id == activeHero.owner){
+                TurnColor = 'lime';
+            } else {TurnColor = 'crimson'}
         }
     }
 
-    function drawInventoryGrid() {
-        canvasInv.line(301, 0, 301, 600, 'yellow');
-        for (var i = 1; i <= 2; i++) {
-            canvasInv.line(i * 100, 0, i * 100, 600, 'yellow');
-        }
-        for (var i = 1; i <= 5; i++) {
-            canvasInv.line(0, i * 100, 301, i * 100, 'yellow');
-        }
+    function printHeadBand(x, y, color) {
+        canvasUI.rect(x, y , 32, 32 , color);
     }
+
 
     function setUserResources() {
         if (dataStruct){
             idGamer = server.getUserId();
             for (var i = 0; i < dataStruct.gamers.length; i++) {
+                if(dataStruct.gamers[i].isActive == 1) {
+                    $('#activePlayer').text(function(color) {
+                        return "Now , " + dataStruct.gamers[idGamer - 1].name;
+                    });
+                }
                 if(dataStruct.gamers[i].id == idGamer) {
                     ore.textContent  = 'Рудишко : '   + dataStruct.gamers[i].resources.ore;
                     wood.textContent = 'Древесина : ' + dataStruct.gamers[i].resources.wood;
                     gold.textContent = 'Золотишко : ' + dataStruct.gamers[i].resources.gold;
                 }
             }
-        } else {
-            console.log('Йа туд!!!', dataStruct);
         }
+    }
+
+    function drawInv() {
+        canvasInv.drawRightInventoryGrid(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvGloves(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvHead(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvRightHand(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvNeck(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvLeftHand(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvRingOne(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvRingTwo(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvBody(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvCloak(activeHero, SIZE, SPRITES);
+        canvasInv.drawInvFeet(activeHero, SIZE, SPRITES);
     }
 
     function setHeroInfo(activeHero) {
@@ -266,41 +290,28 @@ function Game(options) {
         }
     }
 
-    function setInventory() {
-        var x = 0;
-        var y = 0;
-        for (var i = 0; i < dataStruct.heroes.length; i++) {
-            if (activeHero && dataStruct.heroes[i].id == activeHero.id) {
-                dataStruct.heroes[i].backpack.  forEach(function(artifact) {
-                    if (x == 3) {
-                        x = 0;
-                        y++;
-                    }
-                    printArtifactBackpack(artifact, x, y);
-                    x++;
-                });
-                /*
-                for (var j = 0; j < dataStruct.heroes.backpack.length; j++) {
-                    if (x == 3) {
-                        x = 0;
-                        y++;
-                    }
-                    printArtifactBackpack(dataStruct.heroes[i].backpack[j], x, y);
-                    x++;
-                } */
-            }
+    function refreshUI() {
+        canvasUI.clearRect();
+        ColorChange();
+        if (typeof activeHero != "undefined") {
+            printHeadBand(-5+32*activeHero.x,0+32*activeHero.y, TurnColor);
         }
+        requestAnimationFrame(refreshUI);
     }
 
+
     function render(struct) {
-        canvas.fillRect('black');
+        canvas.clearRect();
         setHeroInfo(activeHero);
         setUserResources();
+        refreshUI();
+        console.log(activeHero);
         // нарисовать карту
         const map = struct.map;
         for (let i = 0; i < map.length; i++) {
             for (let j = 0; j < map[i].length; j++) {
                 printSprite(map[i][j], i, j);
+                canvasUI.rect(i,j,1,1,'black');
             }
         }
         // нарисовать артефакты
@@ -308,7 +319,7 @@ function Game(options) {
         // нарисовать предметы
         struct.items.forEach(item => printItemSprite(item));
         // нарисовать здания на карте
-        struct.mapBuildings.forEach(mapBuilding => printMapBuildingSprite(mapBuilding));
+        struct.buildings.forEach(building => printMapBuildingSprite(building));
         // нарисовать города на карте
         struct.towns.forEach(town => printTownSprite(town));
         // нарисовать героев
@@ -318,11 +329,16 @@ function Game(options) {
     this.show = () => $(DOM_ID).show();
     this.hide = () => $(DOM_ID).hide();
 
+
+
+
     async function refreshData() {
         // послать запрос на сервер и отрисовать полученные данные
         const result = await server.getStruct();
         if (result.result) {
             dataStruct = result.data;
+            console.log(dataStruct);
+            activeHero = dataStruct.heroes[heroUpdate];
             render(result.data);
         }
     }
@@ -347,77 +363,194 @@ function Game(options) {
             }
         });
         $('#moveHeroLeft').on('click', async () => {
+            if(typeof activeHero != "undefined") {
             const result = await server.moveHero(activeHero.id, 'LEFT');
             if (result.result) {
                 render(result.data);
             }
-        });
+        } else {alert("Выбери героя!!!");}
+    });
         $('#moveHeroRight').on('click', async () => {
-            const result = await server.moveHero(activeHero.id, 'RIGHT');
-            if (result.result) {
-                render(result.data);
-            }
+            if(typeof activeHero != "undefined") {
+                const result = await server.moveHero(activeHero.id, 'RIGHT');
+                if (result.result) {
+                    render(result.data);
+                }
+            } else {alert("Выбери героя!!!");}
         });
          $('#moveHeroUp').on('click', async () => {
+            if(typeof activeHero != "undefined") {
             const result = await server.moveHero(activeHero.id, 'UP');
             if (result.result) {
                 render(result.data);
             }
-        });
+        } else {alert("Выбери героя!!!");}
+    });
+
          $('#moveHeroDown').on('click', async () => {
+            if(typeof activeHero != "undefined") {
             const result = await server.moveHero(activeHero.id, 'DOWN');
             if (result.result) {
                 render(result.data);
             }
-        });
+        } else {alert("Выбери героя!!!");}
+    });
         $('#moveHeroTopLeft').on('click', async () => {
+            if(typeof activeHero != "undefined") {
             const result = await server.moveHero(activeHero.id, 'UP-LEFT');
             if (result.result) {
                 render(result.data);
             }
-        });
+        } else {alert("Выбери героя!!!");}
+    });
+
         $('#moveHeroTopRight').on('click', async () => {
+            if(typeof activeHero != "undefined") {
             const result = await server.moveHero(activeHero.id, 'UP-RIGHT');
             if (result.result) {
                 render(result.data);
             }
-        });
+        } else {alert("Выбери героя!!!");}
+    });
+
         $('#moveHeroDownLeft').on('click', async () => {
+            if(typeof activeHero != "undefined") {
             const result = await server.moveHero(activeHero.id, 'DOWN-LEFT');
             if (result.result) {
                 render(result.data);
             }
-        });
+        } else {alert("Выбери героя!!!");}
+    });
         $('#moveHeroDownRight').on('click', async () => {
+            if(typeof activeHero != "undefined") {
             const result = await server.moveHero(activeHero.id, 'DOWN-RIGHT');
             if (result.result) {
                 render(result.data);
             }
-        });
+        } else {alert("Выбери героя!!!");}
+    });
 
-        document.getElementById('inventory').addEventListener('click', function() {
+        $('#inventory').on('click', async() => {
             if (invActive == false) {
-                setInventory();
+                canvasInv.setFillRect();
+                canvasInv.drawInventoryGrid();
+                canvasInv.drawRightInventoryGrid();
+                canvasInv.setInventory(dataStruct, activeHero, SPRITES, idGamer, SIZE);
                 document.getElementById('inv-screen').style.display = 'block';
+                drawInv();
                 invActive = true;
             } else {
                 document.getElementById('inv-screen').style.display = 'none';
                 invActive = false;
             }
         });
-
-        document.getElementById('game-field').addEventListener('click', function (canvas) {
+        //Береженого бог бережет(Выпилить после добавления адаптивности)
+        $('#game-field').on('click', async(canvas) => {
             var x = Math.floor(canvas.offsetX / 32);
             var y = Math.floor(canvas.offsetY / 32);
             console.log(x, y);
             for (var i = 0; i < dataStruct.heroes.length; i++) {
                 if (x == dataStruct.heroes[i].x && y == dataStruct.heroes[i].y) {
+                    heroUpdate = i;
                     activeHero = dataStruct.heroes[i];
                 }
             }
         });
 
+        $('#inv-screen').on('dblclick', async(canvasI) => {
+            var x = Math.floor(canvasI.offsetX / 100);
+            var y = Math.floor(canvasI.offsetY / 100);
+            if (activeHero.backpack[x + y * 3]) {
+                if (x <= 2 && y <= 6 && x >= 0 && y >= 0) {
+                    const result = await server.equipArtifact(activeHero.id, activeHero.backpack[x + y * 3].id);
+                    if (result.result) {
+                        render(result.data);
+                    }
+                }
+            }
+            canvasInv.setInventory(dataStruct, activeHero, SPRITES, idGamer, SIZE);
+        });
+
+        $('#inv-screen').on('mousemove', async(canvasI) => {
+        var x = Math.floor(canvasI.offsetX / 100);
+        var y = Math.floor(canvasI.offsetY / 100);
+        var xPos = Math.floor(canvasI.offsetX);
+        var yPos = Math.floor(canvasI.offsetY);
+        if(x < 3) {
+            canvasInv.fillInv(); 
+            canvasInv.drawInventoryGrid();
+            canvasInv.setInventory(dataStruct, activeHero, SPRITES, idGamer, SIZE);
+            drawInv();
+            if (activeHero.backpack[x + y * 3]) {
+                if (x <= 2 && y <= 6 && x >= 0 && y >= 0) {
+                    if (y == 5 && x == 1) {
+                        canvasInv.printDescription(x, y, 0, 4, activeHero) 
+                    } else {
+                        canvasInv.printDescription(x, y, 0, y, activeHero);
+                    }
+                } 
+            }
+        }
+        if (x > 2) {
+            canvasInv.fillRightInv();
+            canvasInv.drawRightInventoryGrid();
+            canvasInv.drawInventoryGrid();
+            drawInv();
+            if(xPos > 440 && yPos > 80 && xPos < 480 && yPos < 120) {
+                if(activeHero.inventory.head != null) {
+                    canvasInv.printLeftDescription(302, 100, "head", activeHero);
+                }
+            }else if(xPos > 530 && yPos > 220 && xPos < 570 && yPos < 260) {
+                if(activeHero.inventory.leftHand != null) {
+                    canvasInv.printLeftDescription(302, 250, "leftHand", activeHero);
+                }
+            }else if(xPos > 350 && yPos > 220 && xPos < 390 && yPos < 260) {
+                if(activeHero.inventory.rightHand != null) {
+                    canvasInv.printLeftDescription(302, 250, "rightHand", activeHero);
+                }
+            }else if(xPos > 420 && yPos > 210 && xPos < 460 && yPos < 250) {
+                if(activeHero.inventory.body != null) {
+                    canvasInv.printLeftDescription(302, 230, "body", activeHero);
+                }
+            }else if(xPos > 530 && yPos > 60 && xPos < 570 && yPos < 100) {
+                if(activeHero.inventory.cloak != null) {
+                    canvasInv.printLeftDescription(302, 80, "cloak", activeHero);
+                }
+            }else if(xPos > 440 && yPos > 460 && xPos < 480 && yPos < 500) {
+                if(activeHero.inventory.feet != null) {
+                    canvasInv.printLeftDescription(302, 400, "feet", activeHero);
+                }
+            }else if(xPos > 440 && yPos > 540 && xPos < 480 && yPos < 580) {
+                if(activeHero.inventory.neck != null) {
+                    canvasInv.printLeftDescription(302, 350, "neck", activeHero);
+                }
+            }else if(xPos > 365 && yPos > 540 && xPos < 405 && yPos < 580) {
+                if(activeHero.inventory.ringOne != null) {
+                    canvasInv.printLeftDescription(302, 400, "ringOne", activeHero);
+                }
+            }else if(xPos > 515 && yPos > 540 && xPos < 555 && yPos < 580) {
+                if(activeHero.inventory.ringTwo != null) {
+                    canvasInv.printLeftDescription(302, 400, "ringTwo", activeHero);
+                }
+            }else if(xPos > 340 && yPos > 110 && xPos < 380 && yPos < 150) {
+                if(activeHero.inventory.gloves != null) {
+                    canvasInv.printLeftDescription(302, 130, "gloves", activeHero);
+                }
+            }
+        }
+        });
+
+        $('#gameUI').on('click', async(canvas) => {
+            var x = Math.floor(canvas.offsetX / 32);
+            var y = Math.floor(canvas.offsetY / 32);
+            console.log(x, y);
+            for (var i = 0; i < dataStruct.heroes.length; i++) {
+                if (x == dataStruct.heroes[i].x && y == dataStruct.heroes[i].y) {
+                    heroUpdate = i;
+                    activeHero = dataStruct.heroes[i];
+                }
+            }
+        });
     }
     init();
-    drawInventoryGrid();
 }
