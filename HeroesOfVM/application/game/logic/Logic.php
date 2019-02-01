@@ -249,17 +249,12 @@ class Logic {
                     case 'RIGHT':
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->x+1 <= $mapWidth){
-
                                 foreach ($this->struct->heroes as $isHero) {
-
-                                    if ($hero->x + 0 == $isHero->x + 1 && $hero->y + 0 == $isHero->y + 0) {
-                                        print_r('111');
+                                    if ($hero->x + 1 == $isHero->x + 0 && $hero->y + 0 == $isHero->y + 0) {
                                         if ($hero->owner != $isHero->owner) {
                                             $this->startBattle($hero->owner, $isHero->owner);
-                                            print_r('111');
                                             return true;
                                         }
-                                        print_r('222');
                                         return true;
                                     }
                                 }
@@ -274,7 +269,7 @@ class Logic {
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->x - 1 >= 0) {
                                 foreach ($this->struct->heroes as $isHero) {
-                                    if ($hero->x == $isHero->x - 1 && $hero->y == $isHero->y + 0) {
+                                    if ($hero->x - 1 == $isHero->x && $hero->y == $isHero->y + 0) {
                                         if ($hero->owner != $isHero->owner) {
                                             $this->startBattle($hero->owner, $isHero->owner);
                                             return true;
@@ -293,7 +288,7 @@ class Logic {
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->y-1 >= 0){
                                 foreach ($this->struct->heroes as $isHero) {
-                                    if ($hero->x == $isHero->x && $hero->y == $isHero->y - 1) {
+                                    if ($hero->x == $isHero->x && $hero->y - 1 == $isHero->y) {
                                         if ($hero->owner != $isHero->owner) {
                                             $this->startBattle($hero->owner, $isHero->owner);
                                             return true;
@@ -312,7 +307,7 @@ class Logic {
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_LINE >= 0) {
                             if ($hero->y + 1 <= $mapHeight) {
                                 foreach ($this->struct->heroes as $isHero) {
-                                    if ($hero->x == $isHero->x && $hero->y == $isHero->y + 1) {
+                                    if ($hero->x == $isHero->x && $hero->y + 1 == $isHero->y) {
                                         if ($hero->owner != $isHero->owner) {
                                             $this->startBattle($hero->owner, $isHero->owner);
                                             return true;
@@ -331,7 +326,7 @@ class Logic {
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y - 1 >= 0 && $hero->x + 1 <= $mapWidth) {
                                 foreach ($this->struct->heroes as $isHero) {
-                                    if ($hero->x == $isHero->x + 1 && $hero->y == $isHero->y - 1) {
+                                    if ($hero->x + 1 == $isHero->x && $hero->y - 1 == $isHero->y) {
                                         if ($hero->owner != $isHero->owner) {
                                             $this->startBattle($hero->owner, $isHero->owner);
                                             return true;
@@ -351,7 +346,7 @@ class Logic {
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y - 1 >= 0 && $hero->x - 1 >= 0) {
                                 foreach ($this->struct->heroes as $isHero) {
-                                    if ($hero->x == $isHero->x - 1 && $hero->y == $isHero->y - 1) {
+                                    if ($hero->x - 1 == $isHero->x && $hero->y - 1 == $isHero->y) {
                                         if ($hero->owner != $isHero->owner) {
                                             $this->startBattle($hero->owner, $isHero->owner);
                                             return true;
@@ -371,7 +366,7 @@ class Logic {
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y + 1 <= $mapHeight && $hero->x + 1 <= $mapWidth) {
                                 foreach ($this->struct->heroes as $isHero) {
-                                    if ($hero->x == $isHero->x + 1 && $hero->y == $isHero->y + 1) {
+                                    if ($hero->x + 1 == $isHero->x && $hero->y + 1 == $isHero->y) {
                                         if ($hero->owner != $isHero->owner) {
                                             $this->startBattle($hero->owner, $isHero->owner);
                                             return true;
@@ -391,7 +386,7 @@ class Logic {
                         if (intval($hero->properties->movePoints) - self::MOVE_POINTS_DIAG >= 0) {
                             if ($hero->y + 1 <= $mapHeight && $hero->x - 1 >= 0) {
                                 foreach ($this->struct->heroes as $isHero) {
-                                    if ($hero->x == $isHero->x - 1 && $hero->y == $isHero->y + 1) {
+                                    if ($hero->x - 1 == $isHero->x && $hero->y + 1 == $isHero->y) {
                                         if ($hero->owner != $isHero->owner) {
                                             $this->startBattle($hero->owner, $isHero->owner);
                                             return true;
@@ -663,13 +658,18 @@ class Logic {
 
     }
 
-    public function startBattle($heroAttackId, $heroDefenceId) {
+    public function startBattle($heroAttackOwner, $heroDefenceOwner) {
+        $playerAttack = $this->getGamer($heroAttackOwner);
+        $playerDefence = $this->getGamer($heroDefenceOwner);
+        $playerAttack->mode = "battle";
+        $playerDefence->mode = "battle";
+    }
 
-        //$idAttackHero, $idDefenceHero, $idAttackPlayer, $idDefencePlayer, $map
-        /*$idAttackHero = intval($options->idAttackHero);
-        $idDefenceHero = intval($options->idDefenceHero);
-        $idAttackPlayer = intval($options->idAttackPlayer);
-        $idDefencePlayer = intval($options->idDefencePlayer);*/
+    public function endBattle($heroAttackOwner, $heroDefenceOwner){
+        $playerAttack = $this->getGamer($heroAttackOwner);
+        $playerDefence = $this->getGamer($heroDefenceOwner);
+        $playerAttack->mode = "world";
+        $playerDefence->mode = "world";
     }
     // Про сражения
     // вступить в сражение (герой с нейтралом)
