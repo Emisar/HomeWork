@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Дек 21 2018 г., 23:46
+-- Время создания: Фев 01 2019 г., 07:13
 -- Версия сервера: 5.7.17
 -- Версия PHP: 5.6.30
 
@@ -47,16 +47,16 @@ CREATE TABLE `artifact` (
 --
 
 INSERT INTO `artifact` (`id`, `game_id`, `user_id`, `clothes_type`, `in_backpack`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
-(1, 1, 0, 'rightHand', 0, -1, -1, 0, 1, 'Sword Of Bastard', 'Kill me, I won`t do anything to you...'),
-(2, 1, 0, 'leftHand', 0, -1, -1, 1, 1, 'Shield Of Homeless', 'Kill me, I am anyway homeless...'),
+(1, 1, 0, 'rightHand', 0, 1, 1, 0, 0, 'Sword Of Bastard', 'Kill me, I won`t do anything to you...'),
+(2, 1, 0, 'leftHand', 0, 2, 1, 1, 0, 'Shield Of Homeless', 'Kill me, I am anyway homeless...'),
 (3, 1, 0, 'body', 0, -1, -1, 2, 1, 'Cuirass Of Aristocrat', 'I`ll make you pay for everything!!!'),
-(4, 1, 0, 'cloak', 1, -1, -1, 3, 1, 'Cloak of Warior', 'I\'ll hide you from mom'),
-(5, 1, 0, 'ringOne', 1, -1, -1, 4, 1, 'Wedding ring', 'Well all bro, this is the end....'),
-(6, 1, 0, 'neck', 0, 3, 6, 5, 0, 'Necklace of Nigggggga', 'SWAAAAAG!!!!'),
-(7, 1, 0, 'gloves', 1, -1, -1, 6, 1, 'Gloves of Theif', 'I\'ll steal everything from you'),
-(8, 1, 0, 'head', 1, -1, -1, 7, 1, 'Helmet of Builder', 'I will build a house of your bones'),
-(9, 1, 0, 'feet', 1, -1, -1, 8, 2, 'Shoes of Runner', 'Run Forrest, Run!!!!!'),
-(10, 1, 0, 'ringTwo', 1, -1, -1, 9, 2, 'Bandit Ring', 'It was popular in the 90s');
+(4, 1, 0, 'cloak', 0, 4, 1, 3, 0, 'Cloak of Warior', 'I\'ll hide you from mom'),
+(5, 1, 0, 'ringOne', 1, -1, -1, 4, 2, 'Wedding ring', 'Well all bro, this is the end....'),
+(6, 1, 0, 'neck', 0, 6, 1, 5, 0, 'Necklace of Nigggggga', 'SWAAAAAG!!!!'),
+(7, 1, 0, 'gloves', 1, -1, -1, 6, 2, 'Gloves of Theif', 'I\'ll steal everything from you'),
+(8, 1, 0, 'head', 0, 8, 1, 7, 0, 'Helmet of Builder', 'I will build a house of your bones'),
+(9, 1, 0, 'feet', 0, 9, 1, 8, 0, 'Shoes of Runner', 'Run Forrest, Run!!!!!'),
+(10, 1, 0, 'ringTwo', 0, 2, 1, 9, 0, 'Bandit Ring', 'It was popular in the 90s');
 
 -- --------------------------------------------------------
 
@@ -168,8 +168,8 @@ CREATE TABLE `hero` (
 --
 
 INSERT INTO `hero` (`id`, `game_id`, `user_id`, `x`, `y`, `type`, `owner`, `name`, `description`) VALUES
-(1, 1, 1, 1, 9, 0, 1, 'Glad Valakas', 'Это супер герой'),
-(2, 1, 2, 3, 9, 0, 2, 'VJlLink_Hero', 'Петя, твой герой, ты и расскажи');
+(1, 1, 1, 3, 1, 0, 1, 'Glad Valakas', 'Это супер герой'),
+(2, 1, 2, 7, 1, 0, 2, 'VJlLink_Hero', 'Петя, твой герой, ты и расскажи');
 
 -- --------------------------------------------------------
 
@@ -198,7 +198,7 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`id`, `game_id`, `hero_id`, `head`, `body`, `feet`, `gloves`, `rightHand`, `leftHand`, `cloak`, `neck`, `ringOne`, `ringTwo`) VALUES
-(1, 1, 1, NULL, 3, NULL, NULL, 1, 2, NULL, NULL, NULL, NULL);
+(1, 1, 1, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -295,9 +295,9 @@ CREATE TABLE `properties` (
 --
 
 INSERT INTO `properties` (`id`, `elem_id`, `elem_type`, `attack`, `defence`, `spell_power`, `knowledge`, `min_damage`, `max_damage`, `health`, `speed`, `move_points`, `mana_points`) VALUES
-(1, 1, 'hero', 4, 4, 12, 80, 0, 8, NULL, 1, 650, 0),
+(1, 1, 'hero', 4, 4, 12, 80, 0, 8, NULL, 1, 950, 0),
 (2, 1, 'hero_default', 1, 1, 12, 5, 0, 8, NULL, 1, 950, 0),
-(3, 2, 'hero', 2, 2, 5, 1, 1, 3, NULL, 2, 950, 0),
+(3, 2, 'hero', 4, 4, 10, 1, 1, 3, NULL, 2, 850, 0),
 (4, 2, 'hero_default', 2, 2, 5, 1, 1, 3, NULL, 2, 950, 0),
 (5, 1, 'artifact', 5, 1, 0, 0, 0, 0, 0, 0, 0, 1),
 (6, 2, 'artifact', 0, 5, 0, 0, 0, 0, 0, 0, 0, 0),
@@ -330,7 +330,7 @@ CREATE TABLE `resources` (
 --
 
 INSERT INTO `resources` (`id`, `elem_id`, `elem_type`, `ore`, `gold`, `wood`) VALUES
-(1, 1, 'gamer', 2830, 3100, 2800),
+(1, 1, 'gamer', 2870, 3500, 2800),
 (2, 2, 'gamer', 300, 300, 300),
 (3, 1, 'item', 300, 300, 300),
 (4, 1, 'map_building', 10, 100, 0);
@@ -852,8 +852,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `login`, `password`, `token`) VALUES
-(1, 'Вася', 'vasya', '123', '0de3f7a26f5609536781d4a8f35c7171'),
-(2, 'Петя', 'petya', '321', 'eae85549de4d55c3fc00737a63c9ce93');
+(1, 'Вася', 'vasya', '123', '759cc52c37e7bab1c18bcae121658b67'),
+(2, 'Петя', 'petya', '321', 'e92dadcf01bf97e429956fa31fc62c39');
 
 -- --------------------------------------------------------
 
@@ -876,8 +876,8 @@ CREATE TABLE `users_games` (
 --
 
 INSERT INTO `users_games` (`id`, `user_id`, `game_id`, `color`, `order`, `is_active`, `mode`) VALUES
-(1, 1, 1, 'red', 0, 1, 'world'),
-(2, 2, 1, 'blue', 1, 0, 'world');
+(1, 1, 1, 'red', 0, 0, 'world'),
+(2, 2, 1, 'blue', 1, 1, 'world');
 
 --
 -- Индексы сохранённых таблиц

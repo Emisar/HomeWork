@@ -240,7 +240,6 @@ function Game(options) {
                 TurnColor = 'lime';
             } else {TurnColor = 'crimson'}
         }
-        requestAnimationFrame(ColorChange);
     }
 
     function printHeadBand(x, y, color) {
@@ -291,6 +290,7 @@ function Game(options) {
         setHeroInfo(activeHero);
         setUserResources();
         refreshUI();
+        console.log(activeHero);
         // нарисовать карту
         const map = struct.map;
         for (let i = 0; i < map.length; i++) {
@@ -335,9 +335,6 @@ function Game(options) {
         if (result.result) {
             dataStruct = result.data;
             activeHero = dataStruct.heroes[heroUpdate];
-            if (typeof activeHero != "undefined"){
-                printHeadBand(-5+32*activeHero.x,0+32*activeHero.y, TurnColor);
-            }
             render(result.data);
         }
     }
@@ -478,7 +475,7 @@ function Game(options) {
         if (activeHero.backpack[x + y * 3]) {
             if (x <= 2 && y <= 6 && x >= 0 && y >= 0) {
                 if (y == 5 && x == 1) {
-                    canvasInv.printDescription(x, y, 0, 4, activeHer0);
+                    canvasInv.printDescription(x, y, 0, 4, activeHero);
                 } else {
                     canvasInv.printDescription(x, y, 0, y, activeHero);
                 }
