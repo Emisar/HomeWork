@@ -11,16 +11,11 @@ function Router(options) {
         const result = mediator.get(TRIGGERS.GET_USERS, null);
         res.send(result ? answer.good(result) : answer.error(101));
     });
-    
-    router.get('/registration/:nickname', (req, res) => {
-        var nickname = req.params.nickname;
-        const result = mediator.get(TRIGGERS.USER_REGISTER, nickname);
-        res.send(result ? answer.good(result) : answer.error(322));
-    });
 
-    router.get('/login/:nickname', (req, res) => {
+    router.get('/login/:nickname/:password', (req, res) => {
         var nickname = req.params.nickname;
-        const result = mediator.get(TRIGGERS.USER_LOGIN, nickname);
+        var password = req.params.password;
+        const result = mediator.get(TRIGGERS.USER_LOGIN, { nickname, password });
         res.send(result ? answer.good(result) : answer.error(323));
     });
     

@@ -10,40 +10,42 @@ class UserManager extends BaseModule {
     constructor(options) {
         super(options);
         this.users = {};
-
         this.mediator.set(this.TRIGGERS.USER_REGISTER, data => this.registration(data));
         this.mediator.set(this.TRIGGERS.USER_LOGIN, data => this.login(data));
         this.mediator.set(this.TRIGGERS.USER_LOGOUT, data => this.logout(data));
         this.mediator.set(this.TRIGGERS.GET_USERS, data => this.getUsers(data));
     }
 
-    getUsers(data) {
+    async setUsers() {
+        this.users = await this.db.getUsers();
         return this.users;
     }
 
-    registration(nickname) {
-        if (!localStorage.getItem(nickname)) {
-            this.users[nickname] = new User({nickname: nickname, token: null});
-            localStorage.setItem(nickname, JSON.stringify(this.users[nickname]));
-            return this.users[nickname];
+    getUsers() {
+        return this.users;
+    }
+    
+    async login(options) {
+        const user = await this.db.getUser(options.nickname);
+        if (user) {
+            if (user.password == options.password && user.token == null) {
+                this.users[options.nickname] = user; 
+                this.users[options.nickname].token = md5(options.nickname + options.password);
+                this.db.setUserToken(options.nickname, this.users[options.nickname].token);
+                return true;
+            }
+            return null
+        } else {
+            this.db.userRegistration(options.nickname, options.password);
+            return true;
         }
-        return null;
     }
 
-    login(nickname) {
-        if (JSON.parse(localStorage.getItem(nickname))) {
-            this.users[nickname].token = md5(nickname);
-            localStorage.setItem(nickname, JSON.stringify(this.users[nickname]));
-            return this.users[nickname];
-        }
-        return null;
-    }
-
-    logout(nickname) {
-        if (JSON.parse(localStorage.getItem(nickname)) && JSON.parse(localStorage.getItem(nickname)).token == this.users[nickname].token) {
-            this.users[nickname].token = md5(nickname);
-            localStorage.setItem(nickname, JSON.stringify(this.users[nickname]));
-            return this.users[nickname];
+    async logout(nickname) {
+        if (nickname) {
+            this.db.setUserToken(nickname, null);
+            delete this.users[nickname];
+            return true;
         }
         return null;
     }

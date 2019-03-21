@@ -1,5 +1,12 @@
 SETTINGS = {
 
+    DB: {
+        USERNAME: '',
+        PASSWORD: '',
+        HOST: '',
+        NAME: 'bomberman.db'
+    },
+
     MEDIATOR: {
         TRIGGERS: {
             TEST: 'TEST',
@@ -12,5 +19,6 @@ SETTINGS = {
             TEST: 'TEST'
         }
     }
+
 };
 module.exports = SETTINGS;
