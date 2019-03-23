@@ -12,10 +12,10 @@ function Router(options) {
         res.send(result ? answer.good(result) : answer.error(101));
     });
 
-    router.get('/login/:nickname/:password', (req, res) => {
+    router.get('/login/:nickname/:password', async (req, res) => {
         var nickname = req.params.nickname;
         var password = req.params.password;
-        const result = mediator.get(TRIGGERS.USER_LOGIN, { nickname, password });
+        const result = await mediator.get(TRIGGERS.USER_LOGIN, { nickname, password });
         res.send(result ? answer.good(result) : answer.error(323));
     });
     
