@@ -11,6 +11,7 @@ SETTINGS = {
 
     MEDIATOR: {
         TRIGGERS: {
+            START_GAME_AGAIN: 'START_GAME_AGAIN',
             USER_LOGIN: 'USER_LOGIN',
             USER_LOGOUT: 'USER_LOGOUT',
             GET_USERS: 'GET_USERS'

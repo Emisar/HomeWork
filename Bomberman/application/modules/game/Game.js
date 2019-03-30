@@ -4,7 +4,7 @@ class Game {
 
     constructor() {
         this.players = {}; // массив игорьков
-        this.map = this.genMap();;
+        this.map = this.genMap();
     }
 
     genMap() {
@@ -18,18 +18,22 @@ class Game {
     }
 
     genCoord() {
-      const OK=false;
-        while (OK==false){
-            const x = Math.round(Math.random * 5);
-            const y = Math.round(Math.random * 5);
-            if(map[x,y]<10) {
-                players.forEach(player => {
-                    if(player.x!=x && player.y!=y ){
-                        OK=true;
-                        return { x: x, y: y };
-                    }
-                });
-            }   
+        const ok = false;
+        while (ok == false) {
+            const x = Math.round(Math.random() * this.map[0].length);
+            const y = Math.round(Math.random() * this.map.length);
+            console.log(x, y);
+            if (10 > this.map[y - 1][x - 1]) {
+                if (this.players.length > 0) {
+                    this.players.forEach(player => {
+                        if (x != player.x && y != player.y) {
+                            return { x, y };
+                        }
+                    });
+                } else {
+                    return { x, y };
+                }
+            }
         }
 
     }
@@ -37,17 +41,12 @@ class Game {
     addPlayer(nickname) {
         const { x, y } = this.genCoord();
         this.players[nickname] = new Player({ nickname, x, y });
-
-        console.log(this.players);
-
         return this.players[nickname];
     }
 
     delPlayer(nickname) {
         if (nickname && this.players[nickname]) {
             delete this.players[nickname];
-
-            console.log(this.players);
         }
     }
 

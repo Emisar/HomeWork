@@ -7,21 +7,25 @@ function Router(options) {
     const TRIGGERS = mediator.getTriggers();
     const answer = new BaseRouter();
 
-    router.get('/getUsers', (req, res) => {
-        const result = mediator.get(TRIGGERS.GET_USERS, null);
-        res.send(result ? answer.good(result) : answer.error(101));
+
+
+    router.get('/startGameAgain', (req, res) => {
+        var token = req.params.token;
+        var answer = req.param.aswer;
+        const result = await mediator.get(TRIGGERS.START_GAME_AGAIN, { token, answer });
+        res.send(result ? answer.good(result) : answer.error(325));
     });
 
-    router.get('/login/:nickname/:password', async (req, res) => {
+    router.get('/login/:nickname/:hash', async (req, res) => {
         var nickname = req.params.nickname;
-        var password = req.params.password;
-        const result = await mediator.get(TRIGGERS.USER_LOGIN, { nickname, password });
+        var hash = req.params.hash;
+        const result = await mediator.get(TRIGGERS.USER_LOGIN, { nickname, hash });
         res.send(result ? answer.good(result) : answer.error(323));
     });
     
-    router.get('/logout/:nickname', (req, res) => {
-        var nickname = req.params.nickname;
-        const result = mediator.get(TRIGGERS.USER_LOGOUT, nickname);
+    router.get('/logout/:token', (req, res) => {
+        var token = req.params.token;
+        const result = mediator.get(TRIGGERS.USER_LOGOUT, token);
         res.send(result ? answer.good(result) : answer.error(324));
     });
     

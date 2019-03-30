@@ -23,12 +23,26 @@ class db {
         });
     }
     // Дает пользователя 
-    getUser(nickname) {
+    getUserByNickname(nickname) {
         return new Promise(resolve => {
             if (nickname) {
                 this.db.serialize(() => {
                     const query = 'SELECT * FROM users WHERE nickname = ?';
                     this.db.get(query, [nickname], (err, rows) => { resolve((err) ? null : rows); });
+                });
+            } else {
+                resolve(null);
+            }
+        })
+    }
+
+    getUserByToken(token) {
+        console.log(token);
+        return new Promise(resolve => {
+            if (token) {
+                this.db.serialize(() => {
+                    const query = 'SELECT * FROM users WHERE token = ?';
+                    this.db.get(query, [token], (err, rows) => { resolve((err) ? null : rows); });
                 });
             } else {
                 resolve(null);
