@@ -9,11 +9,11 @@ function Router(options) {
 
 
 
-    router.get('/startGameAgain', (req, res) => {
+    router.get('/startGameAgain/:token/:answer', async (req, res) => {
         var token = req.params.token;
-        var answer = req.param.aswer;
+        var answer = req.params.aswer;
         const result = await mediator.get(TRIGGERS.START_GAME_AGAIN, { token, answer });
-        res.send(result ? answer.good(result) : answer.error(325));
+        res.send(result ? answer.good(result) : answer.error(326));
     });
 
     router.get('/login/:nickname/:hash', async (req, res) => {

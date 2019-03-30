@@ -8,7 +8,7 @@ class BaseRouter {
             324: 'Logout fail',
             404: 'Error 404! Page not found!',
             9000: 'Unknown error',
-            325: 'It is not possible to start the game'
+            326: 'It is not possible to start the game'
         };
     }
 

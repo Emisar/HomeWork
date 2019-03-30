@@ -12,11 +12,13 @@ class GameManager extends BaseModule {
     async starGameAgain(options) {
         if (options.token && options.answer) {
             const { token, answer } = options;
-            if (answer == true) {
+            if (answer == 'true') {
                 const user = await this.db.getUserByToken(token);
                 this.game.addPlayer(user.nickname);
-            } else {
+                console.log(this.game.players[user.nickname]);
+            } else if (answer == 'false') {
                 //Exit from game
+                console.log('exit');
             }    
         }
     }
