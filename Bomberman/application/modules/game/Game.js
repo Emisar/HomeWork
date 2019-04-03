@@ -4,6 +4,7 @@ class Game {
 
     constructor() {
         this.players = {}; // массив игорьков
+        this.bombs = {};    // Array of bombs
         this.map = this.genMap();
     }
 
@@ -48,6 +49,14 @@ class Game {
         if (nickname && this.players[nickname]) {
             delete this.players[nickname];
         }
+    }
+
+    getScene() {
+        return {
+            players: this.players,
+            bombs: this.bombs,
+            map: this.map
+        };
     }
 
 }

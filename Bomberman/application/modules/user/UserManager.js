@@ -10,8 +10,13 @@ class UserManager extends BaseModule {
         this.mediator.set(this.TRIGGERS.USER_LOGIN, data => this.login(data));
         this.mediator.set(this.TRIGGERS.USER_LOGOUT, data => this.logout(data));
         this.mediator.set(this.TRIGGERS.GET_USERS, data => this.getUsers(data));
+        this.mediator.set(this.TRIGGERS.GET_USER, nickname => this.getUser(nickname));
     }
     
+    getUser(nickname) {
+        return (nickname && this.users[nickname]) ? this.users[nickname] : null;
+    }
+
     async login(options) {
         const { nickname, hash } = options;
         const user = await this.db.getUserByNickname(nickname);
