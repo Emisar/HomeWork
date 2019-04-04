@@ -7,7 +7,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.socket = openSocket('http://localhost:5000');
+    this.client = openSocket('http://localhost:5000');
     
 
   this.send = this.send.bind(this);
@@ -16,9 +16,8 @@ class App extends Component {
 
   //функция, содержащая обращение к серверу и реагирование на обратный ответ от него
   send() {
-    this.socket.emit('priv', 1000);
-    
-    this.socket.on("answer", (data) => {
+    this.client.emit('priv', 1000);
+    this.client.on("answer", (data) => {
       console.log(data);
     })
   }

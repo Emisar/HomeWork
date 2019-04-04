@@ -4,6 +4,11 @@
 }
 
 .App { 
-  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  background-image: url(bg.jpg);
+  background-position: center;
+  max-height: 100vh
 }
 
