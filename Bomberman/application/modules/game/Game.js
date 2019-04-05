@@ -6,7 +6,7 @@ class Game {
         this.players = {}; // массив игорьков
         this.bombs = {};    // Array of bombs
         this.map = this.genMap();
-        this.isChangeScene = false;
+        this.isSceneChanged = false;
     }
 
     genMap() {

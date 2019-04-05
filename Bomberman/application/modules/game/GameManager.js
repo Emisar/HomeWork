@@ -15,12 +15,12 @@ class GameManager extends BaseModule {
         const SOCKET = options.SOCKET;
 
         setInterval(() => {
-            if (this.game.isChangeScene) {
-                this.game.isChangeScene = false;
+            if (this.game.isSceneChanged) {
+                this.game.isSceneChanged = false;
                 console.log('Обновить');
                 this.io.emit(SOCKET.UPDATE_SCENE, this.game.getScene());
             }
-        }, 10000);
+        }, 1000);
 
         if (!this.io) { return; }
         this.io.on('connection', socket => { 
