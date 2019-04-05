@@ -6,6 +6,7 @@ class Game {
         this.players = {}; // массив игорьков
         this.bombs = {};    // Array of bombs
         this.map = this.genMap();
+        this.isChangeScene = false;
     }
 
     genMap() {
@@ -40,13 +41,17 @@ class Game {
     }
 
     addPlayer(nickname) {
+        console.log('addPlayer');
+        this.isChangeScene = true;
         const { x, y } = this.genCoord();
         this.players[nickname] = new Player({ nickname, x, y });
+        
         return this.players[nickname];
     }
 
     delPlayer(nickname) {
         if (nickname && this.players[nickname]) {
+            this.isChangeScene = true;
             delete this.players[nickname];
         }
     }
