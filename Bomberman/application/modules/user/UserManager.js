@@ -11,10 +11,22 @@ class UserManager extends BaseModule {
         this.mediator.set(this.TRIGGERS.USER_LOGOUT, data => this.logout(data));
         this.mediator.set(this.TRIGGERS.GET_USERS, data => this.getUsers(data));
         this.mediator.set(this.TRIGGERS.GET_USER, nickname => this.getUser(nickname));
+        this.mediator.set(this.TRIGGERS.GET_USER_BY_TOKEN, token => this.getUserByToken(token));
     }
     
     getUser(nickname) {
         return (nickname && this.users[nickname]) ? this.users[nickname] : null;
+    }
+
+    getUserByToken(token) {
+        if (token) {
+            for (let key in this.users) {
+                if (this.users[key].token === token) {
+                    return this.users[key];
+                }
+            }
+        }
+        return null;
     }
 
     async login(options) {
@@ -25,7 +37,6 @@ class UserManager extends BaseModule {
                 const token = md5(Math.random() * 1000000);
                 this.users[nickname] = user;
                 this.users[nickname].token = token;
-                console.log(this.users[nickname]);
                 this.db.setUserToken(nickname, this.users[nickname].token);
                 this.mediator.call(this.EVENTS.ADD_PLAYER, nickname);
                 return { token };

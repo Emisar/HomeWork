@@ -10,9 +10,11 @@ const DB = require('./application/modules/db/db');
 const Mediator = require('./application/modules/Mediator');
 const UserManager = require('./application/modules/user/UserManager');
 const GameManager = require('./application/modules/game/GameManager');
+const ChatManager = require('./application/modules/chat/ChatManager');
 
 const db = new DB(SETTINGS.DB);
 const mediator = new Mediator(SETTINGS.MEDIATOR);
+new ChatManager({ mediator, db, io, SOCKET: SETTINGS.SOCKET });
 new UserManager({ mediator, db });
 new GameManager({ mediator, db, io, SOCKET: SETTINGS.SOCKET });
 
