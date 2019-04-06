@@ -42,7 +42,7 @@ class Game {
 
     addPlayer(nickname) {
         console.log('addPlayer');
-        this.isChangeScene = true;
+        this.isSceneChanged = true;
         const { x, y } = this.genCoord();
         this.players[nickname] = new Player({ nickname, x, y });
         
@@ -51,7 +51,7 @@ class Game {
 
     delPlayer(nickname) {
         if (nickname && this.players[nickname]) {
-            this.isChangeScene = true;
+            this.isSceneChanged = true;
             delete this.players[nickname];
         }
     }
