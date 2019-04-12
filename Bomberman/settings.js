@@ -21,6 +21,8 @@ SETTINGS = {
         EVENTS: {
             ADD_PLAYER: 'ADD_PLAYER',
             DEL_PLAYER: 'DEL_PLAYER',
+            ADD_BOMB: 'ADD_BOMB',
+            DEL_BOMB: 'DEL_BOMB'
         }
     },
 
@@ -31,6 +33,11 @@ SETTINGS = {
         START_GAME: 'START_GAME',
         SEND_MESSAGE: 'SEND_MESSAGE', //сообщение с клиента на сервер
         SEND_MESSAGE_TO_ALL: 'SEND_MESSAGE_TO_ALL' //послать сообщение с сервера на все клиенты
+    },
+
+    LOGIC: {
+        MOVE_HERO: 'MOVE_HERO',
+        SET_BOMB: 'SET_BOMB',
     }
 };
 module.exports = SETTINGS;

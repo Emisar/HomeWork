@@ -1,20 +1,31 @@
 const BaseModule = require('../BaseModule');
 const Game = require('./Game');
+const Logic = require('./logic/Logic');
 
 class GameManager extends BaseModule {
     constructor(options) {
         super(options);
         this.game = new Game();
+        this.mediator.subscribe(this.EVENTS.ADD_BOMB, (options) => this.game.addBomb(options));
+        this.mediator.subscribe(this.EVENTS.DEL_BOMB, (options) => this.game.delBomb(options));
         this.mediator.subscribe(this.EVENTS.ADD_PLAYER, (nickname) => { 
-            this.game.addPlayer(nickname); 
+            this.game.addPlayer(nickname);
+            this.logic.setBomb(nickname); 
             this.io.emit(SOCKET.UPDATE_SCENE, this.game.getScene());
         });
         this.mediator.subscribe(this.EVENTS.DEL_PLAYER, (nickname) => this.game.delPlayer(nickname));
 
+        this.logic = new Logic(this.game.getScene(), {
+            addBomb: this.game.addBomb,
+            delBomb: this.game.delBomb
+        });
+
         const sockets = {};
         const SOCKET = options.SOCKET;
-
+        const LOGIC = options.LOGIC;
+        
         setInterval(() => {
+            console.log(this.game.bombs);
             if (this.game.isSceneChanged) {
                 this.game.isSceneChanged = false;
                 console.log('Обновить');
@@ -31,14 +42,26 @@ class GameManager extends BaseModule {
                     if (user) {
                         sockets[socket.id] = user;
                         socket.emit(SOCKET.UPDATE_SCENE, this.game.getScene());
+                        socket.on(SOCKET.GAMER_ACTION, (data) => {
+                            if (data) {
+                                const token = data.token;
+                                if (token) {
+                                    switch (data.action) {
+                                        case LOGIC.MOVE_HERO: {
+                                            this.logic.moveHero(data); //Отправлять никнейм
+                                            break;
+                                        }
+                                        case LOGIC.SET_BOMB: {
+                                            this.logic.setBomb(data); // Отправлять никнейм
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        });
                     }
                 }
             });
-
-            socket.on('priv', (text) => {
-                console.log(text);
-                socket.emit('answer', ('ВАМ ПЕРСОНАЛЬНЫЙ ПРИВЕТ ОТ СЕРВЕРА! КАК ВЫ ТАМ, В 2К19?? ' + text))
-            })
 
             socket.on('disconnect', async () => {
                 delete sockets[socket.id];
@@ -46,6 +69,13 @@ class GameManager extends BaseModule {
             });
         });
     }
+     
+    // addBombCallBack(options) {
+    //     this.mediator.call(this.EVENTS.ADD_BOMB, options);
+    // }
+    // delBombCallBack(options) {
+    //     this.mediator.call(this.EVENTS.DEL_BOMB, options);
+    // }
 
 }
 module.exports = GameManager;

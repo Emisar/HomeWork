@@ -1,4 +1,5 @@
 const Player = require('./struct/Player');
+const Bobm = require('./struct/Bomb');
 
 class Game {
 
@@ -45,7 +46,6 @@ class Game {
         this.isSceneChanged = true;
         const { x, y } = this.genCoord();
         this.players[nickname] = new Player({ nickname, x, y });
-        
         return this.players[nickname];
     }
 
@@ -53,6 +53,25 @@ class Game {
         if (nickname && this.players[nickname]) {
             this.isSceneChanged = true;
             delete this.players[nickname];
+        }
+    }
+
+    addBomb(options) {
+        const { owner, x, y, power, timer } = options;
+        const key = "" + x + y + "";
+        if (owner, x, y, power, timer) {
+            this.isSceneChanged = true;
+            this.bombs[key] = new Bobm({ owner, x, y, power, timer });
+            return this.bombs[owner];
+        }
+        return null;
+    }
+
+    delBomb(options) {
+        const { x, y } = options
+        if (x, y) {
+            this.isSceneChanged = true;
+            delete this.bombs[x, y];
         }
     }
 
