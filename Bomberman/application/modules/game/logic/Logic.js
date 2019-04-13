@@ -3,12 +3,14 @@ class Logic {
 
     constructor(struct, callbacks) {
         this.struct = struct;
-        this.addBomb = (callbacks.addBomb instanceof Function) ? callbacks.addBomb : () => {};
-        this.delBomb = (callbacks.delBomb instanceof Function) ? callbacks.delBomb : () => {};
+        this.addBombCallBack = (callbacks.addBomb instanceof Function) ? callbacks.addBomb : () => {};
+        this.delBombCallBack = (callbacks.delBomb instanceof Function) ? callbacks.delBomb : () => {};
     }
 
+    //Вспомогательные методы 
+
     getBomb(x, y) {
-        const key = "" + x + "and" + y + "";
+        const key = "" + x + y + "";
         return this.struct.bombs[key];
     }
 
@@ -38,12 +40,18 @@ class Logic {
         return true;
     }
 
-    boomBomb(bomb) {
-        setTimeout(bomb.timer, () => {
-            delBomb({ x: bomb.x, y: bomb.y });
-            // Логика убийства игроков        
-        });
+    isBooms() {
+        if (this.struct.bombs) {
+            for (const key in this.struct.bombs) {
+                let bomb = this.struct.bombs[key];
+                if (bomb.isBoom) {
+                    //this.delBombCallBack({ x: bomb.x, y: bomb.y });
+                } 
+            }
+        }
     }
+
+    // Основные методы
 
     moveHero(options) {
         const { nickname, direction } = options;
@@ -97,7 +105,7 @@ class Logic {
             if (player && player.count !== 0) {
                 const x = player.x;
                 const y = player.y;
-                this.addBomb({ owner: player.nickname, x: player.x, y: player.y, power: player.power, timer: 5000 });
+                this.addBombCallBack({ owner: player.nickname, x: player.x, y: player.y, power: player.power, timer: 5000 });
                 this.boomBomb(getBomb(x, y));
                 return true;
             }

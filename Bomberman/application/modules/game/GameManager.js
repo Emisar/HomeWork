@@ -9,7 +9,8 @@ class GameManager extends BaseModule {
         this.mediator.subscribe(this.EVENTS.ADD_BOMB, (options) => this.game.addBomb(options));
         this.mediator.subscribe(this.EVENTS.DEL_BOMB, (options) => this.game.delBomb(options));
         this.mediator.subscribe(this.EVENTS.ADD_PLAYER, (nickname) => { 
-            this.game.addPlayer(nickname);
+            const player = this.game.addPlayer(nickname);
+            this.game.addBomb({ owner: nickname, x: player.x, y: player.y, power: player.power, timer: 5000 }); 
             this.io.emit(SOCKET.UPDATE_SCENE, this.game.getScene());
         });
         this.mediator.subscribe(this.EVENTS.DEL_PLAYER, (nickname) => this.game.delPlayer(nickname));
@@ -24,11 +25,12 @@ class GameManager extends BaseModule {
         const LOGIC = options.LOGIC;
         
         setInterval(() => {
-            console.log(this.game.bombs);
+            console.log(this.game.getScene().bombs);
+            this.logic.isBooms();
             if (this.game.isSceneChanged) {
                 this.game.isSceneChanged = false;
-                console.log('Обновить');
                 this.io.emit(SOCKET.UPDATE_SCENE, this.game.getScene());
+
             }
         }, 1000);
 
