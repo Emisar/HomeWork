@@ -10,7 +10,6 @@ class GameManager extends BaseModule {
         this.mediator.subscribe(this.EVENTS.DEL_BOMB, (options) => this.game.delBomb(options));
         this.mediator.subscribe(this.EVENTS.ADD_PLAYER, (nickname) => { 
             this.game.addPlayer(nickname);
-            this.logic.setBomb(nickname); 
             this.io.emit(SOCKET.UPDATE_SCENE, this.game.getScene());
         });
         this.mediator.subscribe(this.EVENTS.DEL_PLAYER, (nickname) => this.game.delPlayer(nickname));
