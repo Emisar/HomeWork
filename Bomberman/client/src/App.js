@@ -10,14 +10,15 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.client = openSocket('http://localhost:5000');
+
+    
   }
 
   // тут в компонент передвется функция через props
   render() {
     return (
       <div className="App">
-        <LoginComponent func={() => this.send()}/>
-        <ChatComponent client={() => this.client} socketEvent={() => SETTINGS.SOCKET}/>
+        <LoginComponent client={() => this.client} socketEvent={() => SETTINGS.SOCKET}/>
       </div>
     );
   }

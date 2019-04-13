@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import './loginComponent.css'
+import GameScreenComponent from '../GameScreenComponent/GameScreenComponent';
+import ChatComponent from '../ChatComponent/ChatComponent';
 
 class LoginComponent extends Component {
 
@@ -8,9 +10,14 @@ class LoginComponent extends Component {
         this.state = {
             nickName: '',
             password: '',
-            regExp: /[а-яА-яёЁ~!@#$%^&*()+`'";:<>/\\|]/
+            regExp: /[а-яА-яёЁ~!@#$%^&*()+`'";:<>/\\|]/,
+            token: '',
             
         }
+
+        localStorage.setItem('token', '')
+    
+    
         this.handleLoginChange = this.handleLoginChange.bind(this);
         this.handlePassChange  = this.handlePassChange.bind(this);
         this.checkInput = this.checkInput.bind(this)
@@ -30,8 +37,7 @@ class LoginComponent extends Component {
         const promise = await fetch(`/login/${this.state.nickName}/${hash}`);
         const answer  = await promise.json();
         if (answer && answer.result === 'ok' && answer.data && answer.data.token) {
-            localStorage.setItem("token", answer.data.token);
-            //TODO закрыть окно авторизации и перейти в игру
+            this.setState({token: localStorage.setItem("token", answer.data.token)})
         }
     }
 
@@ -48,7 +54,8 @@ class LoginComponent extends Component {
     
     render() {      
         return(
-            <div className="registration-container">
+            <div className="wrapp">
+                <div className={"registration-container" + ((this.state.token === '') ? ' visible' : ' invisible')}>
                 <h1>Приветствие</h1>
                 <form onSubmit={this.checkInput}>
                     <label className="input-container">
@@ -75,7 +82,13 @@ class LoginComponent extends Component {
                         </input>
                     </div>
                 </form>
+                </div>
+                <div className={"game" + ((this.state.token === '') ? ' invisible' : ' visible')}>
+                    <GameScreenComponent />
+                    <ChatComponent client={() => this.props.client()} socketEvent={() => this.props.socketEvent()}/>
+                </div>
             </div>
+            
         )
     }
 }

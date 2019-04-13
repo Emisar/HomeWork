@@ -37,7 +37,7 @@ class ChatComponent extends Component {
             <div className="Chat">
                 <h1>Chatik</h1>
                 <input id="input" type="text" placeholder="Введите сообщение"></input>
-                <button onClick={() => this.send()}>Послать сообщение</button>
+                <button id="btn" onClick={() => this.send()}>Послать сообщение</button>
                 <div id="chat"></div>
             </div>
         )

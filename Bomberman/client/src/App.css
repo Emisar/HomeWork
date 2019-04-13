@@ -9,6 +9,19 @@
   grid-template-rows: 1fr 1fr 1fr;
   background-image: url(bg.jpg);
   background-position: center;
-  max-height: 100vh
-}
+  max-height: 100vh;
+
+  grid-template-areas: 
+        "chat game game"
+        "chat game game"
+        "chat game game"  
+      }
+
+.visible {
+  display: block;
+};
+
+.invisible {
+  display: none;
+};
 
