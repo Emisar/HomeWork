@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import './loginComponent.css'
-import GameScreenComponent from '../GameScreenComponent/GameScreenComponent';
-import ChatComponent from '../ChatComponent/ChatComponent';
 
 class LoginComponent extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            nickName: '',
+            nickname: '',
             password: '',
             regExp: /[а-яА-яёЁ~!@#$%^&*()+`'";:<>/\\|]/,
-            token: '',
+            flag: false,
             
         }
+
+        this.socket = props.socket();
+        this.EVENT = props.socketEvent();
 
         localStorage.setItem('token', '')
     
@@ -24,38 +25,45 @@ class LoginComponent extends Component {
     }
 
     handleLoginChange(event) {
-        this.setState({nickName: event.target.value});
+        this.setState({nickname: event.target.value});
     }
 
     handlePassChange(event) {
-        this.setState({password: event.target.value})
+        this.setState({password: event.target.value});
     }
 
     async getData() {
         const md5 = require('md5');
-        const hash = md5(this.state.nickName + this.state.password);
-        const promise = await fetch(`/login/${this.state.nickName}/${hash}`);
+        const hash = md5(this.state.nickname + this.state.password);
+        const promise = await fetch(`/login/${this.state.nickname}/${hash}`);
         const answer  = await promise.json();
         if (answer && answer.result === 'ok' && answer.data && answer.data.token) {
-            this.setState({token: localStorage.setItem("token", answer.data.token)})
+            localStorage.setItem("token", answer.data.token);
+            console.log(this.props.parent);
+            this.props.parent.token = ()=>{this.setState({token: answer.data.token})};
+            this.props.parent.flag = !this.state.flag;
+            this.setState({flag: !this.state.flag})
+            console.log(this.props.parent);
+            this.socket.emit(this.EVENT.START_GAME, {nickname: this.state.nickname});
+            this.props.parent.updateProps();
         }
     }
 
     checkInput(e) {
         e.preventDefault();
-        if (!this.state.regExp.test(this.state.nickName) && 
+        if (!this.state.regExp.test(this.state.nickname) && 
            !this.state.regExp.test(this.state.password)){
             this.getData();
         } else {
-            this.setState({nickName: "", password: ""})
+            this.setState({nickname: "", password: ""})
             alert('Введены недопустимые символы. Попробуйте еще раз')
         }
     }
     
-    render() {      
+    render() {    
         return(
-            <div className="wrapp">
-                <div className={"registration-container" + ((this.state.token === '') ? ' visible' : ' invisible')}>
+            <div className={"wrapp"}>
+                <div className={"registration-container"}>
                 <h1>Приветствие</h1>
                 <form onSubmit={this.checkInput}>
                     <label className="input-container">
@@ -63,7 +71,7 @@ class LoginComponent extends Component {
                             className="registration-nickname" 
                             placeholder="Login" 
                             type="text" 
-                            value={this.state.nickName} 
+                            value={this.state.nickname} 
                             onChange={this.handleLoginChange}>
                         </input>              
                         <input 
@@ -82,11 +90,7 @@ class LoginComponent extends Component {
                         </input>
                     </div>
                 </form>
-                </div>
-                <div className={"game" + ((this.state.token === '') ? ' invisible' : ' visible')}>
-                    <GameScreenComponent />
-                    <ChatComponent client={() => this.props.client()} socketEvent={() => this.props.socketEvent()}/>
-                </div>
+                </div>  
             </div>
             
         )

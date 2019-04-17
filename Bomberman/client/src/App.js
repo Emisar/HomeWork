@@ -1,26 +1,56 @@
 import React, { Component } from 'react';
 import './App.css';
 import LoginComponent from './components/LoginComponent/LoginComponent';
-import ChatComponent from './components/ChatComponent/ChatComponent';
 import openSocket from 'socket.io-client';
 import SETTINGS from './settings';
+import GameScreenComponent from './components/GameScreenComponent/GameScreenComponent';
+import ChatComponent from './components/ChatComponent/ChatComponent';
 
 class App extends Component {
 
   constructor(props) {
     super(props);
-    this.client = openSocket('http://localhost:5000');
+    this.socket = openSocket('http://localhost:5000');
 
-    
-  }
+    this.state = {
+      token: '',
+      updateProps: ()=>{this.setState({token: this.state.token})}  ,
+    }
+
+    //setInterval(()=>{this.setState({token: this.state.token})}, 1000)
+  } 
+
+
 
   // тут в компонент передвется функция через props
   render() {
+    let token;
+    if(this.state.token === '') {
+      token = true;
+    } else {
+      token = false;
+    }
     return (
-      <div className="App">
-        <LoginComponent client={() => this.client} socketEvent={() => SETTINGS.SOCKET}/>
-      </div>
-    );
+    <div className="App">
+      {
+      token ? 
+      <LoginComponent
+        parent={this.state} 
+        socket={() => this.socket} 
+        socketEvent={() => SETTINGS.SOCKET}/> : 
+      <>
+      <ChatComponent
+        socket={() => this.socket} 
+        socketEvent={() => SETTINGS.SOCKET}/>
+      <GameScreenComponent
+        socket={() => this.socket} 
+        socketEvent={() => SETTINGS.SOCKET}/>
+      </>
+      }
+    </div>
+    )
+
+
   }
 }
 export default App;

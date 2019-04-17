@@ -4,8 +4,11 @@ import './chatComponent.css';
 class ChatComponent extends Component {
     constructor(props) {
         super(props);
-        this.socket = props.client();
+        this.socket = props.socket();
         this.EVENT = props.socketEvent();
+        this.state = {
+            isVisible: this.props.visible
+        }
         
         this.socket.on(this.EVENT.SEND_MESSAGE_TO_ALL, data => this.printMessage(data));
     }
@@ -34,7 +37,7 @@ class ChatComponent extends Component {
     
     render() {      
         return(
-            <div className="Chat">
+            <div className={"Chat"}>
                 <h1>Chatik</h1>
                 <input id="input" type="text" placeholder="Введите сообщение"></input>
                 <button id="btn" onClick={() => this.send()}>Послать сообщение</button>
