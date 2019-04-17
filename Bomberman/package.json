@@ -17,7 +17,7 @@
     "nodemon": "^1.18.10"
   },
   "scripts": {
-    "server": "node app.js",
+    "server": "nodemon app.js",
     "client": "cd client && npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },

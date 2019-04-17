@@ -9,7 +9,7 @@ class Bomb {
 
         setTimeout(() => {
             this.isBoom = true;
-        }, 5000);
+        }, this.timer);
     }
 }
 

@@ -35,9 +35,11 @@ SETTINGS = {
         SEND_MESSAGE_TO_ALL: 'SEND_MESSAGE_TO_ALL' //послать сообщение с сервера на все клиенты
     },
 
-    LOGIC: {
-        MOVE_HERO: 'MOVE_HERO',
-        SET_BOMB: 'SET_BOMB',
+    GAME: {
+        GAMER_ACTION: {
+            MOVE_HERO: 'MOVE_HERO',
+            SET_BOMB: 'SET_BOMB',
+        }
     }
 };
 module.exports = SETTINGS;

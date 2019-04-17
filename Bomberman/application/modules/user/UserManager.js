@@ -20,6 +20,17 @@ class UserManager extends BaseModule {
 
     getUserByToken(token) {
         if (token) {
+            for (key in this.users) {
+                if (this.users[key].token === token) {
+                    return this.users[key];
+                }
+            }
+        }
+        return null;
+    }
+
+    getUserByToken(token) {
+        if (token) {
             for (let key in this.users) {
                 if (this.users[key].token === token) {
                     return this.users[key];

@@ -16,7 +16,7 @@ const db = new DB(SETTINGS.DB);
 const mediator = new Mediator(SETTINGS.MEDIATOR);
 new ChatManager({ mediator, db, io, SOCKET: SETTINGS.SOCKET });
 new UserManager({ mediator, db });
-new GameManager({ mediator, db, io, SOCKET: SETTINGS.SOCKET });
+new GameManager({ mediator, db, io, SOCKET: SETTINGS.SOCKET, GAME: SETTINGS.GAME });
 
 // router
 const Router = require('./application/router/Router');
