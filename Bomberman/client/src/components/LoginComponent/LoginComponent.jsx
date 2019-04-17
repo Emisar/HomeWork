@@ -9,8 +9,6 @@ class LoginComponent extends Component {
             nickname: '',
             password: '',
             regExp: /[а-яА-яёЁ~!@#$%^&*()+`'";:<>/\\|]/,
-            flag: false,
-            
         }
 
         this.socket = props.socket();
@@ -38,14 +36,8 @@ class LoginComponent extends Component {
         const promise = await fetch(`/login/${this.state.nickname}/${hash}`);
         const answer  = await promise.json();
         if (answer && answer.result === 'ok' && answer.data && answer.data.token) {
-            localStorage.setItem("token", answer.data.token);
-            console.log(this.props.parent);
-            this.props.parent.token = ()=>{this.setState({token: answer.data.token})};
-            this.props.parent.flag = !this.state.flag;
-            this.setState({flag: !this.state.flag})
-            console.log(this.props.parent);
             this.socket.emit(this.EVENT.START_GAME, {nickname: this.state.nickname});
-            this.props.parent.updateProps();
+            this.props.parent(answer.data.token);
         }
     }
 

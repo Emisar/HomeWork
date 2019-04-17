@@ -14,11 +14,15 @@ class App extends Component {
 
     this.state = {
       token: '',
-      updateProps: ()=>{this.setState({token: this.state.token})}  ,
     }
 
     //setInterval(()=>{this.setState({token: this.state.token})}, 1000)
-  } 
+  }
+
+  updateToken(token){
+    this.setState({token: token});
+    localStorage.setItem('token', token);
+  }
 
 
 
@@ -35,7 +39,7 @@ class App extends Component {
       {
       token ? 
       <LoginComponent
-        parent={this.state} 
+        parent={()=>{this.updateToken(token)}} 
         socket={() => this.socket} 
         socketEvent={() => SETTINGS.SOCKET}/> : 
       <>
