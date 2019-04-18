@@ -39,7 +39,7 @@ class App extends Component {
       {
       token ? 
       <LoginComponent
-        parent={()=>{this.updateToken(token)}} 
+        parent={(token)=>{this.updateToken(token)}} 
         socket={() => this.socket} 
         socketEvent={() => SETTINGS.SOCKET}/> : 
       <>

@@ -14,9 +14,6 @@ class ChatComponent extends Component {
     }
 
     printMessage(data) {
-
-        console.log(data);
-
         if (data && data.message) {
             let output = document.getElementById("chat");
             let p = document.createElement("p");

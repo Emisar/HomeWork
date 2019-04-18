@@ -53,7 +53,7 @@ componentDidMount() {
 
     updateScene(data) {
 
-        console.log(data)
+        console.log(data);
 
 
         this.addBlock = (x, y, z, color) => {

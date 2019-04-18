@@ -30,6 +30,14 @@ class LoginComponent extends Component {
         this.setState({password: event.target.value});
     }
 
+    writeAuthInfoMessage(msg){
+        document.getElementById("auth-info-message").innerHTML = msg;
+        clearTimeout(document.getElementById("auth-info-message").timeoutId)
+        document.getElementById("auth-info-message").timeoutId = setTimeout(function(){
+            document.getElementById("auth-info-message").innerHTML = '';
+        }, 5000);
+    }
+
     async getData() {
         const md5 = require('md5');
         const hash = md5(this.state.nickname + this.state.password);
@@ -38,6 +46,8 @@ class LoginComponent extends Component {
         if (answer && answer.result === 'ok' && answer.data && answer.data.token) {
             this.socket.emit(this.EVENT.START_GAME, {nickname: this.state.nickname});
             this.props.parent(answer.data.token);
+        } else {
+            this.writeAuthInfoMessage('Неверный логин или пароль');
         }
     }
 
@@ -48,7 +58,7 @@ class LoginComponent extends Component {
             this.getData();
         } else {
             this.setState({nickname: "", password: ""})
-            alert('Введены недопустимые символы. Попробуйте еще раз')
+            this.writeAuthInfoMessage('Введены недопустимые символы. Попробуйте еще раз');
         }
     }
     
@@ -81,6 +91,7 @@ class LoginComponent extends Component {
                             value="Login/Registration">
                         </input>
                     </div>
+                    <div id="auth-info-message"></div>
                 </form>
                 </div>  
             </div>

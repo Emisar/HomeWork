@@ -44,6 +44,12 @@
     margin: 0 auto;
 }
 
+#auth-info-message{
+    text-align: center;
+    padding: 10px;
+    color: red;
+}
+
 .visible {
     display: block;
 }
