@@ -9,6 +9,7 @@ class ChatManager extends BaseModule {
         this.io.on('connection', socket => { 
             
             socket.on(SOCKET.SEND_MESSAGE, (data) => {
+                
                 if (data && data.message && data.token) {
                     const user = this.mediator.get(this.TRIGGERS.GET_USER_BY_TOKEN, data.token);
                     if (user) {
