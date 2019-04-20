@@ -1,4 +1,7 @@
  const SETTINGS = {
+
+    PORT: 5000, // номер порта сервера
+
     SOCKET: {
         UPDATE_SCENE: 'UPDATE_SCENE',
         GAMER_ACTION: 'GAMER_ACTION',

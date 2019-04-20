@@ -78,7 +78,7 @@ class Game {
             [ 9, 9, 1, 9, 1, 10, 10, 100, 0, 6],
             [ 9, 9, 1, 9, 9, 10, 10, 0, 0, 5],
             [ 1, 2, 1, 3, 1, 10, 10, 100, 0, 6],
-            [ 9, 9, 1, 9, 9, 10, 10, 0, 0, 5, 5]
+            [ 9, 9, 1, 9, 9, 10, 10, 0, 0, 5]
         ];
     }
     genCoord() {
@@ -232,14 +232,14 @@ class Game {
     }
 
     action(nickname, action) {
-        console.log(action);
         if (nickname && action) {
-            this[action.method]({ nickname: nickname, action: action });
+            this[action.method]({ nickname, action });
             return true;
         }
         return false;
     }
-    heroMove(options) {
+
+    moveHero(options) {
         const nickname = options.nickname;
         const direction = options.action.move;
         if (nickname && direction) {
