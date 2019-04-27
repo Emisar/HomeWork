@@ -14,7 +14,7 @@
   grid-template-areas: 
         "chat game game"
         "chat game game"
-        "chat game game"  
+        ". game game"  
       }
 
 .visible {

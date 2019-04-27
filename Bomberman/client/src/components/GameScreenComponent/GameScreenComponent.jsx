@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
 
+
+
 class GameScreenComponent extends Component {
     constructor(props) {
         super(props);
@@ -9,12 +11,20 @@ class GameScreenComponent extends Component {
         this.EVENT = props.socketEvent();
         this.socket.on(this.EVENT.UPDATE_SCENE, (data) => this.updateScene(data));
         document.addEventListener("keydown", event => this.keyDown(event));
+        window.addEventListener('resize', () => {
+            this.width = window.innerWidth * 0.9;
+            this.height = window.innerHeight * 0.9;
+            this.renderer.setSize(this.width, this.height)
+            this.camera.aspect = this.width / this.height;
+            this.camera.updateProjectionMatrix();
+        });
     }
+
 
     // юзер нажал на клавишу управления (стрелочку)
     keyDown(event) {
         const token = localStorage.getItem("token");
-        let move;
+        let move; 
         switch(event.keyCode) {
             case 37: // Left Arrow
             case 65: // A
@@ -31,6 +41,8 @@ class GameScreenComponent extends Component {
             case 40: // Up Arrow
             case 83: // W
                 move = "UP";
+               break;
+            default:
                 break;
         }
         if (token && move) {
@@ -39,30 +51,32 @@ class GameScreenComponent extends Component {
     }
 
     componentDidMount() {
-        const width = 400;
-        const height = 400;
+        this.width = window.innerWidth * 0.9;
+        this.height = window.innerHeight * 0.9;
+
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x222222);
 
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(width, height);
-        renderer.setClearColor(0xffffff, 1.0);
+        this.renderer = new THREE.WebGLRenderer();
+        this.renderer.setSize(this.width, this.height);
+        this.renderer.setClearColor(0xffffff, 1.0);
 
-        document.getElementById('game-screen').appendChild(renderer.domElement);
+        document.getElementById('game-screen').appendChild(this.renderer.domElement);
 
-        const camera = new THREE.PerspectiveCamera(100, width / height, 0.1, 1000);
-        camera.position.z = 100;
-        camera.position.y = -50;
+        this.camera = new THREE.PerspectiveCamera(100, this.width / this.height, 0.1, 1000);
+        this.camera.position.z = 100;
+        this.camera.position.y = -50;
 
-        const controls = new OrbitControls(camera, renderer.domElement);
-        //controls.enabled = true;
+        const controls = new OrbitControls(this.camera, this.renderer.domElement);
+        controls.enabled = true;
         controls.maxDistance = 1500;
         controls.minDistance = 0;
+
 
         // запустить анимацию
         const animate = () => {
             requestAnimationFrame(animate);
-            renderer.render(this.scene, camera);
+            this.renderer.render(this.scene, this.camera);
         }
         animate();
     }
@@ -87,7 +101,9 @@ class GameScreenComponent extends Component {
         let material = new THREE.MeshLambertMaterial({ color });
         let cube = new THREE.Mesh(geometry, material);
         this.scene.add(cube);
-        cube.position.set(-50 + x * 10, 0 + y * 10, z);
+        cube.position.set(-50 + x * 10, 0 + y * 10, z);     
+
+        
     }
 
     // нарисовать карту
@@ -120,7 +136,7 @@ class GameScreenComponent extends Component {
         if (data) {
 
             console.log(data);
-
+            
             this.clearScene();
             this.addLight();
             if (data.map) {
@@ -128,7 +144,7 @@ class GameScreenComponent extends Component {
             }
             if (data.players) {
                 this.drawPlayers(data.players);
-            }
+            } 
         }
     }
     
