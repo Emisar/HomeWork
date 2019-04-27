@@ -30,11 +30,15 @@ class LoginComponent extends Component {
         this.setState({password: event.target.value});
     }
 
-    writeAuthInfoMessage(msg){
-        document.getElementById("auth-info-message").innerHTML = msg;
-        clearTimeout(document.getElementById("auth-info-message").timeoutId);
-        document.getElementById("auth-info-message").timeoutId = setTimeout(function(){
-            document.getElementById("auth-info-message").innerHTML = '';
+    writeAuthInfoMessage(msg, color){
+        const authInfoElement = document.getElementById("auth-info-message");
+        document.querySelector('#auth-info-message').style.color = color || 'red';
+        authInfoElement.innerHTML = msg;
+        clearTimeout(authInfoElement.timeoutId);
+        authInfoElement.timeoutId = setTimeout(function(){
+            if (authInfoElement){
+                authInfoElement.innerHTML = '';
+            }
         }, 5000);
     }
 
@@ -43,10 +47,16 @@ class LoginComponent extends Component {
         const hash = md5(this.state.nickname + this.state.password);
         const promise = await fetch(`/login/${this.state.nickname}/${hash}`);
         const answer  = await promise.json();
-        if (answer && answer.result === 'ok' && answer.data && answer.data.token) {
-            clearTimeout(document.getElementById("auth-info-message").timeoutId);
-            this.socket.emit(this.EVENT.START_GAME, {nickname: this.state.nickname});
-            this.props.parent(answer.data.token);
+        if (answer && answer.result === 'ok'){
+            if (answer.data === true){
+                this.writeAuthInfoMessage('Вы успешно зарегестрированы', 'lime');
+            } else if (answer.data.token){
+                this.writeAuthInfoMessage('Вы успешно вошли', 'lime');
+                setTimeout(()=>{
+                    this.socket.emit(this.EVENT.START_GAME, {nickname: this.state.nickname});
+                    this.props.parent(answer.data.token);
+                }, 1000);
+            }
         } else {
             this.writeAuthInfoMessage('Неверный логин или пароль');
         }
