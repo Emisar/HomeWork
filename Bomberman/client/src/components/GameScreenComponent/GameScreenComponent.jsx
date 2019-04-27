@@ -10,6 +10,7 @@ class GameScreenComponent extends Component {
         this.socket = props.socket();
         this.EVENT = props.socketEvent();
         this.socket.on(this.EVENT.UPDATE_SCENE, (data) => this.updateScene(data));
+        this.fullscreen = false;
         document.addEventListener("keydown", event => this.keyDown(event));
         window.addEventListener('resize', () => {
             this.width = window.innerWidth * 0.9;
@@ -42,6 +43,25 @@ class GameScreenComponent extends Component {
             case 83: // W
                 move = "UP";
                break;
+            case 70:
+            if (this.fullscreen) {
+                this.width = window.outerWidth;
+                this.height = window.outerWidth;
+                this.renderer.setSize(this.width, this.height)
+                this.camera.aspect = this.width / this.height;
+                this.camera.updateProjectionMatrix();
+                this.fullscreen = false;
+            } else {
+
+                this.width = window.innerWidth * 0.9;
+                this.height = window.innerHeight * 0.9;
+                this.renderer.setSize(this.width, this.height)
+                this.camera.aspect = this.width / this.height;
+                this.camera.updateProjectionMatrix();
+                this.fullscreen = true;
+
+            }
+
             default:
                 break;
         }
@@ -108,16 +128,16 @@ class GameScreenComponent extends Component {
 
     // нарисовать карту
     drawMap(map) {
-        for (let j = 0; j < map.length; j++) {
-            for (let i = 0; i < map[j].length; i++) {
+        for (let i = map.length - 1; i >= 0; i--) {
+            for (let j = map[i].length - 1; j >= 0; j--) {
                 if (map[i][j] < 10 ) {
-                    this.addBlock(i, j, 0 , 'green');
-                } else if (map[i][j] === 10) {
-                    this.addBlock(i, j, 10 , 'darkgreen');
-                    this.addBlock(i, j, 0 , 'green');
+                    this.addBlock(j, i, 0 , 'green');
+                } else if (map[j][i] === 10) {
+                    this.addBlock(j, i, 10 , 'darkgreen');
+                    this.addBlock(j, i, 0 , 'green');
                 } else {
-                    this.addBlock(i, j, 10 , 'grey');
-                    this.addBlock(i, j, 0 , 'green');
+                    this.addBlock(j, i, 10 , 'grey');
+                    this.addBlock(j, i, 0 , 'green');
                 }  
             }
         }
@@ -126,8 +146,8 @@ class GameScreenComponent extends Component {
     // нарисовать игроков
     drawPlayers(players) {
         for (let key in players) {
-            const x = players[key].x;
-            const y = players[key].y;
+            const x = players[key].x - 1;
+            const y = players[key].y - 1;
             this.addBlock(x, y, 10, 'blue');
         }
     }
