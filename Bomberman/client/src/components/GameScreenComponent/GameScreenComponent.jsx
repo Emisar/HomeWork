@@ -11,6 +11,8 @@ class GameScreenComponent extends Component {
         this.EVENT = props.socketEvent();
         this.socket.on(this.EVENT.UPDATE_SCENE, (data) => this.updateScene(data));
         this.fullscreen = false;
+        this.booms = {};
+        this.bombs = {};
         document.addEventListener("keydown", event => this.keyDown(event));
         window.addEventListener('resize', () => {
             this.width = window.innerWidth * 0.9;
@@ -37,33 +39,34 @@ class GameScreenComponent extends Component {
                 break;
             case 38: // Down Arrow
             case 87: // S
-                move = "DOWN";
+                move = "UP";
                 break;
             case 40: // Up Arrow
             case 83: // W
-                move = "UP";
+                move = "DOWN";
                break;
-            case 70:
-            if (this.fullscreen) {
-                this.width = window.outerWidth;
-                this.height = window.outerWidth;
-                this.renderer.setSize(this.width, this.height)
-                this.camera.aspect = this.width / this.height;
-                this.camera.updateProjectionMatrix();
-                this.fullscreen = false;
-            } else {
-
-                this.width = window.innerWidth * 0.9;
-                this.height = window.innerHeight * 0.9;
-                this.renderer.setSize(this.width, this.height)
-                this.camera.aspect = this.width / this.height;
-                this.camera.updateProjectionMatrix();
-                this.fullscreen = true;
-
-            }
-
-            default:
+            case 32: // SPACE
+                if (token){
+                    this.socket.emit(this.EVENT.GAMER_ACTION, { token, action: { method: "setBomb"} });
+                }
                 break;
+            case 70: // F
+                if (this.fullscreen) {
+                    this.width = window.outerWidth;
+                    this.height = window.outerWidth;
+                    this.renderer.setSize(this.width, this.height)
+                    this.camera.aspect = this.width / this.height;
+                    this.camera.updateProjectionMatrix();
+                    this.fullscreen = false;
+                } else {
+                    this.width = window.innerWidth * 0.9;
+                    this.height = window.innerHeight * 0.9;
+                    this.renderer.setSize(this.width, this.height)
+                    this.camera.aspect = this.width / this.height;
+                    this.camera.updateProjectionMatrix();
+                    this.fullscreen = true;
+                }
+            break;
         }
         if (token && move) {
             this.socket.emit(this.EVENT.GAMER_ACTION, { token, action: { method: "moveHero", move } });
@@ -75,7 +78,7 @@ class GameScreenComponent extends Component {
         this.height = window.innerHeight * 0.9;
 
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x222222);
+        this.scene.background = new THREE.Color('white');
 
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize(this.width, this.height);
@@ -91,7 +94,6 @@ class GameScreenComponent extends Component {
         controls.enabled = true;
         controls.maxDistance = 1500;
         controls.minDistance = 0;
-
 
         // запустить анимацию
         const animate = () => {
@@ -121,22 +123,72 @@ class GameScreenComponent extends Component {
         let material = new THREE.MeshLambertMaterial({ color });
         let cube = new THREE.Mesh(geometry, material);
         this.scene.add(cube);
-        cube.position.set(-50 + x * 10, 0 + y * 10, z);     
+        cube.position.set(-50 + x * 10, 0 + -y * 10, z);     
+    }
 
-        
+    //нарисовать сферу
+    addSphere(x, y, z, color){
+        let geometry = new THREE.SphereGeometry(5, 20, 20);
+        let material = new THREE.MeshLambertMaterial({ color });
+        let cube = new THREE.Mesh(geometry, material);
+        this.scene.add(cube);
+        cube.position.set(-50 + x * 10, 0 + -y * 10, z); 
+    }
+
+    drawBooms(map){
+        for (let key in this.booms){
+            const x = this.booms[key].x - 1;
+            const y = this.booms[key].y - 1;
+            this.addSphere(x, y, 10, 'red');
+            var obstR, obstL, obstT, obstB;
+            for (let i = 1; i <= this.booms[key].power; i++){
+                if ((x + i) < map.length && !obstR){
+                    this.addSphere(x + i, y, 10, 'red');
+                } 
+                if ((x - i) > -1){
+                    this.addSphere(x - i, y, 10, 'red');
+                }
+                if ((y + i) < map[0].length){
+                    this.addSphere(x, y + i, 10, 'red');
+                }
+                if ((y - i) > -1){
+                    this.addSphere(x, y - i, 10, 'red');
+                }
+            }
+        }
+    }
+
+    drawBombs(bombs){
+        for (let key in bombs) {
+            const x = bombs[key].x - 1;
+            const y = bombs[key].y - 1;
+            this.addSphere(x, y, 10, 'black');
+        }
+    }
+
+    checkBombs(newBombs){
+        for (let key in this.bombs){
+            if (!newBombs[key]){
+                this.booms[key] = {x: this.bombs[key].x, y: this.bombs[key].y, power: this.bombs[key].power};
+            }
+        }
+        this.bombs = {};
+        for (let key in newBombs){
+            this.bombs[key] = newBombs[key];
+        }
     }
 
     // нарисовать карту
     drawMap(map) {
-        for (let i = map.length - 1; i >= 0; i--) {
-            for (let j = map[i].length - 1; j >= 0; j--) {
+        for (let i = 0; i < map.length; i++) {
+            for (let j = 0; j < map[i].length; j++) {
                 if (map[i][j] < 10 ) {
                     this.addBlock(j, i, 0 , 'green');
-                } else if (map[j][i] === 10) {
+                } else if (map[i][j] === 10) {
                     this.addBlock(j, i, 10 , 'darkgreen');
                     this.addBlock(j, i, 0 , 'green');
                 } else {
-                    this.addBlock(j, i, 10 , 'grey');
+                    this.addBlock(j, i, 10, 'grey');
                     this.addBlock(j, i, 0 , 'green');
                 }  
             }
@@ -154,9 +206,7 @@ class GameScreenComponent extends Component {
 
     updateScene(data) {
         if (data) {
-
-            console.log(data);
-            
+            console.log('updateScene', data);
             this.clearScene();
             this.addLight();
             if (data.map) {
@@ -165,13 +215,18 @@ class GameScreenComponent extends Component {
             if (data.players) {
                 this.drawPlayers(data.players);
             } 
+            if (data.bombs){
+                this.drawBombs(data.bombs);
+            }
+            this.checkBombs(data.bombs);
+            this.drawBooms(data.map);
+            this.booms = {};
         }
     }
     
     render() {
         return(
-               <div className='game-screen' id='game-screen'>
-               </div>
+            <div className='game-screen' id='game-screen'></div>
         )
     }
 }

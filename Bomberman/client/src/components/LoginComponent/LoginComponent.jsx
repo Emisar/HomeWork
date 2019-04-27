@@ -32,7 +32,7 @@ class LoginComponent extends Component {
 
     writeAuthInfoMessage(msg){
         document.getElementById("auth-info-message").innerHTML = msg;
-        clearTimeout(document.getElementById("auth-info-message").timeoutId)
+        clearTimeout(document.getElementById("auth-info-message").timeoutId);
         document.getElementById("auth-info-message").timeoutId = setTimeout(function(){
             document.getElementById("auth-info-message").innerHTML = '';
         }, 5000);
@@ -44,6 +44,7 @@ class LoginComponent extends Component {
         const promise = await fetch(`/login/${this.state.nickname}/${hash}`);
         const answer  = await promise.json();
         if (answer && answer.result === 'ok' && answer.data && answer.data.token) {
+            clearTimeout(document.getElementById("auth-info-message").timeoutId);
             this.socket.emit(this.EVENT.START_GAME, {nickname: this.state.nickname});
             this.props.parent(answer.data.token);
         } else {
