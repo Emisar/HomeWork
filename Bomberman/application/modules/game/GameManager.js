@@ -4,7 +4,7 @@ const Game = require('./Game');
 class GameManager extends BaseModule {
     constructor(options) {
         super(options);
-        this.game = new Game(options.GAME);
+        this.game = new Game(options.GAME, { boom: () => this.updateScene() });
         this.mediator.subscribe(this.EVENTS.ADD_PLAYER, nickname => { 
             if (this.game.addPlayer(nickname)) {
                 this.updateScene();

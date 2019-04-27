@@ -3,79 +3,35 @@ const Bomb = require('./struct/Bomb');
 
 class Game {
 
-    constructor(options) {
+    constructor(options, callbacks) {
+        this.GAMER_ACTION = options.GAMER_ACTION;
+        this.BOMB_TIMESTAMP = options.BOMB_TIMESTAMP;
+        this.MAP = options.MAP;
         this.players = {}; // массив игорьков
         this.bombs = {};   // Array of bombs
         this.map = this.genMap();
-        this.GAMER_ACTION = options.GAMER_ACTION;
         setInterval(() => {
-            for (let key in this.bombs) {
-                let bomb = this.bombs[key];
-                if (bomb.isBoom) {
-                    let player = this.getPlayer(bomb.owner);
-                    if (player) {
-                        player.count++;
-                    }
-                    this.bombBoom(bomb);
-                }
-            }
-        }, 500);
+            this.updateGame();
+        }, 50);
+        // коллбеки
+        this.boomCallback = (callbacks && callbacks.boom instanceof Function) ? callbacks.boom : () => {};
     }
 
-    getPlayer(nickname) {
-        if (nickname) {
-            return this.players[nickname];
-        }
-        return null;
-    } 
-    getBomb(x, y) {
-        if (x, y) {
-            const key = "" + x + "and" + y + "";
-            return this.struct.bombs[key];
-        }
-        return null;
-    }
-    addPlayer(nickname) {
-        if (nickname) {
-            const { x, y } = this.genCoord();
-            if (x && y) {
-                this.players[nickname] = new Player({ nickname, x: x, y: y });
-                return true;
+    updateGame() {
+        const currentTime = (new Date()).getTime();
+        for (let key in this.bombs) {
+            let bomb = this.bombs[key];
+            if (Math.abs(currentTime - bomb.timestamp) >= this.BOMB_TIMESTAMP){
+                this.bombBoom(bomb);
+                this.boomCallback();
             }
         }
-        return false;
     }
-    delPlayer(nickname) {
-        if (nickname && this.players[nickname]) {
-            
-            delete this.players[nickname];
-            return true;
-        }
-        return false;
-    }
-    addBomb(player) {
-        if (player) {
-            const key = "" + player.x + player.y + "";
-            this.bombs[key] = new Bomb({ owner: player.nickname, x: player.x, y: player.y, power: player.power, timer: 3000 });
-            return true;
-        }
-        return false;
-    }
-    delBomb(x, y) {
-        const key = ""+ x + y +"";
-        if (this.bombs[key]) {
-            delete this.bombs[key];
-        }
-    }
+
     genMap() {
-        return [
-            [ 1, 2, 1,   3,   1],
-            [ 10, 9, 1,   9,   1],
-            [ 9, 7, 9, 100, 100],
-            [ 9, 9, 1, 100, 100],
-            [ 1, 1, 2,  9,   1]
-        ];
+        return this.MAP;
     }
+
     genCoord() {
         let count = 0;
         while (1) {
@@ -100,6 +56,58 @@ class Game {
             }
         }
     }
+
+    getPlayer(nickname) {
+        if (nickname) {
+            return this.players[nickname];
+        }
+        return null;
+    }
+
+    getBomb(x, y) {
+        if (x, y) {
+            const key = "" + x + "and" + y + "";
+            return this.struct.bombs[key];
+        }
+        return null;
+    }
+
+    addPlayer(nickname) {
+        if (nickname) {
+            const { x, y } = this.genCoord();
+            if (x && y) {
+                this.players[nickname] = new Player({ nickname, x: x, y: y });
+                return true;
+            }
+        }
+        return false;
+    }
+
+    delPlayer(nickname) {
+        if (nickname && this.players[nickname]) {
+            
+            delete this.players[nickname];
+            return true;
+        }
+        return false;
+    }
+
+    addBomb(player) {
+        if (player) {
+            const key = "" + player.x + player.y + "";
+            this.bombs[key] = new Bomb({ owner: player.nickname, x: player.x, y: player.y, power: player.power});
+            return true;
+        }
+        return false;
+    }
+
+    delBomb(x, y) {
+        const key = ""+ x + y +"";
+        if (this.bombs[key]) {
+            delete this.bombs[key];
+        }
+    }
+
     isPassable(x, y) {
         const map = this.map;
         if (map[y - 1][x - 1] < 10) {
@@ -107,6 +115,7 @@ class Game {
         }
         return false;
     }
+
     isEmpty(x, y) {
         for (let key in this.players) {
             if (x === this.players[key].x && y === this.players[key].y) {
@@ -120,12 +129,15 @@ class Game {
         }
         return true;
     }
+
     bombBoom(bomb) {
         const { x, y, power } = bomb;
         let isDeadPlayers = {};
-        let map = this.map;
         const mapWidth = this.map[0].length;
         const mapHeight = this.map.length;
+        if (this.players[bomb.owner]) {
+            this.players[bomb.owner].count += 1;
+        }
         for (let i = 0; i <= power; i++) {
             for (let nickname in this.players) {
                 let player = this.players[nickname];
@@ -292,6 +304,7 @@ class Game {
         }
         return false;
     }
+
     setBomb(options) {
         const nickname = options.nickname;
         if (nickname) {
@@ -313,6 +326,5 @@ class Game {
             map: this.map
         };
     }
-
 }
 module.exports = Game;
