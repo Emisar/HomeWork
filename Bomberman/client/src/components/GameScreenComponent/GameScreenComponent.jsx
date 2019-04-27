@@ -128,7 +128,7 @@ class GameScreenComponent extends Component {
 
     //нарисовать сферу
     addSphere(x, y, z, color){
-        let geometry = new THREE.SphereGeometry(5, 20, 20);
+        let geometry = new THREE.SphereGeometry(9, 20, 20);
         let material = new THREE.MeshLambertMaterial({ color });
         let cube = new THREE.Mesh(geometry, material);
         this.scene.add(cube);
@@ -136,24 +136,45 @@ class GameScreenComponent extends Component {
     }
 
     drawBooms(map){
+        console.log(map);
         for (let key in this.booms){
             const x = this.booms[key].x - 1;
             const y = this.booms[key].y - 1;
-            this.addSphere(x, y, 10, 'red');
-            var obstR, obstL, obstT, obstB;
+            this.addSphere(x, y, 11, 'red');
+            var obstacleInRightSide, obstacleInLeftSide, obstacleInTopSide, obstacleInBottomSide;
             for (let i = 1; i <= this.booms[key].power; i++){
-                if ((x + i) < map.length && !obstR){
-                    this.addSphere(x + i, y, 10, 'red');
+                if ((x + i) < map.length){
+                    if (map[y][x+i] > 9){
+                        obstacleInRightSide = true;
+                    }
+                    if (!obstacleInRightSide){
+                        this.addSphere(x + i, y, 10, 'red');
+                    }
                 } 
                 if ((x - i) > -1){
-                    this.addSphere(x - i, y, 10, 'red');
-                }
+                    if (map[y][x-i] > 9){
+                        obstacleInLeftSide = true;
+                    }
+                    if (!obstacleInLeftSide){
+                        this.addSphere(x - i, y, 10, 'red');
+                    }
+                } 
                 if ((y + i) < map[0].length){
-                    this.addSphere(x, y + i, 10, 'red');
-                }
+                    if (map[y+i][x] > 9){
+                        obstacleInBottomSide = true;
+                    }
+                    if (!obstacleInBottomSide){
+                        this.addSphere(x, y + i, 10, 'red');
+                    }
+                } 
                 if ((y - i) > -1){
-                    this.addSphere(x, y - i, 10, 'red');
-                }
+                    if (map[y-i][x] > 9){
+                        obstacleInTopSide = true;
+                    }
+                    if (!obstacleInTopSide){
+                        this.addSphere(x, y - i, 10, 'red');
+                    }
+                } 
             }
         }
     }
@@ -165,7 +186,7 @@ class GameScreenComponent extends Component {
             this.addSphere(x, y, 10, 'black');
         }
     }
-
+    //Проверка, готовы ли бомбы сделать бум
     checkBombs(newBombs){
         for (let key in this.bombs){
             if (!newBombs[key]){
@@ -206,7 +227,6 @@ class GameScreenComponent extends Component {
 
     updateScene(data) {
         if (data) {
-            console.log('updateScene', data);
             this.clearScene();
             this.addLight();
             if (data.map) {
