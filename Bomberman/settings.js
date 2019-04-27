@@ -39,7 +39,15 @@ SETTINGS = {
         GAMER_ACTION: {
             MOVE_HERO: 'MOVE_HERO',
             SET_BOMB: 'SET_BOMB',
-        }
+        },
+        MAP: [
+            [  1, 1, 10, 100, 100],
+            [ 10, 1,  1,   1, 100],
+            [  1, 10, 1,   10, 100],
+            [  1, 1, 10,   10,   1],
+            [  1, 1,  1,   1,   1]            
+        ],
+        BOMB_TIMESTAMP: 3000,
     }
 };
 module.exports = SETTINGS;
