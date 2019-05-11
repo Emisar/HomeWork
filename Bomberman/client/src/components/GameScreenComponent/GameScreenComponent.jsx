@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
+import Webcam from 'react-webcam'
 
 
 
@@ -66,6 +67,8 @@ class GameScreenComponent extends Component {
                     this.camera.updateProjectionMatrix();
                     this.fullscreen = true;
                 }
+            break;
+            default:
             break;
         }
         if (token && move) {
@@ -246,7 +249,12 @@ class GameScreenComponent extends Component {
     
     render() {
         return(
+            <div>
             <div className='game-screen' id='game-screen'></div>
+            <Webcam
+                className='camvideo'
+             />
+            </div>
         )
     }
 }

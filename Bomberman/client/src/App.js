@@ -23,6 +23,7 @@ class App extends Component {
     localStorage.setItem('token', token);
   }
 
+
   // тут в компонент передвется функция через props
   render() {
     return (
