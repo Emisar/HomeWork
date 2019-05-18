@@ -3,8 +3,6 @@ import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
 import Webcam from 'react-webcam'
 
-
-
 class GameScreenComponent extends Component {
     constructor(props) {
         super(props);
@@ -77,8 +75,8 @@ class GameScreenComponent extends Component {
     }
 
     componentDidMount() {
-        this.width = window.innerWidth * 0.9;
-        this.height = window.innerHeight * 0.9;
+        this.width = document.getElementById('game').innerWidth;
+        this.height = document.getElementById('game').innerHeight ;
 
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color('white');
@@ -97,6 +95,7 @@ class GameScreenComponent extends Component {
         controls.enabled = true;
         controls.maxDistance = 1500;
         controls.minDistance = 0;
+        controls.enableKeys = false;
 
         // запустить анимацию
         const animate = () => {
@@ -139,7 +138,6 @@ class GameScreenComponent extends Component {
     }
 
     drawBooms(map){
-        console.log(map);
         for (let key in this.booms){
             const x = this.booms[key].x - 1;
             const y = this.booms[key].y - 1;
@@ -249,11 +247,9 @@ class GameScreenComponent extends Component {
     
     render() {
         return(
-            <div>
-            <div className='game-screen' id='game-screen'></div>
-            <Webcam
-                className='camvideo'
-             />
+            <div id="game">
+                <div className='game-screen' id='game-screen'></div>
+                <Webcam className='camvideo'/>
             </div>
         )
     }

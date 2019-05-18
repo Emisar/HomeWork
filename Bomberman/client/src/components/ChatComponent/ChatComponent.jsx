@@ -34,7 +34,7 @@ class ChatComponent extends Component {
     
     render() {      
         return(
-            <div className={"Chat"}>
+            <div className={"chat"}>
                 <h1>Chatik</h1>
                 <input id="input" type="text" placeholder="Введите сообщение"></input>
                 <button id="btn" onClick={() => this.send()}>Послать сообщение</button>
