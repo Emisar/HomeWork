@@ -1,41 +1,35 @@
+var io = require('socket.io-client');
+var request = require('request');
+
 const SETTINGS = require('../settings.js');
 const SOCKET = SETTINGS.SOCKET;
+const ADDRESS = 'http://localhost:5000';
 
-var io = require('socket.io-client');
-//  , io_server = require('socket.io').listen(SETTINGS.PORT);
-
-describe('basic socket.io example', function() {
-
-    var socket;
-  
-    beforeEach(done => {
-        // Setup
-        socket = io.connect('http://localhost:' + SETTINGS.PORT, {
-            'reconnection delay': 0,
-            'reopen delay': 0, 
-            'force new connection': true, 
-            transports: ['websocket']
+function checkStartGame(login, hash) {
+    it(`check start game user ${login}`, done => {
+        var socket = io.connect(ADDRESS);
+        socket.on('connect', () => {
+            // сначала залогиниться
+            request(ADDRESS + `/login/${login}/${hash}`, (error, response, body) => { // посылает запрос
+                // послать запрос
+                //socket.emit(SOCKET.START_GAME, { nickname: login });
+            });
         });
-        socket.on('connect', () => done());
-        socket.on('disconnect', () => {});
-    });
-  
-    afterEach(done => {
-        if(socket.connected) {
-            socket.disconnect();
-        }
-        done();
-    });
-  
-    it('some test', done => {
-        // сначала авторизоваться под Васей
-        //...
-        // послать запрос на старт игры
-        socket.emit(SOCKET.START_GAME, { nickname: 'vasya' });
-        // ожидать ответа с сервера на изменение сцены
-        socket.once(SOCKET.UPDATE_SCENE, message => {
-            expect(message).to.equal('Hello World');
+
+        // слушать ответ
+        socket.on(SOCKET.UPDATE_SCENE, data => {
+            const { players, bombs, map } = data;
+            expect(players[login]).toBeDefined();
+            expect(bombs).toBeDefined();
+            expect(map.length).toBeGreaterThan(0);
+            expect(map[0].length).toBeGreaterThan(0);
+            socket.close();
             done();
         });
     });
+}
+
+describe('basic socket.io example', () => {
+    checkStartGame('bezbabnik', '7c4d3e6e46003006872ac04cef0c8c44');
+    checkStartGame('vasya', '4a2d247d0c05a4f798b0b03839d94cf0');
 });

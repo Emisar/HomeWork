@@ -50,7 +50,6 @@ class UserManager extends BaseModule {
 
     async logout(token) {
         const user = await this.db.getUserByToken(token);
-        console.log(user);
         if (token && user) {
             this.db.setUserToken(user.nickname, null);
             delete this.users[user.nickname];

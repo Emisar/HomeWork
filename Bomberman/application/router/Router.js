@@ -7,8 +7,6 @@ function Router(options) {
     const TRIGGERS = mediator.getTriggers();
     const answer = new BaseRouter();
 
-
-
     router.get('/startGameAgain/:token/:answer', async (req, res) => {
         var token = req.params.token;
         var answer = req.params.aswer;

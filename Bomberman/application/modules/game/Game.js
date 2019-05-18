@@ -6,18 +6,56 @@ class Game {
     constructor(options, callbacks) {
         this.GAMER_ACTION = options.GAMER_ACTION;
         this.BOMB_TIMESTAMP = options.BOMB_TIMESTAMP;
+        this.GRASS_GROW_TIMESTAMP = options.GRASS_GROW_TIMESTAMP;
         this.MAP = options.MAP;
         this.players = {}; // массив игорьков
         this.bombs = {};   // Array of bombs
         this.map = this.genMap();
+        let tick = 0;
         setInterval(() => {
-            this.updateGame();
+            this.updateGame(++tick);
         }, 50);
         // коллбеки
         this.boomCallback = (callbacks && callbacks.boom instanceof Function) ? callbacks.boom : () => {};
+        this.growCallback = (callbacks && callbacks.grow instanceof Function) ? callbacks.grow : () => {};
     }
 
-    updateGame() {
+    updateGame(tick) {
+        // про рост травки
+        if (tick % this.GRASS_GROW_TIMESTAMP === 0) {
+
+            // вырасти всю травку на 1, кроме той, на которой стоит игрок
+            for (let i = 0; i < this.map.length; i++) {
+                for (let j = 0; j < this.map[i].length; j++) {
+                    if (this.map[i][j] < 10) {
+                        let isGrow = true;
+                        for (let key in this.players) {
+                            if (this.players[key].x === i &&
+                                this.players[key].y === j) {
+                                    isGrow = false;
+                                    break;
+                                }
+                        }
+                        for (let key in this.bombs) {
+                            if (this.bombs[key].x === i &&
+                                this.bombs[key].y === j) {
+                                    isGrow = false;
+                                    break;
+                                }
+                        }
+                        if (isGrow) {
+                            this.map[i][j]++;
+                            if (this.map[i][j] === 10) {
+                                this.growCallback();
+                            }
+                        }
+                    }
+                }
+            }
+            console.log(tick);
+
+        }
+        // про взрыв бомб
         const currentTime = (new Date()).getTime();
         for (let key in this.bombs) {
             let bomb = this.bombs[key];
@@ -156,7 +194,6 @@ class Game {
         // Взрыв вниз от бомбы
         for (let i = 1; i <= power; i++) {
             if (y + i <= mapHeight) {
-                console.log(this.map[y + i - 1][x - 1]);
                 if (this.map[y + i - 1][x - 1] < 10) {
                     this.map[y + i - 1][x - 1] = 0;
                 } else if (this.map[y + i - 1][x - 1] === 10) {

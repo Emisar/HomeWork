@@ -19,7 +19,7 @@
   "scripts": {
     "server": "nodemon app.js",
     "client": "cd client && npm start",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "VM-21",
   "license": "ISC"
