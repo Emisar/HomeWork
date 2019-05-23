@@ -38,7 +38,6 @@ class UserManager extends BaseModule {
                 this.users[nickname] = user;
                 this.users[nickname].token = token;
                 this.db.setUserToken(nickname, this.users[nickname].token);
-                this.mediator.call(this.EVENTS.ADD_PLAYER, nickname);
                 return { token };
             }
             return null
