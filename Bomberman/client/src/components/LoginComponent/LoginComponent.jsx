@@ -68,27 +68,26 @@ class LoginComponent extends Component {
            !this.state.regExp.test(this.state.password)){
             this.getData();
         } else {
-            this.setState({nickname: "", password: ""})
+             this.setState({nickname: "", password: ""})
             this.writeAuthInfoMessage('Введены недопустимые символы. Попробуйте еще раз');
         }
     }
     
     render() {    
         return(
-            <div className={"wrapp"}>
-                <div className={"registration-container"}>
+            <div className={"registration-container"}>
                 <h1>Приветствие</h1>
                 <form onSubmit={this.checkInput}>
                     <label className="input-container">
                         <input 
-                            className="registration-nickname" 
+                            className="registration__nickname" 
                             placeholder="Login" 
                             type="text" 
                             value={this.state.nickname} 
                             onChange={this.handleLoginChange}>
                         </input>              
                         <input 
-                            className="registration-password" 
+                            className="registration__password" 
                             placeholder="Password" 
                             type="password" 
                             value={this.state.password} 
@@ -97,16 +96,14 @@ class LoginComponent extends Component {
                     </label>
                     <div className="button-container">
                         <input 
-                            className="registration-button" 
+                            className="registration__button" 
                             type="submit" 
                             value="Login/Registration">
                         </input>
                     </div>
                     <div id="auth-info-message"></div>
                 </form>
-                </div>  
             </div>
-            
         )
     }
 }

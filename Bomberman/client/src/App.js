@@ -27,23 +27,25 @@ class App extends Component {
   // тут в компонент передвется функция через props
   render() {
     return (
-      <div className="App">
+      <div>
         {
         !this.state.token
         ? 
-          <LoginComponent
-            parent={(token)=>{this.updateToken(token)}} 
-            socket={() => this.socket} 
-            socketEvent={() => SETTINGS.SOCKET}/> 
+          <div className="login__screen">
+            <LoginComponent
+              parent={(token)=>{this.updateToken(token)}} 
+              socket={() => this.socket} 
+              socketEvent={() => SETTINGS.SOCKET}/>
+          </div> 
         : 
-          <>
-          <ChatComponent
-            socket={() => this.socket} 
-            socketEvent={() => SETTINGS.SOCKET}/>
-          <GameScreenComponent
-            socket={() => this.socket} 
-            socketEvent={() => SETTINGS.SOCKET}/>
-          </>
+          <div className="game__screen" id="g__scr">
+            <ChatComponent
+              socket={() => this.socket}
+              socketEvent={() => SETTINGS.SOCKET}/>
+            <GameScreenComponent
+              socket={() => this.socket}
+              socketEvent={() => SETTINGS.SOCKET}/>
+          </div>
         }
       </div>
     )

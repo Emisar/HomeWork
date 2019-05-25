@@ -14,8 +14,8 @@ class GameScreenComponent extends Component {
         this.bombs = {};
         document.addEventListener("keydown", event => this.keyDown(event));
         window.addEventListener('resize', () => {
-            this.width = window.innerWidth * 0.9;
-            this.height = window.innerHeight * 0.9;
+            this.width = window.innerWidth * 0.8;
+            this.height = window.innerHeight * 0.95;
             this.renderer.setSize(this.width, this.height)
             this.camera.aspect = this.width / this.height;
             this.camera.updateProjectionMatrix();
@@ -75,8 +75,8 @@ class GameScreenComponent extends Component {
     }
 
     componentDidMount() {
-        this.width = document.getElementById('game').innerWidth;
-        this.height = document.getElementById('game').innerHeight ;
+        this.width = window.innerWidth * 0.8;
+        this.height = window.innerHeight * 0.95;
 
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color('white');
@@ -85,9 +85,12 @@ class GameScreenComponent extends Component {
         this.renderer.setSize(this.width, this.height);
         this.renderer.setClearColor(0xffffff, 1.0);
 
-        document.getElementById('game-screen').appendChild(this.renderer.domElement);
+        document.getElementById('game').appendChild(this.renderer.domElement);
+
+        console.log(document.getElementById('game'));
 
         this.camera = new THREE.PerspectiveCamera(100, this.width / this.height, 0.1, 1000);
+        this.camera.aspect = this.width / this.height;
         this.camera.position.z = 100;
         this.camera.position.y = -50;
 
@@ -247,9 +250,8 @@ class GameScreenComponent extends Component {
     
     render() {
         return(
-            <div id="game">
-                <div className='game-screen' id='game-screen'></div>
-                <Webcam className='camvideo'/>
+            <div id="game__container">
+                <div id='game'></div>
             </div>
         )
     }
