@@ -52,7 +52,6 @@ class Game {
                     }
                 }
             }
-            console.log(tick);
 
         }
         // про взрыв бомб
@@ -75,7 +74,7 @@ class Game {
         while (1) {
             const x = Math.round(Math.random() * (this.map[0].length - 1));
             const y = Math.round(Math.random() * (this.map.length - 1));
-            if (this.map[y][x] < 10) {
+            if (this.map[y][x] < 10 || this.map[y][x] === 11) {
                 let flag = true;
                 for (let key in this.players) {
                     const player = this.players[key];
@@ -148,7 +147,7 @@ class Game {
 
     isPassable(x, y) {
         const map = this.map;
-        if (map[y - 1][x - 1] < 10) {
+        if (map[y - 1][x - 1] < 10 || map[y-1][x-1] === 11) {
             return true;
         }
         return false;

@@ -145,10 +145,10 @@ class GameScreenComponent extends Component {
             const x = this.booms[key].x - 1;
             const y = this.booms[key].y - 1;
             this.addSphere(x, y, 11, 'red');
-            var obstacleInRightSide, obstacleInLeftSide, obstacleInTopSide, obstacleInBottomSide;
+            let obstacleInRightSide, obstacleInLeftSide, obstacleInTopSide, obstacleInBottomSide;
             for (let i = 1; i <= this.booms[key].power; i++){
                 if ((x + i) < map.length){
-                    if (map[y][x+i] > 9){
+                    if (map[y][x+i] > 9 && map[y][x+i] !== 11){
                         obstacleInRightSide = true;
                     }
                     if (!obstacleInRightSide){
@@ -156,7 +156,7 @@ class GameScreenComponent extends Component {
                     }
                 } 
                 if ((x - i) > -1){
-                    if (map[y][x-i] > 9){
+                    if (map[y][x-i] > 9 && map[y][x-i] !== 11){
                         obstacleInLeftSide = true;
                     }
                     if (!obstacleInLeftSide){
@@ -164,7 +164,7 @@ class GameScreenComponent extends Component {
                     }
                 } 
                 if ((y + i) < map[0].length){
-                    if (map[y+i][x] > 9){
+                    if (map[y+i][x] > 9 && map[y+i][x] !== 11){
                         obstacleInBottomSide = true;
                     }
                     if (!obstacleInBottomSide){
@@ -172,7 +172,7 @@ class GameScreenComponent extends Component {
                     }
                 } 
                 if ((y - i) > -1){
-                    if (map[y-i][x] > 9){
+                    if (map[y-i][x] > 9 && map[y-i][x] !== 11){
                         obstacleInTopSide = true;
                     }
                     if (!obstacleInTopSide){
@@ -212,10 +212,12 @@ class GameScreenComponent extends Component {
                 } else if (map[i][j] === 10) {
                     this.addBlock(j, i, 10 , 'darkgreen');
                     this.addBlock(j, i, 0 , 'green');
-                } else {
+                } else if (map[i][j] === 11) {
+                    this.addBlock(j, i, 0, 'green');
+                }  else {
                     this.addBlock(j, i, 10, 'grey');
                     this.addBlock(j, i, 0 , 'green');
-                }  
+                }
             }
         }
     }
