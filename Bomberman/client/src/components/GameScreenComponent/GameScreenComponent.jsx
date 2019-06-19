@@ -1,11 +1,10 @@
 import React, {Component} from 'react'
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
-import Webcam from 'react-webcam'
 
 class GameScreenComponent extends Component {
     constructor(props) {
-        super(props);
+        super(props);   
         this.socket = props.socket();
         this.EVENT = props.socketEvent();
         this.socket.on(this.EVENT.UPDATE_SCENE, (data) => this.updateScene(data));
@@ -49,23 +48,6 @@ class GameScreenComponent extends Component {
                     this.socket.emit(this.EVENT.GAMER_ACTION, { token, action: { method: "setBomb"} });
                 }
                 break;
-            case 70: // F
-                if (this.fullscreen) {
-                    this.width = window.outerWidth;
-                    this.height = window.outerWidth;
-                    this.renderer.setSize(this.width, this.height)
-                    this.camera.aspect = this.width / this.height;
-                    this.camera.updateProjectionMatrix();
-                    this.fullscreen = false;
-                } else {
-                    this.width = window.innerWidth * 0.9;
-                    this.height = window.innerHeight * 0.9;
-                    this.renderer.setSize(this.width, this.height)
-                    this.camera.aspect = this.width / this.height;
-                    this.camera.updateProjectionMatrix();
-                    this.fullscreen = true;
-                }
-            break;
             default:
             break;
         }
@@ -75,25 +57,54 @@ class GameScreenComponent extends Component {
     }
 
     componentDidMount() {
+        //Подключиение распознователя метки
+        //var AR = new require('js-aruco').AR;
+        //var detector = new AR.Detector();
+
+        //создание канваса на котором отображается видео
+        /*var video = document.getElementById('videoElement');
+        var canvas = document.getElementById('canvasElement');
+        var ctx = canvas.getContext('2d');
+
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({video: true})
+            .then(function (stream) {
+                video.srcObject = stream;
+                video.addEventListener('timeupdate', () => {
+                    ctx.drawImage(video, 0 ,0);
+                    var markers = detector.detect(ctx.getImageData(0, 0, canvas.width, canvas.height));
+                    console.log(markers);
+                });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }   */
+
+        //Высота и ширина игрового поля
         this.width = window.innerWidth * 0.8;
         this.height = window.innerHeight * 0.95;
 
+        //Создаем игровую сцену (THREE.JS)
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color('white');
 
-        this.renderer = new THREE.WebGLRenderer();
+        //Создаем конвас под игровое поле
+        this.gamecanvas = document.getElementById("gamecanvas");
+
+        //Создаем рендер элемент (THREE.JS)
+        this.renderer = new THREE.WebGLRenderer( { alpha: true, canvas: this.gamecanvas } );
         this.renderer.setSize(this.width, this.height);
-        this.renderer.setClearColor(0xffffff, 1.0);
+        this.renderer.setClearColor(0x000000, 0);
 
-        document.getElementById('game').appendChild(this.renderer.domElement);
+        //document.getElementById('game').appendChild(this.renderer.domElement);
 
-        console.log(document.getElementById('game'));
-
+        //Создаем камеру игрового поля (THREE.JS)
         this.camera = new THREE.PerspectiveCamera(100, this.width / this.height, 0.1, 1000);
         this.camera.aspect = this.width / this.height;
         this.camera.position.z = 100;
         this.camera.position.y = -50;
 
+        //Возможность крутить в пространстве объекты на игровом поле (THREE.JS)
         const controls = new OrbitControls(this.camera, this.renderer.domElement);
         controls.enabled = true;
         controls.maxDistance = 1500;
@@ -108,12 +119,16 @@ class GameScreenComponent extends Component {
         animate();
     }
 
+    //Очистить сцену (THREE.JS)
     clearScene() {
         for(var i = this.scene.children.length - 1; i >= 0; i--) { 
             this.scene.remove(this.scene.children[i]);
         }
+
+
     }
 
+    //Добавить освещение на игровое поле (THREE.JS)
     addLight() {
         const lightP = new THREE.PointLight(0xffffff);
         lightP.position.set(10000, 10000, 10000);
@@ -122,7 +137,7 @@ class GameScreenComponent extends Component {
         this.scene.add(lightA);
     }
 
-    // нарисовать блок 
+    // нарисовать блок (THREE.JS)
     addBlock(x, y, z, color) {
         let geometry = new THREE.BoxGeometry(10, 10, 10);
         let material = new THREE.MeshLambertMaterial({ color });
@@ -131,7 +146,7 @@ class GameScreenComponent extends Component {
         cube.position.set(-50 + x * 10, 0 + -y * 10, z);     
     }
 
-    //нарисовать сферу
+    //нарисовать сферу (THREE.JS)
     addSphere(x, y, z, color){
         let geometry = new THREE.SphereGeometry(9, 20, 20);
         let material = new THREE.MeshLambertMaterial({ color });
@@ -140,6 +155,7 @@ class GameScreenComponent extends Component {
         cube.position.set(-50 + x * 10, 0 + -y * 10, z); 
     }
 
+    //Отрисовка взрывов от бомб (THREE.JS)
     drawBooms(map){
         for (let key in this.booms){
             const x = this.booms[key].x - 1;
@@ -163,7 +179,7 @@ class GameScreenComponent extends Component {
                         this.addSphere(x - i, y, 10, 'red');
                     }
                 } 
-                if ((y + i) < map[0].length){
+                if ((y + i) < map.length){
                     if (map[y+i][x] > 9 && map[y+i][x] !== 11){
                         obstacleInBottomSide = true;
                     }
@@ -183,6 +199,7 @@ class GameScreenComponent extends Component {
         }
     }
 
+    //Отрисовка бомб (THREE.JS)
     drawBombs(bombs){
         for (let key in bombs) {
             const x = bombs[key].x - 1;
@@ -190,6 +207,7 @@ class GameScreenComponent extends Component {
             this.addSphere(x, y, 10, 'black');
         }
     }
+
     //Проверка, готовы ли бомбы сделать бум
     checkBombs(newBombs){
         for (let key in this.bombs){
@@ -231,6 +249,7 @@ class GameScreenComponent extends Component {
         }
     }
 
+    //Обновление сцены (THREE.JS)
     updateScene(data) {
         if (data) {
             this.clearScene();
@@ -250,10 +269,15 @@ class GameScreenComponent extends Component {
         }
     }
     
+
+    /*<video autoPlay id="videoElement" width="640" height="480"></video>
+    <canvas id="canvasElement" width="640" height="480"></canvas> */
+
+
     render() {
         return(
             <div id="game__container">
-                <div id='game'></div>
+                <canvas id='gamecanvas'></canvas>
             </div>
         )
     }
