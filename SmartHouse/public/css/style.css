@@ -1,0 +1,14 @@
+.button {
+    display: block;
+    border: none;
+    width: 100px;
+    height: 100px;
+    color: red;
+    margin-right: 20px;
+}
+
+.buttonswrap {
+    display: flex;
+    width: 240px;
+    flex-wrap: wrap;
+}
